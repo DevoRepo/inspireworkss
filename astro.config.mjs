@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -12,8 +12,21 @@ import tailwindcss from '@tailwindcss/vite';
  */
 const site = process.env.SITE_URL || process.env.CF_PAGES_URL || 'http://localhost:4321';
 
+/**
+ * Sub-path the site is served from. '/' for a domain root (Cloudflare Pages);
+ * '/inspireworkss' for the temporary GitHub Pages preview. Links use src/lib/url.ts.
+ */
+const base = process.env.BASE_PATH || '/';
+
 export default defineConfig({
   site,
+  base,
+  env: {
+    schema: {
+      /** true = temporary/preview deployment: noindex meta + "Disallow: /" in robots.txt. */
+      NOINDEX: envField.boolean({ context: 'server', access: 'public', default: false }),
+    },
+  },
   trailingSlash: 'always',
   build: { format: 'directory' },
   integrations: [sitemap({ filter: (page) => !page.includes('/404') })],

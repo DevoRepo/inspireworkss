@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { url } from '../lib/url';
 import type { Project } from '../lib/content';
 import { pad, resolveTools } from '../lib/content';
 import Icon from './Icon.astro';
@@ -16,7 +17,7 @@ const { project, index, reverse = false, headingLevel = 'h3', eager = false } = 
 const { data } = project;
 const tools = await resolveTools(data.tools);
 const Heading = headingLevel;
-const href = `/projects/${project.id}/`;
+const href = url(`/projects/${project.id}/`);
 const meta = [
   { label: 'Discipline', value: data.discipline },
   { label: 'Category', value: data.category },

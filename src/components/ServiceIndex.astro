@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import type { Service } from '../lib/content';
 import { pad, resolveTools } from '../lib/content';
 import Icon from './Icon.astro';
@@ -17,7 +18,7 @@ const rows = await Promise.all(services.map(async (s) => ({ s, tools: await reso
   {
     rows.map(({ s, tools }, i) => (
       <li data-reveal style={`--reveal-i: ${i % 4}`}>
-        <a href={`/services/${s.id}/`} class="svc-row">
+        <a href={url(`/services/${s.id}/`)} class="svc-row">
           <span class="svc-num mono">{pad(s.data.order)}</span>
           <span class="svc-main">
             <Heading class="svc-title">{s.data.title}</Heading>

@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TitleBlock from '../../components/TitleBlock.astro';
 import ProjectShowcase from '../../components/ProjectShowcase.astro';
@@ -17,7 +18,7 @@ const schema = [
     hasPart: projects.map((p) => ({
       '@type': 'CreativeWork',
       name: p.data.title,
-      url: new URL(`/projects/${p.id}/`, Astro.site).href,
+      url: new URL(url(`/projects/${p.id}/`), Astro.site).href,
     })),
   },
 ];

@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Font } from 'astro:assets';
 import '../styles/global.css';
 import SEO, { type SEOProps } from '../components/SEO.astro';
@@ -28,11 +29,11 @@ const props = Astro.props;
     <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
     <meta name="author" content="Avani Jangam" />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
+    <link rel="icon" href={url('/favicon-192.png')} type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="manifest" href={url('/site.webmanifest')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
     <Font cssVariable="--font-barlow-condensed" preload />
     <Font cssVariable="--font-barlow" preload />
     <Font cssVariable="--font-plex-mono" />

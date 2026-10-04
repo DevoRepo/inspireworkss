@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DimensionLine from '../components/DimensionLine.astro';
 import Icon from '../components/Icon.astro';
@@ -16,14 +17,14 @@ import { nav } from '../config/site';
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="btn btn-ghost">
+              <a href={url(item.href)} class="btn btn-ghost">
                 {item.label}
               </a>
             </li>
           ))
         }
       </ul>
-      <a href="/" class="btn btn-primary mt-10">Back to home <Icon name="arrow" /></a>
+      <a href={url('/')} class="btn btn-primary mt-10">Back to home <Icon name="arrow" /></a>
     </div>
   </section>
 </BaseLayout>

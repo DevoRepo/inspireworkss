@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TitleBlock from '../../components/TitleBlock.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
@@ -25,7 +26,7 @@ const schema = [
       '@type': 'ListItem',
       position: i + 1,
       name: s.data.title,
-      url: new URL(`/services/${s.id}/`, Astro.site).href,
+      url: new URL(url(`/services/${s.id}/`), Astro.site).href,
     })),
   },
 ];

@@ -1,7 +1,9 @@
 ---
+import { url } from '../lib/url';
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { getCollection } from 'astro:content';
+import { NOINDEX } from 'astro:env/server';
 import { site } from '../config/site';
 import { baseGraph, breadcrumbs, type JsonLd } from '../lib/schema';
 import logo from '../assets/brand/inspireworkss-logo.png';
@@ -45,8 +47,8 @@ const graph: JsonLd[] = [
     url: canonical,
     name: fullTitle,
     description,
-    isPartOf: { '@id': new URL('/#website', origin).href },
-    about: { '@id': new URL('/#organization', origin).href },
+    isPartOf: { '@id': new URL(url('/#website'), origin).href },
+    about: { '@id': new URL(url('/#organization'), origin).href },
     inLanguage: 'en',
   },
   ...(trail.length ? [breadcrumbs(origin, [{ name: 'Home', href: '/' }, ...trail])] : []),
@@ -58,7 +60,7 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
-{noindex && <meta name="robots" content="noindex, follow" />}
+{(noindex || NOINDEX) && <meta name="robots" content={NOINDEX ? 'noindex, nofollow' : 'noindex, follow'} />}
 
 <meta property="og:site_name" content={site.name} />
 <meta property="og:locale" content={site.locale} />

@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { nav, site, mailto } from '../config/site';
 import { getServices } from '../lib/content';
 import Icon from './Icon.astro';
@@ -30,14 +31,14 @@ const socials = [
     <nav aria-label="Footer" class="md:col-span-4 lg:col-span-2">
       <h2 class="eyebrow">Index</h2>
       <ul class="mt-4 space-y-2">
-        {nav.map((item) => <li><a class="footer-link" href={item.href}>{item.label}</a></li>)}
+        {nav.map((item) => <li><a class="footer-link" href={url(item.href)}>{item.label}</a></li>)}
       </ul>
     </nav>
 
     <div class="md:col-span-4 lg:col-span-3">
       <h2 class="eyebrow">Services</h2>
       <ul class="mt-4 space-y-2">
-        {services.map((s) => <li><a class="footer-link" href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
+        {services.map((s) => <li><a class="footer-link" href={url(`/services/${s.id}/`)}>{s.data.title}</a></li>)}
       </ul>
     </div>
 

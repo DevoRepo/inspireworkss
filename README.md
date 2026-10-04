@@ -37,6 +37,18 @@ Set `SITE_URL` before launch, even to the `*.pages.dev` address. Without it, can
 
 Security and caching headers are in [`public/_headers`](public/_headers).
 
+## Temporary preview on GitHub Pages
+
+[`.github/workflows/github-pages-preview.yml`](.github/workflows/github-pages-preview.yml) builds and deploys every push to `main` to `https://<owner>.github.io/<repo>/`. It sets three environment variables:
+
+| Variable | Value | Effect |
+|---|---|---|
+| `SITE_URL` | `https://<owner>.github.io` | Absolute URLs for canonical tags, Open Graph and the sitemap |
+| `BASE_PATH` | `/<repo>` | The site is served from a sub-path. Every internal link goes through `url()` in [`src/lib/url.ts`](src/lib/url.ts) |
+| `NOINDEX` | `true` | Adds a `noindex` meta tag and `Disallow: /` in robots.txt, so this temporary copy never shows up in search results |
+
+When the site moves to Cloudflare Pages, leave `BASE_PATH` and `NOINDEX` unset, then delete the workflow or disable GitHub Pages.
+
 ## Editing content
 
 Content is kept separate from presentation. Most updates are a single file edit:

@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 /**
  * Page header styled as an engineering drawing sheet: breadcrumb trail, heading, lead,
  * and a title block (dl) with sheet metadata.
@@ -28,11 +29,11 @@ const cells: Meta[] = [{ label: 'Sheet', value: sheet }, ...meta];
         <nav aria-label="Breadcrumb" class="mb-8">
           <ol class="crumbs">
             <li>
-              <a href="/">Home</a>
+              <a href={url('/')}>Home</a>
             </li>
             {trail.map((item, i) => (
               <li>
-                {i === trail.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={item.href}>{item.name}</a>}
+                {i === trail.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={url(item.href)}>{item.name}</a>}
               </li>
             ))}
           </ol>

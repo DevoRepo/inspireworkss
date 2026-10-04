@@ -1,3 +1,4 @@
+import { url } from './url';
 import { site } from '../config/site';
 
 /** schema.org helpers. All URLs are absolute and derived from Astro's configured `site`. */
@@ -5,9 +6,9 @@ import { site } from '../config/site';
 export type JsonLd = Record<string, unknown>;
 
 export const ids = (origin: URL) => ({
-  org: new URL('/#organization', origin).href,
-  person: new URL('/#avani-jangam', origin).href,
-  website: new URL('/#website', origin).href,
+  org: new URL(url('/#organization'), origin).href,
+  person: new URL(url('/#avani-jangam'), origin).href,
+  website: new URL(url('/#website'), origin).href,
 });
 
 export function baseGraph(origin: URL, logoUrl: string, knowsAbout: string[]): JsonLd[] {
@@ -18,7 +19,7 @@ export function baseGraph(origin: URL, logoUrl: string, knowsAbout: string[]): J
       '@type': 'Organization',
       '@id': id.org,
       name: site.name,
-      url: new URL('/', origin).href,
+      url: new URL(url('/'), origin).href,
       logo: logoUrl,
       email: `mailto:${site.email}`,
       description: site.description,
@@ -30,7 +31,7 @@ export function baseGraph(origin: URL, logoUrl: string, knowsAbout: string[]): J
       '@id': id.person,
       name: site.owner,
       jobTitle: 'Mechanical Engineer',
-      url: new URL('/about/', origin).href,
+      url: new URL(url('/about/'), origin).href,
       worksFor: { '@id': id.org },
       knowsAbout,
       sameAs: [site.social.linkedin.url, site.social.youtube.url, site.social.blog.url],
@@ -39,7 +40,7 @@ export function baseGraph(origin: URL, logoUrl: string, knowsAbout: string[]): J
       '@type': 'WebSite',
       '@id': id.website,
       name: site.name,
-      url: new URL('/', origin).href,
+      url: new URL(url('/'), origin).href,
       publisher: { '@id': id.org },
       inLanguage: 'en',
     },
@@ -53,7 +54,7 @@ export function breadcrumbs(origin: URL, trail: { name: string; href: string }[]
       '@type': 'ListItem',
       position: i + 1,
       name: item.name,
-      item: new URL(item.href, origin).href,
+      item: new URL(url(item.href), origin).href,
     })),
   };
 }

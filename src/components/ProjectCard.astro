@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import type { Project } from '../lib/content';
 import { pad } from '../lib/content';
@@ -12,7 +13,7 @@ const { project, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
 ---
 
-<a href={`/projects/${project.id}/`} class="card">
+<a href={url(`/projects/${project.id}/`)} class="card">
   <span class="thumb">
     <Image src={project.data.cover} alt="" widths={[360, 540, 720]} sizes="(min-width: 64rem) 25vw, (min-width: 40rem) 50vw, 100vw" />
   </span>
