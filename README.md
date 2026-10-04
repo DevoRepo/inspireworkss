@@ -61,17 +61,14 @@ The production domain is **not** hard-coded into the site. Canonical URLs, Open 
 
 Security and caching headers are in [`public/_headers`](public/_headers).
 
-## Temporary preview on GitHub Pages
+## Optional build settings
 
-[`.github/workflows/github-pages-preview.yml`](.github/workflows/github-pages-preview.yml) builds and deploys every push to `main` to `https://<owner>.github.io/<repo>/`. The daily refresh only runs for Cloudflare. It sets three environment variables:
+These environment variables are not used for the live site. They're available if you ever need a test copy:
 
-| Variable | Value | Effect |
-|---|---|---|
-| `SITE_URL` | `https://<owner>.github.io` | Absolute URLs for canonical tags, Open Graph and the sitemap |
-| `BASE_PATH` | `/<repo>` | The site is served from a sub-path. Every internal link goes through `url()` in [`src/lib/url.ts`](src/lib/url.ts) |
-| `NOINDEX` | `true` | Adds a `noindex` meta tag and `Disallow: /` in robots.txt, so this temporary copy never shows up in search results |
-
-When the site moves to Cloudflare Pages, leave `BASE_PATH` and `NOINDEX` unset, then delete the workflow or disable GitHub Pages.
+| Variable | Effect |
+|---|---|
+| `BASE_PATH` | Serves the site from a sub-path, e.g. `/preview`. Every internal link goes through `url()` in [`src/lib/url.ts`](src/lib/url.ts). |
+| `NOINDEX=true` | Adds a `noindex` meta tag and `Disallow: /` in robots.txt, so a test copy never appears in search results. |
 
 ## Editing content
 

@@ -26,12 +26,11 @@ Consult these guides before working on related tasks:
 Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Avani Jangam. It uses Tailwind v4 for layout and is intended for Cloudflare Pages.
 
 - **Production:** https://inspireworkss.inspireworkss.workers.dev (Cloudflare Pages on Workers, static assets). `.github/workflows/deploy-cloudflare.yml` runs `npm run deploy` on every push to `main`, daily and on demand. It uses the secrets `CLOUDFLARE_API_TOKEN` and `YOUTUBE_API_KEY`. Config is in `wrangler.jsonc`.
-- **GitHub preview:** https://devorepo.github.io/inspireworkss/ (noindex). Every push to `main` deploys it via `.github/workflows/github-pages-preview.yml`.
 - **Repo:** https://github.com/DevoRepo/inspireworkss (branches `main` and `feat/site`).
 
 ### Rules
 - The source of truth is the INSPIREWORKSS Notion page: https://inspireworkss.notion.site/INSPIREWORKSSS-5afe3987a78a8365b276818574973f05. Never invent clients, stats, testimonials or credentials.
-- Never hard-code a domain or root path. Internal links go through `url()` in `src/lib/url.ts`, because the site may be served from a sub-path (`BASE_PATH`). Absolute URLs come from `site` (`SITE_URL` / `CF_PAGES_URL`).
+- Never hard-code a domain or root path. Internal links go through `url()` in `src/lib/url.ts`, because the site can be built for a sub-path (`BASE_PATH`, unused in production). Absolute URLs come from `site` (`SITE_URL` / `CF_PAGES_URL`).
 - Light theme is the default. Every new style must work in both themes: use the `--c-*` tokens in `src/styles/global.css` and never hard-code colours.
 - Scoped `<style>` in `.astro` files is unlayered, so it overrides Tailwind utilities. Make responsive `display` changes in a component media query instead.
 - Don't use gendered pronouns for Avani. Write "Avani Jangam" or rephrase.
