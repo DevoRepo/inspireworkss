@@ -25,7 +25,7 @@ Consult these guides before working on related tasks:
 
 Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Avani Jangam. It uses Tailwind v4 for layout and is intended for Cloudflare Pages.
 
-- **Production:** https://inspireworkss.inspireworkss.workers.dev (Cloudflare Pages on Workers, static assets). Deploy with `npm run deploy`; config is in `wrangler.jsonc`.
+- **Production:** https://inspireworkss.inspireworkss.workers.dev (Cloudflare Pages on Workers, static assets). `.github/workflows/deploy-cloudflare.yml` runs `npm run deploy` on every push to `main`, daily and on demand. It uses the secrets `CLOUDFLARE_API_TOKEN` and `YOUTUBE_API_KEY`. Config is in `wrangler.jsonc`.
 - **GitHub preview:** https://devorepo.github.io/inspireworkss/ (noindex). Every push to `main` deploys it via `.github/workflows/github-pages-preview.yml`.
 - **Repo:** https://github.com/DevoRepo/inspireworkss (branches `main` and `feat/site`).
 
@@ -67,4 +67,4 @@ Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Av
 - All service and project copy is marked `draft: true`. It was drafted from Notion facts and is awaiting Avani's review.
 - Testimonials, experience and education are omitted until real data exists.
 - The final domain is not chosen yet. When it is, add it as a custom domain in Cloudflare and update the `SITE_URL` default in the `deploy` script. Never set `BASE_PATH` or `NOINDEX` for Cloudflare.
-- YouTube API key: not configured yet. `npm run deploy` builds locally, so the key would go in the local shell or `.env`; any CI that deploys needs it as a secret.
+- YouTube API key: configured as a GitHub secret. For local builds, put it in `.env` (git-ignored; see `.env.example`).

@@ -28,7 +28,20 @@ npm run deploy               # type-check → fetch YouTube videos → build →
 npm run preview:cloudflare   # build, then serve locally through Cloudflare's runtime (wrangler dev)
 ```
 
-Deployment needs a one-time `npx wrangler login`. The Cloudflare settings are in [`wrangler.jsonc`](wrangler.jsonc):
+### Automatic deploys (GitHub Actions)
+
+[`.github/workflows/deploy-cloudflare.yml`](.github/workflows/deploy-cloudflare.yml) runs `npm run deploy`:
+- on every push to `main`;
+- **daily at 02:30 UTC**, so new YouTube videos and view counts appear automatically;
+- whenever you start it from **Actions → Deploy to Cloudflare → Run workflow**.
+
+It uses two repository secrets: `CLOUDFLARE_API_TOKEN` (the "Edit Cloudflare Workers" token) and `YOUTUBE_API_KEY`. The account ID is in `wrangler.jsonc`.
+
+GitHub pauses scheduled workflows after 60 days with no repository activity. If that happens, re-enable the workflow from the Actions tab.
+
+### Manual deploys
+
+Manual deploys from your own machine need a one-time `npx wrangler login`. To use the YouTube API key locally, copy `.env.example` to `.env`, which git ignores, and fill it in. The Cloudflare settings are in [`wrangler.jsonc`](wrangler.jsonc):
 - project name `inspireworkss`
 - assets served from `./dist`
 - `dist/404.html` for unknown URLs
@@ -50,7 +63,7 @@ Security and caching headers are in [`public/_headers`](public/_headers).
 
 ## Temporary preview on GitHub Pages
 
-[`.github/workflows/github-pages-preview.yml`](.github/workflows/github-pages-preview.yml) builds and deploys every push to `main` to `https://<owner>.github.io/<repo>/`. It sets three environment variables:
+[`.github/workflows/github-pages-preview.yml`](.github/workflows/github-pages-preview.yml) builds and deploys every push to `main` to `https://<owner>.github.io/<repo>/`. The daily refresh only runs for Cloudflare. It sets three environment variables:
 
 | Variable | Value | Effect |
 |---|---|---|
@@ -85,17 +98,18 @@ The Resources page lists the channel's **long-form videos automatically**: title
 - It writes `src/content/youtube.json`, `src/content/youtube-meta.json` and thumbnails to `src/assets/youtube/`. These are a committed snapshot, so builds still work if YouTube can't be reached.
 - Shorts are excluded by reading YouTube's long-form-only playlist (`UULF…`).
 - Channel ID and page size are in [`src/config/youtube.json`](src/config/youtube.json).
-- The GitHub workflow rebuilds **daily** (02:30 UTC), so new videos and view counts appear without anyone doing anything. GitHub pauses scheduled workflows after 60 days without repository activity; re-enable it from the Actions tab if that happens.
+- The Cloudflare deploy workflow rebuilds **daily**, so new videos and view counts appear automatically.
 
-**Without an API key (current setup)**, the public feed is used. It lists the latest 15 long-form videos. Older videos are kept from the committed snapshot, and running `npm run youtube` before a commit carries them forward.
+**With `YOUTUBE_API_KEY` set (current setup)**, the script uses the YouTube Data API v3. It reads every long-form video, with exact views and lengths. The key is a GitHub repository secret, plus `.env` for local builds.
 
-**With a YouTube API key**, the script reads every long-form video, with exact views and video length. Add the key before the channel passes 15 long-form videos:
+**Without a key**, it falls back to the public feed: the latest 15 long-form videos, with older ones kept from the committed snapshot.
 
-1. In [Google Cloud Console](https://console.cloud.google.com/), create a project and enable **YouTube Data API v3**.
-2. Under **Credentials**, create an **API key** and restrict it to the YouTube Data API v3.
-3. In the GitHub repo, go to **Settings → Secrets and variables → Actions → New repository secret**. Name it `YOUTUBE_API_KEY` and paste the key. On Cloudflare Pages, add the same name as an encrypted environment variable.
+To replace the key:
+1. In [Google Cloud Console](https://console.cloud.google.com/), open **APIs & Services → Credentials**.
+2. Create or regenerate the key. Keep it restricted to YouTube Data API v3.
+3. Update the GitHub secret `YOUTUBE_API_KEY`, and your local `.env` if you use one.
 
-The free quota (10,000 units a day) is far more than needed; one build uses only a few units.
+The free quota is 10,000 units a day; one build uses only a few units.
 
 ### Adding a project
 

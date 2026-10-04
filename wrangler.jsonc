@@ -3,6 +3,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "inspireworkss",
+  // Cloudflare account (not a secret). Lets CI deploy with just CLOUDFLARE_API_TOKEN.
+  "account_id": "8260315a6fa43aacf7a28064c9d08555",
   "compatibility_date": "2026-10-04",
   "assets": {
     // Astro's static build output. public/_headers is applied automatically.

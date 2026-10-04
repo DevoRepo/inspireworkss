@@ -11,8 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "prebuild": "node scripts/fetch-youtube.mjs",
-    "youtube": "node scripts/fetch-youtube.mjs",
+    "prebuild": "node --env-file-if-exists=.env scripts/fetch-youtube.mjs",
+    "youtube": "node --env-file-if-exists=.env scripts/fetch-youtube.mjs",
     "deploy": "astro check && SITE_URL=${SITE_URL:-https://inspireworkss.inspireworkss.workers.dev} npm run build && wrangler deploy",
     "preview:cloudflare": "npm run build && wrangler dev"
   },

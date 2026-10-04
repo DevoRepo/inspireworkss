@@ -5,9 +5,6 @@ name: Deploy preview to GitHub Pages
 on:
   push:
     branches: [main]
-  # Daily rebuild so new YouTube videos and view counts appear on the Resources page.
-  schedule:
-    - cron: '30 2 * * *'
   workflow_dispatch:
 
 permissions:
