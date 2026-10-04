@@ -2,7 +2,6 @@
 import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import type { Project } from '../lib/content';
-import { pad } from '../lib/content';
 
 interface Props {
   project: Project;
@@ -13,17 +12,27 @@ const { project, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
 ---
 
-<a href={url(`/projects/${project.id}/`)} class="card">
+<a href={url(`/projects/${project.id}/`)} class="card project-card">
   <span class="thumb">
     <Image src={project.data.cover} alt="" widths={[360, 540, 720]} sizes="(min-width: 64rem) 25vw, (min-width: 40rem) 50vw, 100vw" />
   </span>
-  <span class="eyebrow mt-4 block">Fig. {pad(project.data.order)} · {project.data.category}</span>
-  <Heading class="heading-md mt-2">{project.data.title}</Heading>
+  <span class="body">
+    <span class="block text-sm text-ink-3">{project.data.category}</span>
+    <Heading class="heading-md mt-1">{project.data.title}</Heading>
+  </span>
 </a>
 
 <style>
-  .card {
-    display: block;
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    transition: border-color 0.25s ease;
+  }
+
+  .project-card:hover {
+    border-color: var(--c-ink);
   }
 
   .thumb {
@@ -31,7 +40,7 @@ const Heading = headingLevel;
     overflow: hidden;
     aspect-ratio: 16 / 10;
     background: #fff;
-    box-shadow: inset 0 0 0 1px var(--c-line);
+    border-bottom: 1px solid var(--c-line);
   }
 
   .thumb :global(img) {
@@ -41,12 +50,17 @@ const Heading = headingLevel;
     transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
-  .card:hover .thumb :global(img) {
+  .project-card:hover .thumb :global(img) {
     transform: scale(1.04);
   }
 
-  .card:hover h2,
-  .card:hover h3 {
+  .body {
+    display: block;
+    padding: 1.1rem 1.25rem 1.3rem;
+  }
+
+  .project-card:hover h2,
+  .project-card:hover h3 {
     color: var(--c-accent);
   }
 </style>
