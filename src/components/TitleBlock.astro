@@ -1,8 +1,8 @@
 ---
 import { url } from '../lib/url';
 /**
- * Page header styled as an engineering drawing sheet: breadcrumb trail, heading, lead,
- * and a title block (dl) with sheet metadata.
+ * Page header: breadcrumb trail, heading, lead, and a short list of key facts
+ * set like the notes column of a drawing (label left, value right, hairline rules).
  */
 interface Meta {
   label: string;
@@ -13,17 +13,15 @@ interface Props {
   eyebrow: string;
   title: string;
   lead?: string;
-  sheet: string;
   meta?: Meta[];
   trail?: { name: string; href: string }[];
 }
 
-const { eyebrow, title, lead, sheet, meta = [], trail = [] } = Astro.props;
-const cells: Meta[] = [{ label: 'Sheet', value: sheet }, ...meta];
+const { eyebrow, title, lead, meta = [], trail = [] } = Astro.props;
 ---
 
 <section class="title-block grid-paper" aria-labelledby="page-title">
-  <div class="container-x relative pb-10 pt-10 sm:pt-14 lg:pb-14 lg:pt-20">
+  <div class="container-x relative pb-14 pt-10 sm:pt-14 lg:pb-20 lg:pt-20">
     {
       trail.length > 0 && (
         <nav aria-label="Breadcrumb" class="mb-8">
@@ -41,7 +39,7 @@ const cells: Meta[] = [{ label: 'Sheet', value: sheet }, ...meta];
       )
     }
 
-    <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+    <div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
       <div class="lg:col-span-8" data-reveal>
         <p class="eyebrow flex items-center gap-3"><span class="tick" aria-hidden="true"></span>{eyebrow}</p>
         <h1 id="page-title" class="display-lg mt-5">{title}</h1>
@@ -49,19 +47,20 @@ const cells: Meta[] = [{ label: 'Sheet', value: sheet }, ...meta];
         <slot />
       </div>
 
-      <dl class="tb lg:col-span-4" data-reveal style="--reveal-i: 2">
-        {
-          cells.map((cell) => (
-            <div>
-              <dt>{cell.label}</dt>
-              <dd>{cell.value}</dd>
-            </div>
-          ))
-        }
-      </dl>
+      {
+        meta.length > 0 && (
+          <dl class="facts lg:col-span-4" data-reveal style="--reveal-i: 2">
+            {meta.map((cell) => (
+              <div>
+                <dt>{cell.label}</dt>
+                <dd>{cell.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
     </div>
   </div>
-  <div class="ruler" aria-hidden="true"></div>
 </section>
 
 <style>
@@ -80,16 +79,18 @@ const cells: Meta[] = [{ label: 'Sheet', value: sheet }, ...meta];
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem 0;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
+    font-size: 0.875rem;
     color: var(--c-ink-3);
   }
 
   .crumbs li + li::before {
     content: '/';
-    margin-inline: 0.6rem;
+    margin-inline: 0.55rem;
     color: var(--c-line-strong);
+  }
+
+  .crumbs a {
+    transition: color 0.2s;
   }
 
   .crumbs a:hover {
@@ -100,57 +101,27 @@ const cells: Meta[] = [{ label: 'Sheet', value: sheet }, ...meta];
     color: var(--c-ink);
   }
 
-  .tb {
+  .facts > div {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    background: var(--c-sheet);
-    border: 1px solid var(--c-ink);
-  }
-
-  .tb > div {
-    padding: 0.7rem 0.85rem 0.8rem;
-    border-right: 1px solid var(--c-line);
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 0.85rem;
     border-bottom: 1px solid var(--c-line);
-    min-width: 0;
   }
 
-  .tb > div:nth-child(2n) {
-    border-right: 0;
+  .facts > div:first-child {
+    border-top: 1px solid var(--c-line);
   }
 
-  .tb > div:first-child {
-    background: var(--c-ink);
-    color: var(--c-paper);
-  }
-
-  .tb > div:first-child dt {
-    color: color-mix(in srgb, var(--c-paper) 70%, transparent);
-  }
-
-  .tb dt {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .facts dt {
+    font-size: 0.875rem;
     color: var(--c-ink-3);
   }
 
-  .tb dd {
-    margin-top: 0.3rem;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    line-height: 1.35;
-    overflow-wrap: anywhere;
-  }
-
-  /* Measuring scale along the bottom edge of the sheet. */
-  .ruler {
-    height: 10px;
-    background-image:
-      linear-gradient(90deg, var(--c-line-strong) 1px, transparent 1px),
-      linear-gradient(90deg, var(--c-line) 1px, transparent 1px);
-    background-size: 64px 10px, 8px 4px;
-    background-repeat: repeat-x;
-    background-position: left bottom;
+  .facts dd {
+    font-size: 0.975rem;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--c-ink);
   }
 </style>

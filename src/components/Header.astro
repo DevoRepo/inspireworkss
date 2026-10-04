@@ -106,15 +106,15 @@ const isActive = (href: string) => (href === '/' ? path === url('/') : path.star
   .brand-name {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.3rem;
-    letter-spacing: 0.06em;
+    font-size: 1.2rem;
+    letter-spacing: 0.02em;
   }
 
   .brand-sub {
     margin-top: 0.2rem;
     font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.16em;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--c-ink-3);
   }
@@ -161,6 +161,7 @@ const isActive = (href: string) => (href === '/' ? path === url('/') : path.star
     width: 2.75rem;
     height: 2.75rem;
     color: var(--c-ink);
+    border-radius: 999px;
     box-shadow: inset 0 0 0 1px var(--c-line-strong);
     background: var(--c-sheet);
     cursor: pointer;
@@ -207,9 +208,9 @@ const isActive = (href: string) => (href === '/' ? path === url('/') : path.star
     border-bottom: 1px solid var(--c-line);
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(2rem, 8vw, 2.75rem);
-    line-height: 1;
-    text-transform: uppercase;
+    font-size: clamp(1.9rem, 7vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
   }
 
   .mobile-link[aria-current='page'] {

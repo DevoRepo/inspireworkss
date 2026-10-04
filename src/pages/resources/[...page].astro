@@ -86,7 +86,6 @@ const schema = videos.length
     eyebrow="Learn with INSPIREWORKSS"
     title="Resources"
     lead="Complex engineering concepts, simplified — with a focus on both the how and the why."
-    sheet="06 / 07"
     meta={[
       { label: 'Page', value: `${pad(current)} of ${pad(last)}` },
       { label: 'Videos', value: `${pad(total)} long-form` },
@@ -99,7 +98,6 @@ const schema = videos.length
     <div class="container-x">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
-          mark="A"
           eyebrow="YouTube"
           id="videos-title"
           title="Tutorials, most watched first."
@@ -133,7 +131,7 @@ const schema = videos.length
 
   <section class="grid-paper border-y border-line py-20 sm:py-24" aria-labelledby="channels-title">
     <div class="container-x">
-      <SectionHeading mark="B" eyebrow="Follow along" id="channels-title" title="Keep learning." />
+      <SectionHeading eyebrow="Follow along" id="channels-title" title="Keep learning." />
       <ul class="mt-12 grid gap-px border border-line bg-line md:grid-cols-2">
         {
           channels.map((c, i) => (

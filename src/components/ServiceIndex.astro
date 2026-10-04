@@ -86,8 +86,9 @@ const rows = await Promise.all(services.map(async (s) => ({ s, tools: await reso
   .svc-title {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(1.45rem, 1.2rem + 1vw, 2.1rem);
-    line-height: 1.05;
+    font-size: clamp(1.35rem, 1.15rem + 0.8vw, 1.85rem);
+    line-height: 1.15;
+    letter-spacing: -0.028em;
   }
 
   .svc-summary {

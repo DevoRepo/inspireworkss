@@ -31,6 +31,7 @@ Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Av
 ### Rules
 - The source of truth is the INSPIREWORKSS Notion page: https://inspireworkss.notion.site/INSPIREWORKSSS-5afe3987a78a8365b276818574973f05. Never invent clients, stats, testimonials or credentials.
 - Never hard-code a domain or root path. Internal links go through `url()` in `src/lib/url.ts`, because the site can be built for a sub-path (`BASE_PATH`, unused in production). Absolute URLs come from `site` (`SITE_URL` / `CF_PAGES_URL`).
+- Typography follows DESIGN.md: Geist for all text, in sentence case. Use Geist Mono only for the `.eyebrow` caption and drawing annotations; never use spaced-out uppercase mono for labels, tables or buttons. Boxes are `.card` (hairline, rounded, separated by a gap), not joined `gap-px` grids.
 - Light theme is the default. Every new style must work in both themes: use the `--c-*` tokens in `src/styles/global.css` and never hard-code colours.
 - Scoped `<style>` in `.astro` files is unlayered, so it overrides Tailwind utilities. Make responsive `display` changes in a component media query instead.
 - Don't use gendered pronouns for Avani. Write "Avani Jangam" or rephrase.

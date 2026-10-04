@@ -15,7 +15,6 @@ const applications = await getSkillApplications();
 const engineeringTools = tools.filter(isEngineeringTool);
 const appliedIn = (id: string) => (applications.get(id) ?? []).map((svc) => ({ label: svc.data.title, href: `/services/${svc.id}/` }));
 const slug = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-const marks = 'ABCDEFGH';
 const trail = [{ name: 'Expertise', href: '/expertise/' }];
 ---
 
@@ -28,9 +27,7 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
     eyebrow="Specification sheet"
     title="Expertise"
     lead="Every skill, standard and software package behind INSPIREWORKSS — and where each one is put to work."
-    sheet="05 / 07"
     meta={[
-      { label: 'Title', value: 'Expertise' },
       { label: 'Skills', value: `${skills.length} across ${byCategory.length} disciplines` },
       { label: 'Software', value: `${pad(engineeringTools.length)} CAD / CAE packages` },
     ]}
@@ -41,13 +38,13 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
         {
           byCategory.map(([c]) => (
             <li>
-              <a href={`#${slug(c)}`} class="chip !px-3 !py-2 hover:!text-accent">
+              <a href={`#${slug(c)}`} class="chip">
                 {c}
               </a>
             </li>
           ))
         }
-        <li><a href="#software" class="chip !px-3 !py-2 hover:!text-accent">Software</a></li>
+        <li><a href="#software" class="chip">Software</a></li>
       </ul>
     </nav>
   </TitleBlock>
@@ -55,10 +52,10 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
   <section class="py-16 sm:py-20 lg:py-24" aria-label="Skills by category">
     <div class="container-x space-y-20 lg:space-y-28">
       {
-        byCategory.map(([category, items], i) => (
+        byCategory.map(([category, items]) => (
           <div class="grid gap-8 lg:grid-cols-12" id={slug(category)}>
             <div class="lg:col-span-4">
-              <SectionHeading mark={marks[i]} eyebrow={`${pad(items.length)} skills`} title={category} />
+              <SectionHeading eyebrow={`${pad(items.length)} skills`} title={category} />
             </div>
             <div class="lg:col-span-8" data-reveal>
               <SpecTable
@@ -77,18 +74,25 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
   <section id="software" class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="software-title">
     <div class="container-x">
       <SectionHeading
-        mark={marks[byCategory.length]}
         eyebrow="Software"
         id="software-title"
         title="CAD, plant design and analysis packages."
         intro="From 2D drafting to pipe stress analysis — the packages behind every deliverable."
       />
-      <div class="mt-12 grid gap-10 md:grid-cols-2">
+      <div class="mt-12 grid gap-5 md:grid-cols-2">
         {
           toolGroups.map(([group, items], i) => (
-            <div class="bg-sheet p-6 shadow-[inset_0_0_0_1px_var(--c-line)]" data-reveal style={`--reveal-i: ${i % 2}`}>
-              <SpecTable caption={group} itemLabel="Package" noteLabel="Used for" rows={items.map((t) => ({ name: t.data.name, note: t.data.use }))} />
-            </div>
+            <section class="card tool-card" data-reveal style={`--reveal-i: ${i % 2}`} aria-labelledby={`tools-${slug(group)}`}>
+              <h3 id={`tools-${slug(group)}`} class="heading-md">{group}</h3>
+              <ul class="mt-4">
+                {items.map((t) => (
+                  <li class="tool-row">
+                    <span class="font-semibold tracking-[-0.01em]">{t.data.name}</span>
+                    <span class="text-[0.95rem] text-ink-2">{t.data.use}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))
         }
       </div>
@@ -97,3 +101,22 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
 
   <CTABand title="Need these skills on your project?" />
 </BaseLayout>
+
+<style>
+  .tool-card {
+    padding: 1.75rem 1.75rem 0.75rem;
+  }
+
+  .tool-row {
+    display: grid;
+    gap: 0.15rem;
+    padding-block: 0.9rem;
+    border-top: 1px solid var(--c-line);
+  }
+
+  @media (min-width: 40rem) {
+    .tool-card {
+      padding: 2rem 2rem 1rem;
+    }
+  }
+</style>

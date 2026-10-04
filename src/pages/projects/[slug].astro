@@ -75,7 +75,7 @@ const schema = [
   trail={trail}
   schema={schema}
 >
-  <TitleBlock eyebrow={`Project ${pad(data.order)} · ${data.discipline}`} title={data.title} lead={data.summary} sheet={`04.${pad(data.order)}`} meta={meta} trail={trail} />
+  <TitleBlock eyebrow={`Project ${pad(data.order)} · ${data.discipline}`} title={data.title} lead={data.summary} meta={meta} trail={trail} />
 
   <!-- Media -->
   <section class="pt-12 sm:pt-16" aria-label="Project media">
@@ -109,7 +109,7 @@ const schema = [
   <section class="py-20 sm:py-24" aria-labelledby="detail-title">
     <div class="container-x grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-7">
-        <SectionHeading mark="A" eyebrow="Design detail" id="detail-title" title="What the model demonstrates." />
+        <SectionHeading eyebrow="Design detail" id="detail-title" title="What the model demonstrates." />
 
         {
           data.highlights.length > 0 && (
@@ -249,10 +249,7 @@ const schema = [
   }
 
   .datasheet dt {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-size: 0.8125rem;
     color: var(--c-ink-3);
   }
 

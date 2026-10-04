@@ -27,11 +27,10 @@ const hasLinks = rows.some((r) => r.links?.length);
 ---
 
 <div class="spec-wrap">
-  <table class="spec">
+  <table class:list={['spec', { 'has-links': hasLinks }]}>
     <caption class:list={[hideCaption ? 'sr-only' : 'eyebrow']}>{caption}</caption>
     <thead>
       <tr>
-        <th scope="col" class="w-[3rem]">No.</th>
         <th scope="col">{itemLabel}</th>
         {hasNotes && <th scope="col" class="col-wide">{noteLabel}</th>}
         {hasLinks && <th scope="col" class="col-wide">Applied in</th>}
@@ -39,9 +38,8 @@ const hasLinks = rows.some((r) => r.links?.length);
     </thead>
     <tbody>
       {
-        rows.map((row, i) => (
+        rows.map((row) => (
           <tr>
-            <td class="mono text-ink-3">{String(i + 1).padStart(2, '0')}</td>
             <th scope="row">
               {row.name}
               {row.note && <span class="note-sm">{row.note}</span>}
@@ -79,7 +77,7 @@ const hasLinks = rows.some((r) => r.links?.length);
   .spec {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.98rem;
+    font-size: 1rem;
   }
 
   caption {
@@ -88,77 +86,82 @@ const hasLinks = rows.some((r) => r.links?.length);
   }
 
   thead th {
-    padding: 0.55rem 0.75rem 0.55rem 0;
+    padding: 0 1.25rem 0.75rem 0;
     text-align: left;
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: 0.8125rem;
     font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
     color: var(--c-ink-3);
-    border-top: 1px solid var(--c-ink);
-    border-bottom: 1px solid var(--c-ink);
+    border-bottom: 1px solid var(--c-line-strong);
   }
 
   tbody th,
   tbody td {
-    padding: 0.85rem 0.75rem 0.85rem 0;
+    padding: 1.15rem 1.25rem 1.15rem 0;
     text-align: left;
     vertical-align: top;
+    line-height: 1.5;
     border-bottom: 1px solid var(--c-line);
   }
 
   tbody th {
     font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
-  tbody td:first-child {
-    font-size: 0.75rem;
-    padding-top: 1.05rem;
-  }
+  /* Fixed column widths so every table on a page lines up. */
+  @media (min-width: 48rem) {
+    .spec {
+      table-layout: fixed;
+    }
 
-  tbody tr {
-    transition: background-color 0.2s ease;
-  }
+    thead th:first-child {
+      width: 32%;
+    }
 
-  tbody tr:hover {
-    background: var(--c-sheet);
+    .spec.has-links thead th:nth-child(2) {
+      width: 36%;
+    }
   }
 
   .links,
   .links-sm {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
   }
 
   .links a,
   .links-sm a {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--c-ink);
+    font-size: 0.9375rem;
+    font-weight: 450;
+    line-height: 1.4;
+    color: var(--c-ink-2);
     text-decoration: underline;
-    text-decoration-color: var(--c-accent);
-    text-underline-offset: 0.2em;
-    transition: color 0.2s;
+    text-decoration-color: var(--c-line-strong);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+    transition: color 0.2s, text-decoration-color 0.2s;
   }
 
   .links a:hover,
   .links-sm a:hover {
     color: var(--c-accent);
+    text-decoration-color: var(--c-accent);
   }
 
   /* Small screens: description and links stack under the item name. */
   .note-sm {
     display: block;
-    margin-top: 0.2rem;
+    margin-top: 0.25rem;
     font-weight: 400;
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
+    letter-spacing: 0;
     color: var(--c-ink-2);
   }
 
   .links-sm {
-    margin-top: 0.4rem;
+    margin-top: 0.6rem;
   }
 
   .col-wide {

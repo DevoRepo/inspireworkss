@@ -42,9 +42,7 @@ const schema = [
     eyebrow="Services"
     title="What INSPIREWORKSS can do"
     lead={`${services.length} engineering services covering design, piping, analysis, consulting and training — backed by ${engineeringTools.length} professional CAD/CAE packages and the ASME, API and ISO standards that govern the work.`}
-    sheet="03 / 07"
     meta={[
-      { label: 'Title', value: 'Services' },
       { label: 'Items', value: `${pad(services.length)} services` },
       { label: 'Standards', value: 'ASME · API · ISO' },
     ]}
@@ -59,7 +57,7 @@ const schema = [
 
   <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="who-title">
     <div class="container-x">
-      <SectionHeading mark="A" eyebrow="Who it helps" id="who-title" title="Built for the people who make and maintain things." />
+      <SectionHeading eyebrow="Who it helps" id="who-title" title="Built for the people who make and maintain things." />
       <ol class="mt-12 grid gap-px border border-line bg-line md:grid-cols-3">
         {
           audiences.map((a, i) => (

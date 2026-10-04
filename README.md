@@ -141,14 +141,14 @@ These items were left out on purpose because the Notion source does not support 
 
 ## Design system: "Drawing Office"
 
-- Each page is styled as a sheet from an engineering drawing set:
-  - a title-block page header (`TitleBlock`)
-  - section headings marked with cutting-plane lines, "A–A" (`SectionHeading`)
-  - animated dimension lines (`DimensionLine`)
+- The drawing-office identity is kept light, so it never gets in the way of reading:
+  - a page header with a short "key facts" list (`TitleBlock`)
+  - section headings with a mono caption and a red tick (`SectionHeading`)
+  - animated dimension lines (`DimensionLine`) and the hero line-drawing
   - a faint 8 px / 64 px drafting grid
-  - chamfered corners that echo the hexagonal IW mark
+- **Shapes (DESIGN.md):** pill buttons and chips, hairline cards with 16 px corners (`.card`), no shadows. Cards sit apart with a gap; they are never joined into box grids.
 - **Light theme is the default.** Dark mode is a separately designed palette (graphite with blueline annotations), toggled from the header's top-right corner. The choice is saved in `localStorage`.
-- **Typefaces:** Barlow Condensed for display headings, IBM Plex Sans for body text and IBM Plex Mono for annotations. All three are self-hosted through the Astro Fonts API.
+- **Typefaces:** Geist (variable) for everything: headings, body, buttons and labels. Hierarchy comes from size, weight and tracking, never from switching font. Geist Mono is used only for small uppercase section captions and drawing annotations, never for text people read. Both are self-hosted through the Astro Fonts API.
 - Design tokens live in [`src/styles/global.css`](src/styles/global.css). Tailwind CSS v4 is used for layout utilities.
 - **Motion:** native cross-document view transitions with no JavaScript, plus scroll reveals and the hero line-drawing. Everything is disabled under `prefers-reduced-motion`.
 

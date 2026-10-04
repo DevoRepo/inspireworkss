@@ -19,7 +19,7 @@ const socials = [
     <div class="md:col-span-12 lg:col-span-5">
       <div class="flex items-center gap-3">
         <LogoBadge size={44} />
-        <span class="font-display text-2xl font-bold tracking-[0.06em]">{site.name}</span>
+        <span class="font-display text-xl font-bold tracking-[0.02em]">{site.name}</span>
       </div>
       <p class="mt-5 max-w-sm text-ink-2">{site.tagline}</p>
       <a href={mailto()} class="footer-email mt-8">
@@ -92,8 +92,9 @@ const socials = [
     display: inline-block;
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
-    line-height: 1.05;
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
     border-bottom: 1px solid var(--c-line-strong);
     padding-bottom: 0.4rem;
     transition: color 0.2s ease, border-color 0.2s ease;
@@ -115,17 +116,14 @@ const socials = [
   }
 
   .title-strip dt {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-size: 0.8125rem;
     color: var(--c-ink-3);
   }
 
   .title-strip dd {
-    margin-top: 0.25rem;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    margin-top: 0.2rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
   }
 
   @media (min-width: 48rem) {

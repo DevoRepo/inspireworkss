@@ -13,7 +13,7 @@ import CTABand from '../components/CTABand.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
 import { expertiseCategories } from '../content.config';
-import { getProjects, getServices, getSkills, getTools, getVideos, groupBy, isEngineeringTool, pad } from '../lib/content';
+import { getProjects, getServices, getSkills, getTools, getVideos, groupBy, isEngineeringTool } from '../lib/content';
 import logo from '../assets/brand/inspireworkss-logo.png';
 
 const services = await getServices();
@@ -99,7 +99,6 @@ const principles = [
 
       <div class="lg:col-span-7 lg:pl-8">
         <SectionHeading
-          mark="A"
           eyebrow="The practice"
           id="practice-title"
           title="A mechanical engineering practice built on design, analysis and teaching."
@@ -116,17 +115,16 @@ const principles = [
           </p>
         </div>
 
-        <ol class="mt-10 grid gap-px bg-line sm:grid-cols-3" data-reveal>
+        <ul class="mt-12 grid gap-8 sm:grid-cols-3 sm:gap-6" data-reveal>
           {
-            principles.map((p, i) => (
-              <li class="bg-paper p-5 sm:pr-6">
-                <span class="mono text-xs text-accent">{pad(i + 1)}</span>
-                <h3 class="heading-md mt-3">{p.title}</h3>
+            principles.map((p) => (
+              <li class="border-t border-line-strong pt-5">
+                <h3 class="heading-md">{p.title}</h3>
                 <p class="mt-2 text-[0.95rem] text-ink-2">{p.text}</p>
               </li>
             ))
           }
-        </ol>
+        </ul>
 
         <a href={url('/about/')} class="link-arrow mt-10">About {site.owner} <Icon name="arrow" /></a>
       </div>
@@ -138,7 +136,6 @@ const principles = [
     <div class="container-x">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
-          mark="B"
           eyebrow="Services"
           id="services-title"
           title="Engineering services, from first sketch to stress check."
@@ -157,7 +154,6 @@ const principles = [
     <div class="container-x">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
-          mark="C"
           eyebrow="Selected work"
           id="projects-title"
           title="Models built to be made — and explained."
@@ -188,7 +184,6 @@ const principles = [
   <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-32" aria-labelledby="expertise-title">
     <div class="container-x">
       <SectionHeading
-        mark="D"
         eyebrow="Expertise"
         id="expertise-title"
         title="Specification: skills, standards and software."
@@ -196,18 +191,18 @@ const principles = [
       />
 
       <div class="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12">
-        <ul class="grid gap-px border border-line bg-line sm:grid-cols-2 lg:col-span-8">
+        <ul class="grid gap-4 sm:grid-cols-2 lg:col-span-8">
           {
             byCategory.map(([category, items], i) => (
-              <li class="bg-sheet p-6" data-reveal style={`--reveal-i: ${i % 2}`}>
+              <li class="card p-6 sm:p-7" data-reveal style={`--reveal-i: ${i % 2}`}>
                 <div class="flex items-baseline justify-between gap-4">
                   <h3 class="heading-md">{category}</h3>
-                  <span class="mono text-xs text-ink-3">{pad(items.length)} skills</span>
+                  <span class="shrink-0 text-sm text-ink-3">{items.length} skills</span>
                 </div>
                 <ul class="mt-4 space-y-1.5 text-[0.95rem] text-ink-2">
                   {items.map((s) => (
-                    <li class="flex gap-2">
-                      <span class="mt-[0.7em] h-0.5 w-3 flex-none bg-accent" aria-hidden="true" />
+                    <li class="flex gap-2.5">
+                      <span class="mt-[0.68em] size-1 flex-none rounded-full bg-ink-3" aria-hidden="true" />
                       {s.data.skill}
                     </li>
                   ))}
@@ -219,7 +214,7 @@ const principles = [
 
         <div class="lg:col-span-4" data-reveal>
           <h3 class="eyebrow">Software toolset</h3>
-          <ul class="mt-4 border-t border-ink">
+          <ul class="mt-4 border-t border-line-strong">
             {
               engineeringTools.map((t) => (
                 <li class="border-b border-line py-3">
@@ -240,7 +235,6 @@ const principles = [
     <div class="container-x">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
-          mark="E"
           eyebrow="Learn"
           id="learn-title"
           title="Engineering, simplified on YouTube."
@@ -293,16 +287,13 @@ const principles = [
   }
 
   .spec-strip dt {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-size: 0.8125rem;
     color: var(--c-ink-3);
   }
 
   .spec-strip dd {
-    margin-top: 0.25rem;
-    font-weight: 600;
+    margin-top: 0.2rem;
+    font-weight: 500;
   }
 
   @media (min-width: 64rem) {

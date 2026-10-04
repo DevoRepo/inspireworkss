@@ -31,28 +31,21 @@ export default defineConfig({
   build: { format: 'directory' },
   integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
   vite: { plugins: [tailwindcss()] },
+  // One variable family carries every role (DESIGN.md: weight, not typeface, sets hierarchy).
+  // The mono is only for small captions and figures.
   fonts: [
     {
-      name: 'Barlow Condensed',
-      cssVariable: '--font-barlow-condensed',
+      name: 'Geist',
+      cssVariable: '--font-geist',
       provider: fontProviders.fontsource(),
-      weights: [500, 600, 700],
-      styles: ['normal'],
-      subsets: ['latin'],
-      fallbacks: ['Arial Narrow', 'sans-serif'],
-    },
-    {
-      name: 'IBM Plex Sans',
-      cssVariable: '--font-plex-sans',
-      provider: fontProviders.fontsource(),
-      weights: [400, 500, 600],
+      weights: ['300 700'],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['sans-serif'],
     },
     {
-      name: 'IBM Plex Mono',
-      cssVariable: '--font-plex-mono',
+      name: 'Geist Mono',
+      cssVariable: '--font-geist-mono',
       provider: fontProviders.fontsource(),
       weights: [400, 500],
       styles: ['normal'],

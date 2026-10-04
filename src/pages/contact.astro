@@ -33,9 +33,7 @@ const channels = [
     eyebrow="Contact"
     title="Let's talk engineering"
     lead="For projects, collaborations, training or a question about a drawing — email is the fastest way to reach INSPIREWORKSS."
-    sheet="07 / 07"
     meta={[
-      { label: 'Title', value: 'Contact' },
       { label: 'Channel', value: 'Email' },
       { label: 'LinkedIn', value: site.social.linkedin.handle },
     ]}
@@ -89,14 +87,13 @@ const channels = [
     <div class="container-x grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-5">
         <SectionHeading
-          mark="A"
           eyebrow="Enquiry checklist"
           id="brief-title"
           title="What to include in your email."
           intro="A short brief makes the first reply useful. None of this is required — send what you have."
         />
       </div>
-      <ol class="border-t border-ink lg:col-span-7" data-reveal>
+      <ol class="border-t border-line-strong lg:col-span-7" data-reveal>
         {
           checklist.map((c, i) => (
             <li class="grid gap-1 border-b border-line bg-sheet/60 px-1 py-5 sm:grid-cols-[3rem_1fr]">
@@ -115,19 +112,17 @@ const channels = [
   <section class="py-20 sm:py-24" aria-labelledby="topic-title">
     <div class="container-x">
       <SectionHeading
-        mark="B"
         eyebrow="Quick start"
         id="topic-title"
         title="Email about a specific service."
         intro="Each link opens a new email with the subject line already filled in."
       />
-      <ul class="mt-12 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {
           services.map((s, i) => (
-            <li class="bg-paper" data-reveal style={`--reveal-i: ${i % 4}`}>
-              <a href={mailto(`Enquiry: ${s.data.title}`)} class="topic">
-                <span class="mono text-xs text-ink-3">{pad(s.data.order)}</span>
-                <span class="heading-md mt-3 block">{s.data.title}</span>
+            <li data-reveal style={`--reveal-i: ${i % 4}`}>
+              <a href={mailto(`Enquiry: ${s.data.title}`)} class="card topic">
+                <span class="heading-md block">{s.data.title}</span>
                 <span class="topic-cta mt-5">
                   <Icon name="mail" size={16} /> Email about this
                 </span>
@@ -144,10 +139,10 @@ const channels = [
   .email-big {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(1.9rem, 0.9rem + 3.4vw, 3.75rem);
+    font-size: clamp(1.75rem, 0.9rem + 3vw, 3.25rem);
     overflow-wrap: anywhere;
-    line-height: 1;
-    letter-spacing: -0.01em;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
     transition: color 0.2s ease;
   }
 
@@ -173,11 +168,11 @@ const channels = [
     flex-direction: column;
     height: 100%;
     padding: 1.5rem;
-    transition: background-color 0.25s ease;
+    transition: border-color 0.25s ease;
   }
 
   .topic:hover {
-    background: var(--c-sheet);
+    border-color: var(--c-ink);
   }
 
   .topic-cta {
@@ -186,10 +181,8 @@ const channels = [
     gap: 0.5rem;
     margin-top: auto;
     padding-top: 1.25rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.9375rem;
+    font-weight: 500;
     color: var(--c-ink-3);
   }
 

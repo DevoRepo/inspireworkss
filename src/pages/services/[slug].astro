@@ -57,9 +57,7 @@ const schema = [
     eyebrow={`Service ${pad(data.order)} of ${pad(total)}`}
     title={data.title}
     lead={data.summary}
-    sheet={`03.${pad(data.order)}`}
     meta={[
-      { label: 'Title', value: 'Service' },
       { label: 'Skills', value: `${pad(skills.length)} referenced` },
       { label: 'Software', value: tools.length ? tools.map((t) => t.data.name).slice(0, 3).join(', ') + (tools.length > 3 ? ' +' : '') : '—' },
     ]}
@@ -74,7 +72,7 @@ const schema = [
   <!-- Who / value -->
   <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="fit-title">
     <div class="container-x">
-      <SectionHeading mark="A" eyebrow="Fit" id="fit-title" title="Who it helps — and what it delivers." />
+      <SectionHeading eyebrow="Fit" id="fit-title" title="Who it helps — and what it delivers." />
       <div class="mt-12 grid gap-px border border-line bg-line lg:grid-cols-2">
         <div class="bg-sheet p-6 sm:p-8" data-reveal>
           <h3 class="eyebrow">Who it helps</h3>
@@ -132,7 +130,7 @@ const schema = [
     (skills.length > 0 || tools.length > 0) && (
       <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="scope-title">
         <div class="container-x">
-          <SectionHeading mark="B" eyebrow="Specification" id="scope-title" title="Skills and software behind the service." />
+          <SectionHeading eyebrow="Specification" id="scope-title" title="Skills and software behind the service." />
           <div class="mt-12 grid gap-12 lg:grid-cols-12">
             {skills.length > 0 && (
               <div class="lg:col-span-8" data-reveal>
@@ -160,7 +158,7 @@ const schema = [
     related.length > 0 && (
       <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="related-title">
         <div class="container-x">
-          <SectionHeading mark="C" eyebrow="Related work" id="related-title" title="See it applied." />
+          <SectionHeading eyebrow="Related work" id="related-title" title="See it applied." />
           <ul class="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((p, i) => (
               <li data-reveal style={`--reveal-i: ${i}`}>
