@@ -89,7 +89,7 @@ const schema = [
         tools.length > 0 && (
           <>
             <p class="label mt-6">Software</p>
-            <p class="mt-2 text-[0.95rem] text-ink-2">{tools.map((t) => t.data.name).join(', ')}</p>
+            <p class="mt-2 text-[0.95rem] text-ink-2">{tools.map((t) => t.data.name.replace(/ /g, '\u00a0')).join(', ')}</p>
           </>
         )
       }

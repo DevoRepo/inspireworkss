@@ -142,10 +142,11 @@ These items were left out on purpose because the Notion source does not support 
 ## Design system: "Drawing Office"
 
 - The drawing-office identity is kept light, so it never gets in the way of reading:
-  - a page header with a short "key facts" list (`TitleBlock`)
+  - every page header is built like the home hero: heading on the left, a visual on the right and a strip of key facts (`TitleBlock`)
+  - real, to-scale technical drawings as header visuals: a weld-neck flange (ASME B16.5), a GD&T plate (ASME Y14.5) and a sheet-metal flat pattern (`src/components/drawings/`)
   - section headings with a mono caption and a red tick (`SectionHeading`)
-  - animated dimension lines (`DimensionLine`) and the hero line-drawing
-  - a faint 8 px / 64 px drafting grid
+  - a faint 8 px / 64 px drafting grid behind headers only
+- **Colour blocks (DESIGN.md):** one rounded panel per page carries a story section (`.surface-tint`, `.surface-blush`); the closing call to action is an inset graphite block.
 - **Shapes (DESIGN.md):** pill buttons and chips, hairline cards with 16 px corners (`.card`), no shadows. Cards sit apart with a gap; they are never joined into box grids.
 - **Light theme is the default.** Dark mode is a separately designed palette (graphite with blueline annotations), toggled from the header's top-right corner. The choice is saved in `localStorage`.
 - **Typefaces:** Geist (variable) for everything: headings, body, buttons and labels. Hierarchy comes from size, weight and tracking, never from switching font. Geist Mono is used only for small uppercase section captions and drawing annotations, never for text people read. Both are self-hosted through the Astro Fonts API.

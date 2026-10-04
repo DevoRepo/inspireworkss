@@ -31,7 +31,9 @@ Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Av
 ### Rules
 - The source of truth is the INSPIREWORKSS Notion page: https://inspireworkss.notion.site/INSPIREWORKSSS-5afe3987a78a8365b276818574973f05. Never invent clients, stats, testimonials or credentials.
 - Never hard-code a domain or root path. Internal links go through `url()` in `src/lib/url.ts`, because the site can be built for a sub-path (`BASE_PATH`, unused in production). Absolute URLs come from `site` (`SITE_URL` / `CF_PAGES_URL`).
-- Typography follows DESIGN.md: Geist for all text, in sentence case. Use Geist Mono only for the `.eyebrow` caption and drawing annotations; never use spaced-out uppercase mono for labels, tables or buttons. Boxes are `.card` (hairline, rounded, separated by a gap), not joined `gap-px` grids.
+- Typography follows DESIGN.md: Geist for all text, in sentence case. Use Geist Mono only for the `.eyebrow` section caption and drawing annotations. Small sub-labels use `.label` (sans). Never use spaced-out uppercase mono for labels, tables, stats or buttons. Boxes are `.card` (hairline, rounded, separated by a gap), not joined `gap-px` grids.
+- At most one tinted or blush DESIGN.md colour block per page, plus the graphite `CTABand`: `.surface` with `.surface-tint` (pale steel), `.surface-blush` (soft red) or `.surface-sheet`. Don't name a class `.block`; it clashes with Tailwind's `block` utility.
+- Copy reads like a person wrote it: plain sentences, no em-dash slogans, no "not X but Y" lines, no drafting gimmicks (Fig., Rev, Drawn by, Sheet n/n). YAML front matter that contains `: ` must be quoted.
 - Light theme is the default. Every new style must work in both themes: use the `--c-*` tokens in `src/styles/global.css` and never hard-code colours.
 - Scoped `<style>` in `.astro` files is unlayered, so it overrides Tailwind utilities. Make responsive `display` changes in a component media query instead.
 - Don't use gendered pronouns for Avani. Write "Avani Jangam" or rephrase.
@@ -54,14 +56,15 @@ Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Av
 | SEO / structured data | `src/components/SEO.astro`, `src/lib/schema.ts` |
 
 **Reusable components:**
-- `TitleBlock`: page header.
-- `SectionHeading`: "A–A" section heading.
-- `DimensionLine`
+- `TitleBlock`: inner-page header, built like the home hero. Put a visual in `slot="aside"` (a drawing, image or card) and key facts in `meta` (shown as a strip along the bottom).
+- `drawings/FlangeDrawing`, `drawings/GdtDrawing`, `drawings/FlatPatternDrawing`: to-scale technical drawings for page headers (Services, Expertise, Projects). They share the `.drawing` styles in `global.css`, and only one goes on a page (marker and hatch ids are fixed).
+- `SectionHeading`: mono eyebrow with a red tick, then the heading.
+- `DimensionLine` (home only)
 - `ServiceIndex`
 - `ProjectShowcase` and `ProjectCard`
 - `SpecTable`
 - `VideoFacade`
-- `CTABand`
+- `CTABand`: closing call to action, an inset graphite colour block.
 
 ### Status / open items
 - All service and project copy is marked `draft: true`. It was drafted from Notion facts and is awaiting Avani's review.

@@ -58,7 +58,7 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
       {
         byCategory.map(([category, items]) => (
           <div class="grid gap-8 lg:grid-cols-12" id={slug(category)}>
-            <div class="lg:col-span-4">
+            <div class="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
               <SectionHeading eyebrow={`${items.length} skills`} title={category} />
             </div>
             <div class="lg:col-span-8" data-reveal>
