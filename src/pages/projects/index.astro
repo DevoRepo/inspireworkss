@@ -4,11 +4,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TitleBlock from '../../components/TitleBlock.astro';
 import ProjectShowcase from '../../components/ProjectShowcase.astro';
 import CTABand from '../../components/CTABand.astro';
+import FlatPatternDrawing from '../../components/drawings/FlatPatternDrawing.astro';
 import { site } from '../../config/site';
-import { getProjects, pad } from '../../lib/content';
+import { getProjects, resolveTools } from '../../lib/content';
 
 const projects = await getProjects();
 const disciplines = [...new Set(projects.map((p) => p.data.discipline))];
+const software = [...new Set((await Promise.all(projects.map((p) => resolveTools(p.data.tools)))).flat().map((t) => t.data.name))];
 const trail = [{ name: 'Projects', href: '/projects/' }];
 
 const schema = [
@@ -26,20 +28,23 @@ const schema = [
 
 <BaseLayout
   title="Projects & Engineering Portfolio"
-  description="Mechanical design projects by INSPIREWORKSS — sheet-metal, product and cutting-tool models in SolidWorks, plus engineering-drawing exercises, presented with discipline, software and design highlights."
+  description="Mechanical design projects by INSPIREWORKSS: sheet-metal, product and cutting-tool models in SolidWorks, plus engineering-drawing exercises, each with its discipline, software and design highlights."
   trail={trail}
   schema={schema}
 >
   <TitleBlock
     eyebrow="Portfolio"
     title="Projects"
-    lead="Design models and step-by-step builds — each presented like a drawing sheet, with the discipline, software and design features that make it work."
+    lead="Design models and step-by-step SolidWorks builds, each shown with its discipline, software and the design features that make it work."
     meta={[
-      { label: 'Items', value: `${pad(projects.length)} figures` },
+      { label: 'Projects', value: String(projects.length) },
       { label: 'Disciplines', value: disciplines.join(' · ') },
+      ...(software.length ? [{ label: 'Software', value: software.join(', ') }] : []),
     ]}
     trail={trail}
-  />
+  >
+    <FlatPatternDrawing slot="aside" />
+  </TitleBlock>
 
   <section class="py-16 sm:py-20 lg:py-28" aria-label="Project list">
     <div class="container-x">
@@ -47,7 +52,7 @@ const schema = [
         {
           projects.map((p, i) => (
             <li>
-              <ProjectShowcase project={p} index={p.data.order} reverse={i % 2 === 1} headingLevel="h2" eager={i === 0} />
+              <ProjectShowcase project={p} reverse={i % 2 === 1} headingLevel="h2" eager={i === 0} />
             </li>
           ))
         }
@@ -55,5 +60,5 @@ const schema = [
     </div>
   </section>
 
-  <CTABand title="Have a part or product to design?" />
+  <CTABand title="Have a part or product to design?" text="Send a short email about the part, what it needs to do and any sketches, drawings or models you already have." />
 </BaseLayout>

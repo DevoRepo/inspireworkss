@@ -1,7 +1,7 @@
 ---
 title: Corporate CAD/CAE Training
 order: 5
-summary: Practical CAD/CAE training for engineering teams, students and professionals — taught with a focus on both the how and the why behind every tool and command.
+summary: Practical CAD/CAE training for engineering teams, students and professionals, taught with a focus on both the how and the why behind every tool and command.
 audience:
   - Companies upskilling design, drafting or piping teams
   - Engineering students preparing for industry work

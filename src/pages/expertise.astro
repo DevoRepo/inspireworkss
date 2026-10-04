@@ -4,8 +4,9 @@ import TitleBlock from '../components/TitleBlock.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SpecTable from '../components/SpecTable.astro';
 import CTABand from '../components/CTABand.astro';
+import GdtDrawing from '../components/drawings/GdtDrawing.astro';
 import { expertiseCategories } from '../content.config';
-import { getSkillApplications, getSkills, getTools, groupBy, isEngineeringTool, pad } from '../lib/content';
+import { getSkillApplications, getSkills, getTools, groupBy, isEngineeringTool } from '../lib/content';
 
 const skills = await getSkills();
 const byCategory = expertiseCategories.map((c) => [c, skills.filter((s) => s.data.category === c)] as const);
@@ -20,16 +21,18 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
 
 <BaseLayout
   title="Engineering Skills & Software Expertise"
-  description="INSPIREWORKSS expertise: mechanical design, piping engineering, pipe stress analysis, pressure vessel design, CAD/CAE, GD&T, ASME/API/ISO standards and Python automation — with AutoCAD, SolidWorks, Creo, NX, Inventor, E3D, Plant 3D, Navisworks, PV Elite and Caesar II."
+  description="INSPIREWORKSS expertise: mechanical design, piping engineering, pipe stress analysis, pressure vessel design, CAD/CAE, GD&T, ASME, API and ISO standards and Python automation, using AutoCAD, SolidWorks, Creo, NX, Inventor, E3D, Plant 3D, Navisworks, PV Elite and Caesar II."
   trail={trail}
 >
   <TitleBlock
-    eyebrow="Specification sheet"
-    title="Expertise"
-    lead="Every skill, standard and software package behind INSPIREWORKSS — and where each one is put to work."
+    eyebrow="Expertise"
+    title="Skills and software"
+    lead="The engineering skills, standards and software behind INSPIREWORKSS, with the services where each one is used."
     meta={[
-      { label: 'Skills', value: `${skills.length} across ${byCategory.length} disciplines` },
-      { label: 'Software', value: `${pad(engineeringTools.length)} CAD / CAE packages` },
+      { label: 'Skills', value: String(skills.length) },
+      { label: 'Disciplines', value: String(byCategory.length) },
+      { label: 'Software', value: `${engineeringTools.length} CAD/CAE packages` },
+      { label: 'Standards', value: 'ASME · API · ISO · GD&T' },
     ]}
     trail={trail}
   >
@@ -47,6 +50,7 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
         <li><a href="#software" class="chip">Software</a></li>
       </ul>
     </nav>
+    <GdtDrawing slot="aside" />
   </TitleBlock>
 
   <section class="py-16 sm:py-20 lg:py-24" aria-label="Skills by category">
@@ -55,7 +59,7 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
         byCategory.map(([category, items]) => (
           <div class="grid gap-8 lg:grid-cols-12" id={slug(category)}>
             <div class="lg:col-span-4">
-              <SectionHeading eyebrow={`${pad(items.length)} skills`} title={category} />
+              <SectionHeading eyebrow={`${items.length} skills`} title={category} />
             </div>
             <div class="lg:col-span-8" data-reveal>
               <SpecTable
@@ -71,15 +75,16 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
     </div>
   </section>
 
-  <section id="software" class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="software-title">
+  <section id="software" class="scroll-mt-24" aria-labelledby="software-title">
     <div class="container-x">
+      <div class="surface surface-tint">
       <SectionHeading
         eyebrow="Software"
         id="software-title"
-        title="CAD, plant design and analysis packages."
-        intro="From 2D drafting to pipe stress analysis — the packages behind every deliverable."
+        title="CAD, plant design and analysis software"
+        intro="From 2D drafting and 3D modelling to plant design, pipe stress and pressure vessel calculations."
       />
-      <div class="mt-12 grid gap-5 md:grid-cols-2">
+      <div class="mt-12 grid gap-4 md:grid-cols-2">
         {
           toolGroups.map(([group, items], i) => (
             <section class="card tool-card" data-reveal style={`--reveal-i: ${i % 2}`} aria-labelledby={`tools-${slug(group)}`}>
@@ -95,6 +100,7 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
             </section>
           ))
         }
+      </div>
       </div>
     </div>
   </section>

@@ -1,7 +1,7 @@
 ---
 title: Ice Cube Tray
 order: 2
-summary: A moulded ice cube tray designed in SolidWorks from scratch — a rimmed, thin-walled body with a grid of tapered cavities, built step by step on the INSPIREWORKSS channel.
+summary: "A moulded ice cube tray designed from scratch in SolidWorks: a rimmed, thin-walled body with a grid of tapered cavities, built step by step on the INSPIREWORKSS channel."
 discipline: Product Design
 category: Plastic part
 format: YouTube build

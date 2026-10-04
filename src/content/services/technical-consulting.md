@@ -1,7 +1,7 @@
 ---
 title: Technical Consulting
 order: 4
-summary: An experienced second pair of eyes on mechanical and piping work — design reviews, codes-and-standards questions, problem solving and clear technical communication.
+summary: Design reviews, codes and standards questions, engineering problem solving and clear technical communication for mechanical and piping work.
 audience:
   - Companies that need an independent design review
   - Teams facing a recurring engineering problem

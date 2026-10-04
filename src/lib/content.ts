@@ -27,7 +27,7 @@ export async function getVideos(): Promise<Video[]> {
 const toolOrder = toolsData.map((t) => t.id);
 
 /** Display order for software groups. */
-export const toolGroups = ['CAD — 2D & 3D', 'Plant design & review', 'Analysis', 'Automation & productivity'];
+export const toolGroups = ['2D and 3D CAD', 'Plant design & review', 'Analysis', 'Automation & productivity'];
 
 /** Skills ordered by category (as defined in the content config), then name. */
 export async function getSkills(): Promise<Skill[]> {

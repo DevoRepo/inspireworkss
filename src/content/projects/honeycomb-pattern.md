@@ -1,7 +1,7 @@
 ---
 title: Honeycomb Pattern
 order: 5
-summary: A hexagonal honeycomb grid modelled in SolidWorks — a technique every designer should know for lightweight, repeating cell structures.
+summary: A hexagonal honeycomb grid modelled in SolidWorks, a useful technique for lightweight structures built from repeating cells.
 discipline: Mechanical Design
 category: Modelling technique
 format: YouTube build

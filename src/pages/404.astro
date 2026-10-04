@@ -1,7 +1,6 @@
 ---
 import { url } from '../lib/url';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import DimensionLine from '../components/DimensionLine.astro';
 import Icon from '../components/Icon.astro';
 import { nav } from '../config/site';
 ---
@@ -9,9 +8,8 @@ import { nav } from '../config/site';
 <BaseLayout title="Page not found" description="This page could not be found on the INSPIREWORKSS website." noindex>
   <section class="grid-paper border-b border-line">
     <div class="container-x py-24 sm:py-32">
-      <p class="eyebrow">Error 404 · Out of tolerance</p>
-      <h1 class="display-xl mt-6">This sheet<br />isn't in the set.</h1>
-      <DimensionLine label="Nominal: page · Actual: not found" class="mt-10 max-w-xl" />
+      <p class="eyebrow">Error 404</p>
+      <h1 class="display-xl mt-6">Page not found</h1>
       <p class="lead mt-8 max-w-xl">The page may have moved, or the link may be mistyped. Try one of these instead:</p>
       <ul class="mt-8 flex flex-wrap gap-3">
         {

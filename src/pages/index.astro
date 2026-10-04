@@ -37,7 +37,7 @@ const specs = [
 const principles = [
   { title: 'Practical, optimised solutions', text: 'Complex engineering challenges translated into designs that can be built, installed and maintained.' },
   { title: 'Codes, standards & GD&T', text: 'Design work grounded in ASME, API and ISO standards, engineering documentation and geometric tolerancing.' },
-  { title: 'The how — and the why', text: 'Every concept explained from first principles, through tutorials, courses and one-to-one mentoring.' },
+  { title: 'The how and the why', text: 'Every concept explained from first principles, through tutorials, courses and one-to-one mentoring.' },
 ];
 ---
 
@@ -57,7 +57,7 @@ const principles = [
           Engineering<br />with the how <br />and the <span class="text-accent">why.</span>
         </h1>
         <p class="lead mt-7 max-w-xl" data-reveal style="--reveal-i: 2">
-          {site.name} is the engineering practice of {site.owner} — translating complex mechanical, piping and plant challenges
+          {site.name} is the engineering practice of {site.owner}, translating complex mechanical, piping and plant challenges
           into practical, optimised designs, and teaching the reasoning behind every one of them.
         </p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row" data-reveal style="--reveal-i: 3">
@@ -93,7 +93,7 @@ const principles = [
             <Image src={logo} alt="The INSPIREWORKSS IW monogram: an isometric hexagon in brushed steel and red with drafting construction lines." widths={[400, 640, 900]} sizes="(min-width: 64rem) 36vw, 90vw" />
           </div>
           <DimensionLine label="The IW mark" class="mt-4" />
-          <figcaption class="eyebrow mt-3">Fig. 00 — Brand mark, drawn like a part</figcaption>
+          <figcaption class="label mt-3">The INSPIREWORKSS mark, drawn like a part</figcaption>
         </figure>
       </div>
 
@@ -105,13 +105,13 @@ const principles = [
         />
         <div class="prose-body mt-8 max-w-2xl text-lg" data-reveal>
           <p>
-            {site.owner} is an engineer on a never-ending journey of exploring mechanical, piping and marine engineering —
+            {site.owner} is an engineer on a never-ending journey of exploring mechanical, piping and marine engineering,
             treating every project as an opportunity to translate complex engineering challenges into practical, optimised
             solutions.
           </p>
           <p>
             Beyond professional work, {site.name} shares engineering knowledge through tutorials, technical courses and
-            mentoring — simplifying complex concepts with a focus on both the how and the why.
+            mentoring, simplifying complex concepts with a focus on both the how and the why.
           </p>
         </div>
 
@@ -139,7 +139,7 @@ const principles = [
           eyebrow="Services"
           id="services-title"
           title="Engineering services, from first sketch to stress check."
-          intro="Design, piping, analysis, training and support — each service backed by the same toolset and standards."
+          intro="Design, piping, analysis, training and support, each backed by the same toolset and standards."
         />
         <a href={url('/services/')} class="link-arrow shrink-0" data-reveal>All services <Icon name="arrow" /></a>
       </div>
@@ -156,14 +156,14 @@ const principles = [
         <SectionHeading
           eyebrow="Selected work"
           id="projects-title"
-          title="Models built to be made — and explained."
-          intro="Design models and step-by-step builds from the INSPIREWORKSS studio and YouTube channel."
+          title="Models built to be made, and explained."
+          intro="Design models and step-by-step builds from INSPIREWORKSS and its YouTube channel."
         />
         <a href={url('/projects/')} class="link-arrow shrink-0" data-reveal>All projects <Icon name="arrow" /></a>
       </div>
 
       <div class="mt-12 lg:mt-16">
-        <ProjectShowcase project={featured} index={featured.data.order} />
+        <ProjectShowcase project={featured} />
       </div>
 
       {
@@ -238,7 +238,7 @@ const principles = [
           eyebrow="Learn"
           id="learn-title"
           title="Engineering, simplified on YouTube."
-          intro="Tutorials on the INSPIREWORKSS channel break down CAD modelling and engineering drawing — the how, and the why."
+          intro="Tutorials on the INSPIREWORKSS channel break down CAD modelling and engineering drawing: the how, and the why."
         />
         <div class="flex shrink-0 flex-wrap gap-6" data-reveal>
           <a href={url('/resources/')} class="link-arrow">All resources <Icon name="arrow" /></a>
@@ -253,7 +253,7 @@ const principles = [
           videos.map((v, i) => (
             <li data-reveal style={`--reveal-i: ${i}`}>
               <VideoFacade id={v.id} title={v.data.title} />
-              <p class="eyebrow mt-4">{v.data.topic}</p>
+              <p class="label mt-4">{v.data.topic}</p>
               <h3 class="heading-md mt-2">{v.data.title}</h3>
             </li>
           ))
@@ -268,51 +268,6 @@ const principles = [
 <style>
   .hero {
     border-bottom: 1px solid var(--c-line);
-  }
-
-  .spec-strip {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .spec-strip > div {
-    padding: 0.9rem 1rem 1rem 0;
-    border-bottom: 1px solid var(--c-line);
-    min-width: 0;
-  }
-
-  .spec-strip > div:last-child {
-    grid-column: 1 / -1;
-    border-bottom: 0;
-  }
-
-  .spec-strip dt {
-    font-size: 0.8125rem;
-    color: var(--c-ink-3);
-  }
-
-  .spec-strip dd {
-    margin-top: 0.2rem;
-    font-weight: 500;
-  }
-
-  @media (min-width: 64rem) {
-    .spec-strip {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-
-    .spec-strip > div,
-    .spec-strip > div:last-child {
-      grid-column: auto;
-      border-bottom: 0;
-      padding-left: 1.25rem;
-      border-left: 1px solid var(--c-line);
-    }
-
-    .spec-strip > div:first-child {
-      padding-left: 0;
-      border-left: 0;
-    }
   }
 
   .plate-frame {

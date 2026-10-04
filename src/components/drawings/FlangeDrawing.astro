@@ -1,0 +1,114 @@
+---
+/**
+ * Technical drawing of a weld-neck flange, ASME B16.5 NPS 6 Class 150: front view with the bolt
+ * pattern and a full section A–A. The three dimensions shown (outside diameter, bolt circle and
+ * bolt holes) are the standard's values in millimetres; the drawing is to scale.
+ */
+const k = 0.93; // drawing units per millimetre
+const r = (dia: number) => (dia / 2) * k;
+const f = (n: number) => n.toFixed(1);
+
+// Front view
+const cx = 175;
+const cy = 210;
+const OD = r(279.4);
+const RF = r(215.9);
+const PCD = r(241.3);
+const HOLE = r(22.4);
+const BORE = r(154.1);
+const holes = Array.from({ length: 8 }, (_, i) => {
+  const a = ((22.5 + i * 45) * Math.PI) / 180;
+  return { x: cx + PCD * Math.cos(a), y: cy - PCD * Math.sin(a) };
+});
+
+// Section A–A (third-angle: the face sits next to the front view)
+const fx = 410;
+const rfH = 1.6 * k;
+const t = 25.4 * k;
+const Y = 88.9 * k;
+const X = r(192);
+const A = r(168.3);
+const half = (s: 1 | -1) =>
+  [
+    [fx, cy - s * BORE],
+    [fx, cy - s * RF],
+    [fx + rfH, cy - s * RF],
+    [fx + rfH, cy - s * OD],
+    [fx + rfH + t, cy - s * OD],
+    [fx + rfH + t, cy - s * X],
+    [fx + Y, cy - s * A],
+    [fx + Y, cy - s * BORE],
+  ]
+    .map(([x, y], i) => `${i ? 'L' : 'M'}${f(x)} ${f(y)}`)
+    .join(' ') + ' Z';
+
+// Leader to one bolt hole (upper right) and to the bolt circle (lower right, clear of holes)
+const h = holes[0];
+const tip = { x: 318, y: 92 };
+const dx = tip.x - h.x;
+const dy = tip.y - h.y;
+const len = Math.hypot(dx, dy);
+const holeEdge = { x: h.x + (HOLE * dx) / len, y: h.y + (HOLE * dy) / len };
+const back = fx + rfH + t;
+const pcdAt = (315 * Math.PI) / 180;
+const pcdPt = { x: cx + PCD * Math.cos(pcdAt), y: cy - PCD * Math.sin(pcdAt) };
+const pcdTip = { x: 300, y: 372 };
+---
+
+<svg class="drawing" viewBox="0 0 600 420" role="img" aria-labelledby="flange-title">
+  <title id="flange-title">Technical drawing of a weld-neck pipe flange (NPS 6, Class 150): front view and section</title>
+  <defs>
+    <pattern id="dwg-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="7" class="hatch-line"></line>
+    </pattern>
+    <marker id="dwg-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 1.5 10 5 0 8.5z" class="arrowhead"></path>
+    </marker>
+  </defs>
+
+  <!-- Centre lines -->
+  <g class="later" style="--d: 0s">
+    <line x1={cx - OD - 18} y1={cy} x2={cx + OD + 18} y2={cy} class="chain"></line>
+    <line x1={cx} y1={cy - OD - 18} x2={cx} y2={cy + OD + 18} class="chain"></line>
+    <circle cx={cx} cy={cy} r={f(PCD)} class="chain"></circle>
+    <line x1={fx - 16} y1={cy} x2={fx + Y + 16} y2={cy} class="chain"></line>
+  </g>
+
+  <!-- Front view -->
+  <circle cx={cx} cy={cy} r={f(OD)} pathLength="1" class="obj draw" style="--d: 0.05s"></circle>
+  <circle cx={cx} cy={cy} r={f(RF)} pathLength="1" class="obj draw" style="--d: 0.2s; stroke-width: 1.25"></circle>
+  <circle cx={cx} cy={cy} r={f(BORE)} pathLength="1" class="obj draw" style="--d: 0.35s"></circle>
+  {holes.map((p, i) => <circle cx={f(p.x)} cy={f(p.y)} r={f(HOLE)} pathLength="1" class="feat draw" style={`--d: ${0.5 + i * 0.06}s`} />)}
+
+  <!-- Section A–A -->
+  <path d={`${half(1)} ${half(-1)}`} class="hatch-fill later" style="--d: 0.9s"></path>
+  <path d={`${half(1)} ${half(-1)}`} pathLength="1" class="obj draw" style="--d: 0.3s"></path>
+
+  <!-- Cutting plane A–A on the front view (arrows show the direction of sight) -->
+  <g class="later" style="--d: 1.1s">
+    <path d={`M${cx} ${f(cy - OD - 34)}v14M${cx} ${f(cy + OD + 20)}v14`} class="obj" style="stroke-width: 3"></path>
+    <line x1={cx} y1={f(cy - OD - 27)} x2={cx - 24} y2={f(cy - OD - 27)} class="thin" marker-end="url(#dwg-arrow)"></line>
+    <line x1={cx} y1={f(cy + OD + 27)} x2={cx - 24} y2={f(cy + OD + 27)} class="thin" marker-end="url(#dwg-arrow)"></line>
+    <text x={cx - 40} y={f(cy - OD - 23)} class="t-strong">A</text>
+    <text x={cx - 40} y={f(cy + OD + 31)} class="t-strong">A</text>
+  </g>
+
+  <!-- Dimensions -->
+  <g class="later" style="--d: 1.3s">
+    <!-- Bolt holes -->
+    <polyline points={`${f(holeEdge.x)},${f(holeEdge.y)} ${tip.x},${tip.y} ${tip.x + 66},${tip.y}`} class="thin" marker-start="url(#dwg-arrow)"></polyline>
+    <text x={tip.x + 3} y={tip.y - 6}>8× Ø22.4</text>
+
+    <!-- Bolt circle -->
+    <polyline points={`${f(pcdPt.x)},${f(pcdPt.y)} ${pcdTip.x},${pcdTip.y} ${pcdTip.x + 84},${pcdTip.y}`} class="thin" marker-start="url(#dwg-arrow)"></polyline>
+    <text x={pcdTip.x + 3} y={pcdTip.y - 6}>PCD Ø241.3</text>
+
+    <!-- Outside diameter, on the section -->
+    <path d={`M${f(back + 4)} ${f(cy - OD)}H538M${f(back + 4)} ${f(cy + OD)}H538`} class="thin"></path>
+    <line x1="530" y1={f(cy - OD)} x2="530" y2={f(cy + OD)} class="thin" marker-start="url(#dwg-arrow)" marker-end="url(#dwg-arrow)"></line>
+    <text x="530" y={cy} text-anchor="middle" dy="4" transform={`rotate(-90 530 ${cy})`}>Ø279.4</text>
+
+    <text x={f(fx + Y / 2)} y={f(cy + OD + 31)} text-anchor="middle" class="t-strong">SECTION A–A</text>
+    <text x="24" y="408" class="t-small">WN FLANGE · NPS 6 · CLASS 150 · MM</text>
+  </g>
+</svg>

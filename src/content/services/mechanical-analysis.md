@@ -1,7 +1,7 @@
 ---
 title: Mechanical Analysis
 order: 3
-summary: Engineering calculations, stress checks and design optimisation that show whether a design will hold up — and where it can be made lighter, simpler or cheaper.
+summary: Engineering calculations, stress checks and design optimisation that show whether a design will hold up, and where it can be made lighter, simpler or cheaper.
 audience:
   - Designers who need calculations to support or validate a design
   - Teams investigating a failure or an under-performing component

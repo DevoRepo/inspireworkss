@@ -8,7 +8,7 @@ import SpecTable from '../../components/SpecTable.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import CTABand from '../../components/CTABand.astro';
 import Icon from '../../components/Icon.astro';
-import { site, mailto } from '../../config/site';
+import { mailto } from '../../config/site';
 import { getProjects, getServices, pad, resolveSkills, resolveTools, type Service } from '../../lib/content';
 import { render } from 'astro:content';
 
@@ -53,67 +53,66 @@ const schema = [
 ---
 
 <BaseLayout title={data.title} description={data.summary} trail={trail} schema={schema}>
-  <TitleBlock
-    eyebrow={`Service ${pad(data.order)} of ${pad(total)}`}
-    title={data.title}
-    lead={data.summary}
-    meta={[
-      { label: 'Skills', value: `${pad(skills.length)} referenced` },
-      { label: 'Software', value: tools.length ? tools.map((t) => t.data.name).slice(0, 3).join(', ') + (tools.length > 3 ? ' +' : '') : '—' },
-    ]}
-    trail={trail}
-  >
+  <TitleBlock eyebrow={`Service ${pad(data.order)} of ${pad(total)}`} title={data.title} lead={data.summary} trail={trail}>
     <div class="mt-8 flex flex-col gap-3 sm:flex-row">
       <a href={mailto(`Enquiry: ${data.title}`)} class="btn btn-primary">Enquire about this service <Icon name="arrow" /></a>
       <a href={url('/services/')} class="btn btn-ghost">All services</a>
     </div>
-  </TitleBlock>
 
-  <!-- Who / value -->
-  <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="fit-title">
-    <div class="container-x">
-      <SectionHeading eyebrow="Fit" id="fit-title" title="Who it helps — and what it delivers." />
-      <div class="mt-12 grid gap-px border border-line bg-line lg:grid-cols-2">
-        <div class="bg-sheet p-6 sm:p-8" data-reveal>
-          <h3 class="eyebrow">Who it helps</h3>
-          <ul class="mt-5 space-y-4">
-            {
-              data.audience.map((a) => (
-                <li class="flex gap-4 text-lg">
-                  <span class="mt-[0.7em] h-px w-5 flex-none bg-ink-3" aria-hidden="true" />
-                  {a}
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-        <div class="bg-sheet p-6 sm:p-8" data-reveal style="--reveal-i: 1">
-          <h3 class="eyebrow">Value delivered</h3>
-          <ul class="mt-5 space-y-4">
-            {
-              data.value.map((v) => (
-                <li class="flex gap-4 text-lg">
-                  <span class="mt-[0.45em] h-3 w-3 flex-none rotate-45 bg-accent" aria-hidden="true" />
-                  {v}
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </div>
-
+    <div slot="aside" class="card brief">
+      <h2 class="heading-md">Who it helps</h2>
+      <ul class="mt-4 space-y-3">
+        {
+          data.audience.map((a) => (
+            <li class="flex gap-3">
+              <span class="brief-check" aria-hidden="true">
+                <Icon name="check" size={14} />
+              </span>
+              <span>{a}</span>
+            </li>
+          ))
+        }
+      </ul>
       {
         data.scope.length > 0 && (
-          <div class="mt-10" data-reveal>
-            <h3 class="eyebrow">Specific scope</h3>
-            <ul class="mt-4 flex flex-wrap gap-2">
-              {data.scope.map((s) => (
-                <li class="chip !px-3 !py-2 !text-sm">{s}</li>
+          <>
+            <p class="label mt-6">Specific scope</p>
+            <ul class="mt-3 flex flex-wrap gap-2">
+              {data.scope.map((sc) => (
+                <li class="chip">{sc}</li>
               ))}
             </ul>
-          </div>
+          </>
         )
       }
+      {
+        tools.length > 0 && (
+          <>
+            <p class="label mt-6">Software</p>
+            <p class="mt-2 text-[0.95rem] text-ink-2">{tools.map((t) => t.data.name).join(', ')}</p>
+          </>
+        )
+      }
+    </div>
+  </TitleBlock>
+
+  <!-- What you get -->
+  <section class="pt-16 sm:pt-20 lg:pt-24" aria-labelledby="value-title">
+    <div class="container-x">
+      <div class="surface surface-blush" data-reveal>
+        <p class="eyebrow">Deliverables</p>
+        <h2 id="value-title" class="heading-xl mt-4">What you get</h2>
+        <ol class="mt-10 grid gap-8 md:grid-cols-3 md:gap-10">
+          {
+            data.value.map((v, i) => (
+              <li class="border-t border-line-strong pt-5">
+                <span class="value-num">{pad(i + 1)}</span>
+                <p class="mt-3 text-lg leading-snug">{v}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
 
       {
         hasBody && (
@@ -128,26 +127,22 @@ const schema = [
   <!-- Scope: skills + tools -->
   {
     (skills.length > 0 || tools.length > 0) && (
-      <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="scope-title">
+      <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="scope-title">
         <div class="container-x">
-          <SectionHeading eyebrow="Specification" id="scope-title" title="Skills and software behind the service." />
-          <div class="mt-12 grid gap-12 lg:grid-cols-12">
+          <SectionHeading eyebrow="Specification" id="scope-title" title="Skills and software" />
+          <div class="mt-12 grid gap-14 lg:grid-cols-12 lg:gap-12">
             {skills.length > 0 && (
-              <div class="lg:col-span-8" data-reveal>
-                <SpecTable
-                  caption="Skills"
-                  itemLabel="Skill"
-                  rows={skills.map((s) => ({ name: s.data.skill, note: s.data.note }))}
-                />
+              <div class="lg:col-span-7" data-reveal>
+                <SpecTable caption="Skills" itemLabel="Skill" rows={skills.map((s) => ({ name: s.data.skill, note: s.data.note }))} />
               </div>
             )}
             {tools.length > 0 && (
-              <div class="lg:col-span-4" data-reveal style="--reveal-i: 1">
+              <div class="lg:col-span-5" data-reveal style="--reveal-i: 1">
                 <SpecTable caption="Software" itemLabel="Package" noteLabel="Used for" rows={tools.map((t) => ({ name: t.data.name, note: t.data.use }))} />
               </div>
             )}
           </div>
-          <a href={url('/expertise/')} class="link-arrow mt-10">Full expertise specification <Icon name="arrow" /></a>
+          <a href={url('/expertise/')} class="link-arrow mt-10">All skills and software <Icon name="arrow" /></a>
         </div>
       </section>
     )
@@ -156,9 +151,9 @@ const schema = [
   <!-- Related work -->
   {
     related.length > 0 && (
-      <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="related-title">
+      <section class="pb-20 sm:pb-24 lg:pb-28" aria-labelledby="related-title">
         <div class="container-x">
-          <SectionHeading eyebrow="Related work" id="related-title" title="See it applied." />
+          <SectionHeading eyebrow="Related work" id="related-title" title="Projects that use this service" />
           <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((p, i) => (
               <li data-reveal style={`--reveal-i: ${i}`}>
@@ -177,7 +172,7 @@ const schema = [
       {
         prev ? (
           <a href={url(`/services/${prev.id}/`)} class="pager">
-            <span class="eyebrow">← Previous service</span>
+            <span class="label">← Previous service</span>
             <span class="heading-md mt-2 block">{prev.data.title}</span>
           </a>
         ) : (
@@ -187,7 +182,7 @@ const schema = [
       {
         next && (
           <a href={url(`/services/${next.id}/`)} class="pager sm:text-right">
-            <span class="eyebrow">Next service →</span>
+            <span class="label">Next service →</span>
             <span class="heading-md mt-2 block">{next.data.title}</span>
           </a>
         )
@@ -195,10 +190,33 @@ const schema = [
     </div>
   </nav>
 
-  <CTABand title={`Discuss ${data.title} with ${site.name}.`} subject={`Enquiry: ${data.title}`} />
+  <CTABand title={`Enquire about ${data.title}`} subject={`Enquiry: ${data.title}`} />
 </BaseLayout>
 
 <style>
+  .brief {
+    padding: 1.75rem;
+  }
+
+  .brief-check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-top: 0.1rem;
+    border-radius: 999px;
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  .value-num {
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--c-accent);
+  }
+
   .pager {
     display: block;
     padding-block: 2rem;

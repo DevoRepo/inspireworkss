@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TitleBlock from '../components/TitleBlock.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import DimensionLine from '../components/DimensionLine.astro';
 import Icon from '../components/Icon.astro';
 import { site, mailto } from '../config/site';
 import { getServices, pad } from '../lib/content';
@@ -11,17 +10,18 @@ const services = await getServices();
 const [emailUser, emailDomain] = site.email.split('@');
 const trail = [{ name: 'Contact', href: '/contact/' }];
 const checklist = [
-  { title: 'The component or system', text: 'What it is, what it does and where it sits — a part, an assembly, a piping system or a whole layout.' },
+  { title: 'The component or system', text: 'What it is, what it does and where it sits: a part, an assembly, a piping system or a whole layout.' },
   { title: 'The deliverable', text: '3D models, 2D drawings, calculations, a design review, a stress check or a training session.' },
   { title: 'Existing information', text: 'Sketches, legacy drawings, models (with file formats), photos or specifications.' },
-  { title: 'Codes & standards', text: 'Any ASME, API, ISO or client standards the work must follow.' },
+  { title: 'Codes and standards', text: 'Any ASME, API, ISO or client standards the work must follow.' },
   { title: 'Timeline', text: 'When you need it, and whether there are review stages along the way.' },
 ];
 const channels = [
-  { ...site.social.linkedin, icon: 'linkedin' as const, note: 'Professional profile & messages' },
-  { ...site.social.youtube, icon: 'youtube' as const, note: 'Tutorials & comments' },
-  { ...site.social.blog, icon: 'blog' as const, note: 'Articles & notes' },
+  { ...site.social.linkedin, icon: 'linkedin' as const, note: 'Professional profile and messages' },
+  { ...site.social.youtube, icon: 'youtube' as const, note: 'Tutorials and comments' },
+  { ...site.social.blog, icon: 'blog' as const, note: 'Articles and notes' },
 ];
+const enquiry = mailto('Project enquiry: INSPIREWORKSS');
 ---
 
 <BaseLayout
@@ -31,81 +31,66 @@ const channels = [
 >
   <TitleBlock
     eyebrow="Contact"
-    title="Let's talk engineering"
-    lead="For projects, collaborations, training or a question about a drawing — email is the fastest way to reach INSPIREWORKSS."
-    meta={[
-      { label: 'Channel', value: 'Email' },
-      { label: 'LinkedIn', value: site.social.linkedin.handle },
-    ]}
+    title="Get in touch"
+    lead="Email is the fastest way to reach INSPIREWORKSS about a project, training or a question about a drawing."
     trail={trail}
-  />
-
-  <section class="py-16 sm:py-20 lg:py-24" aria-labelledby="email-title">
-    <div class="container-x grid gap-14 lg:grid-cols-12">
-      <div class="lg:col-span-7" data-reveal>
-        <p class="eyebrow" id="email-title">Primary channel · Email</p>
-        <a href={mailto('Project enquiry — INSPIREWORKSS')} class="email-big mt-4 block">
-          {emailUser}@<wbr />{emailDomain}
-        </a>
-        <DimensionLine label="Write to the studio" class="mt-6 max-w-xl" />
-        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a href={mailto('Project enquiry — INSPIREWORKSS')} class="btn btn-primary">
-            <Icon name="mail" /> Write an email
-          </a>
-          <button type="button" class="btn btn-ghost" data-copy={site.email}>
-            <Icon name="copy" class="copy-icon" />
-            <span data-copy-label>Copy address</span>
-          </button>
-        </div>
-        <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
+  >
+    <div slot="aside" class="card contact-card">
+      <p class="label">Email</p>
+      <a href={enquiry} class="contact-email">{emailUser}@<wbr />{emailDomain}</a>
+      <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+        <a href={enquiry} class="btn btn-primary"><Icon name="mail" /> Write an email</a>
+        <button type="button" class="btn btn-ghost" data-copy={site.email}>
+          <Icon name="copy" />
+          <span data-copy-label>Copy address</span>
+        </button>
       </div>
+      <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
 
-      <div class="lg:col-span-5" data-reveal style="--reveal-i: 1">
-        <p class="eyebrow">Other channels</p>
-        <ul class="mt-4 border-t border-ink">
-          {
-            channels.map((c) => (
-              <li class="border-b border-line">
-                <a href={c.url} target="_blank" rel="me noopener" class="channel-row">
-                  <Icon name={c.icon} size={20} />
-                  <span class="flex-1">
-                    <span class="block font-semibold">{c.label}</span>
-                    <span class="block text-sm text-ink-3">{c.note}</span>
-                  </span>
-                  <Icon name="arrow-up-right" size={18} />
-                  <span class="sr-only">(opens in a new tab)</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="grid-paper border-y border-line py-20 sm:py-24" aria-labelledby="brief-title">
-    <div class="container-x grid gap-12 lg:grid-cols-12">
-      <div class="lg:col-span-5">
-        <SectionHeading
-          eyebrow="Enquiry checklist"
-          id="brief-title"
-          title="What to include in your email."
-          intro="A short brief makes the first reply useful. None of this is required — send what you have."
-        />
-      </div>
-      <ol class="border-t border-line-strong lg:col-span-7" data-reveal>
+      <ul class="mt-7 border-t border-line" aria-label="Other channels">
         {
-          checklist.map((c, i) => (
-            <li class="grid gap-1 border-b border-line bg-sheet/60 px-1 py-5 sm:grid-cols-[3rem_1fr]">
-              <span class="mono text-xs text-accent">{pad(i + 1)}</span>
-              <div>
-                <h3 class="heading-md">{c.title}</h3>
-                <p class="mt-1 text-ink-2">{c.text}</p>
-              </div>
+          channels.map((c) => (
+            <li class="border-b border-line last:border-b-0">
+              <a href={c.url} target="_blank" rel="me noopener" class="channel-row">
+                <Icon name={c.icon} size={20} />
+                <span class="flex-1">
+                  <span class="block font-semibold">{c.label}</span>
+                  <span class="block text-sm text-ink-3">{c.note}</span>
+                </span>
+                <Icon name="arrow-up-right" size={18} />
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
             </li>
           ))
         }
-      </ol>
+      </ul>
+    </div>
+  </TitleBlock>
+
+  <section class="pt-16 sm:pt-20 lg:pt-24" aria-labelledby="brief-title">
+    <div class="container-x">
+      <div class="surface surface-tint" data-reveal>
+        <div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <div class="lg:col-span-5">
+            <p class="eyebrow">Enquiry checklist</p>
+            <h2 id="brief-title" class="heading-xl mt-4">What to include in your email</h2>
+            <p class="lead mt-5">A short brief makes the first reply useful. None of it is required, so send what you have.</p>
+          </div>
+          <ol class="lg:col-span-7">
+            {
+              checklist.map((c, i) => (
+                <li class="check-row">
+                  <span class="check-num">{pad(i + 1)}</span>
+                  <div>
+                    <h3 class="heading-md">{c.title}</h3>
+                    <p class="mt-1 text-ink-2">{c.text}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -114,7 +99,7 @@ const channels = [
       <SectionHeading
         eyebrow="Quick start"
         id="topic-title"
-        title="Email about a specific service."
+        title="Email about a specific service"
         intro="Each link opens a new email with the subject line already filled in."
       />
       <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -136,17 +121,22 @@ const channels = [
 </BaseLayout>
 
 <style>
-  .email-big {
-    font-family: var(--font-display);
+  .contact-card {
+    padding: 1.75rem;
+  }
+
+  .contact-email {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.9rem);
     font-weight: 600;
-    font-size: clamp(1.75rem, 0.9rem + 3vw, 3.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.035em;
     overflow-wrap: anywhere;
-    line-height: 1.1;
-    letter-spacing: -0.04em;
     transition: color 0.2s ease;
   }
 
-  .email-big:hover {
+  .contact-email:hover {
     color: var(--c-accent);
   }
 
@@ -154,13 +144,33 @@ const channels = [
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1rem 0.25rem;
-    transition: color 0.2s ease, padding 0.3s ease;
+    padding-block: 0.9rem;
+    transition: color 0.2s ease;
   }
 
   .channel-row:hover {
     color: var(--c-accent);
-    padding-left: 0.75rem;
+  }
+
+  .check-row {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.25rem 0.75rem;
+    padding-block: 1.1rem;
+    border-top: 1px solid var(--c-line-strong);
+  }
+
+  .check-row:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .check-num {
+    padding-top: 0.2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--c-accent);
   }
 
   .topic {
@@ -202,7 +212,7 @@ const channels = [
         if (status) status.textContent = 'Email address copied to clipboard';
         setTimeout(() => label && (label.textContent = 'Copy address'), 2200);
       } catch {
-        if (status) status.textContent = 'Copy failed — please select the address manually';
+        if (status) status.textContent = 'Copy failed. Please select the address manually.';
       }
     });
   });

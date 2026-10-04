@@ -1,8 +1,12 @@
 ---
 import { url } from '../lib/url';
-import { site, mailto } from '../config/site';
+import { mailto } from '../config/site';
 import Icon from './Icon.astro';
 
+/**
+ * Closing call to action: a graphite DESIGN.md colour block, inset from the page edges.
+ * It stays dark in both themes, like the logo plate.
+ */
 interface Props {
   title?: string;
   text?: string;
@@ -10,28 +14,28 @@ interface Props {
 }
 
 const {
-  title = 'Have a design, drawing or piping problem on the table?',
-  text = 'Share what you are working on — the component or system, the deliverable you need and any drawings or standards involved — and send it over by email.',
-  subject = 'Project enquiry — INSPIREWORKSS',
+  title = 'Have a design, drawing or piping problem to solve?',
+  text = 'Send a short email about the component or system, the deliverable you need and any drawings or standards involved.',
+  subject = 'Project enquiry: INSPIREWORKSS',
 } = Astro.props;
 ---
 
-<section class="cta" aria-labelledby="cta-title">
-  <div class="container-x relative py-16 sm:py-20 lg:py-24">
-    <div class="grid gap-10 lg:grid-cols-12 lg:items-end" data-reveal>
-      <div class="lg:col-span-8">
-        <p class="eyebrow cta-eyebrow">Revision request · Open</p>
-        <h2 id="cta-title" class="display-lg mt-4">{title}</h2>
-        <p class="cta-text mt-6 max-w-2xl text-lg">{text}</p>
-      </div>
-      <div class="flex flex-col gap-3 sm:flex-row lg:col-span-4 lg:flex-col lg:items-end">
-        <a href={mailto(subject)} class="btn btn-primary w-full sm:w-auto">
-          Email the studio <Icon name="arrow" />
-        </a>
-        <a href={url('/contact/')} class="btn cta-ghost w-full sm:w-auto">All contact options</a>
+<section class="py-16 sm:py-20 lg:py-24" aria-labelledby="cta-title">
+  <div class="container-x">
+    <div class="cta surface" data-reveal>
+      <div class="relative grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-8">
+          <h2 id="cta-title" class="cta-title">{title}</h2>
+          <p class="cta-text mt-5 max-w-2xl text-lg">{text}</p>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row lg:col-span-4 lg:flex-col lg:items-end">
+          <a href={mailto(subject)} class="btn btn-primary w-full sm:w-auto">
+            <Icon name="mail" /> Send an email
+          </a>
+          <a href={url('/contact/')} class="btn cta-ghost w-full sm:w-auto">Contact options</a>
+        </div>
       </div>
     </div>
-    <p class="cta-mail mono mt-10 break-all">{site.email}</p>
   </div>
 </section>
 
@@ -41,22 +45,32 @@ const {
     --c-paper: #0f1113;
     --c-ink: #eceae4;
     --c-ink-3: #9aa1a8;
-    --c-grid: rgb(127 184 201 / 0.05);
-    --c-grid-major: rgb(127 184 201 / 0.09);
     --c-accent: #ff4b3e;
     --c-accent-ink: #140605;
     position: relative;
+    overflow: hidden;
     background-color: var(--c-plate);
-    color: var(--c-ink);
     background-image:
-      linear-gradient(var(--c-grid-major) 1px, transparent 1px),
-      linear-gradient(90deg, var(--c-grid-major) 1px, transparent 1px);
+      linear-gradient(rgb(127 184 201 / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(127 184 201 / 0.07) 1px, transparent 1px);
     background-size: 64px 64px;
-    border-block: 1px solid #2a2f35;
+    background-position: -1px -1px;
+    color: var(--c-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  .cta-eyebrow {
-    color: var(--c-accent);
+  :global([data-theme='dark']) .cta {
+    background-color: #16191c;
+    box-shadow: inset 0 0 0 1px #2a2f35;
+  }
+
+  .cta-title {
+    font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
   }
 
   .cta-text {
@@ -66,7 +80,7 @@ const {
   .cta-ghost {
     background: transparent;
     color: var(--c-ink);
-    box-shadow: inset 0 0 0 1px #414850;
+    box-shadow: inset 0 0 0 1px #4a5159;
   }
 
   .cta-ghost:hover {
@@ -76,11 +90,5 @@ const {
   .cta :global(.btn-primary:hover) {
     background: var(--c-ink);
     color: #0f1113;
-  }
-
-  .cta-mail {
-    font-size: 0.8125rem;
-    letter-spacing: 0.04em;
-    color: var(--c-ink-3);
   }
 </style>

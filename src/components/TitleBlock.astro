@@ -1,8 +1,9 @@
 ---
 import { url } from '../lib/url';
 /**
- * Page header: breadcrumb trail, heading, lead, and a short list of key facts
- * set like the notes column of a drawing (label left, value right, hairline rules).
+ * Inner-page header, built like the home hero: heading and lead on the left, an optional visual on
+ * the right (slot "aside": a technical drawing, image or card) and an optional strip of key facts
+ * along the bottom edge.
  */
 interface Meta {
   label: string;
@@ -18,29 +19,28 @@ interface Props {
 }
 
 const { eyebrow, title, lead, meta = [], trail = [] } = Astro.props;
+const hasAside = Astro.slots.has('aside');
 ---
 
-<section class="title-block grid-paper" aria-labelledby="page-title">
-  <div class="container-x relative pb-14 pt-10 sm:pt-14 lg:pb-20 lg:pt-20">
+<section class="page-head grid-paper" aria-labelledby="page-title">
+  <div class="container-x pb-12 pt-8 sm:pb-14 sm:pt-10 lg:pb-16">
     {
       trail.length > 0 && (
-        <nav aria-label="Breadcrumb" class="mb-8">
+        <nav aria-label="Breadcrumb">
           <ol class="crumbs">
             <li>
               <a href={url('/')}>Home</a>
             </li>
             {trail.map((item, i) => (
-              <li>
-                {i === trail.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={url(item.href)}>{item.name}</a>}
-              </li>
+              <li>{i === trail.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={url(item.href)}>{item.name}</a>}</li>
             ))}
           </ol>
         </nav>
       )
     }
 
-    <div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
-      <div class="lg:col-span-8" data-reveal>
+    <div class:list={['mt-10 grid gap-12 sm:mt-12', { 'lg:grid-cols-12 lg:items-center lg:gap-10': hasAside }]}>
+      <div class:list={[hasAside ? 'lg:col-span-7' : 'max-w-4xl']} data-reveal>
         <p class="eyebrow flex items-center gap-3"><span class="tick" aria-hidden="true"></span>{eyebrow}</p>
         <h1 id="page-title" class="display-lg mt-5">{title}</h1>
         {lead && <p class="lead mt-6 max-w-2xl">{lead}</p>}
@@ -48,30 +48,40 @@ const { eyebrow, title, lead, meta = [], trail = [] } = Astro.props;
       </div>
 
       {
-        meta.length > 0 && (
-          <dl class="facts lg:col-span-4" data-reveal style="--reveal-i: 2">
-            {meta.map((cell) => (
-              <div>
-                <dt>{cell.label}</dt>
-                <dd>{cell.value}</dd>
-              </div>
-            ))}
-          </dl>
+        hasAside && (
+          <div class="aside lg:col-span-5" data-reveal style="--reveal-i: 2">
+            <slot name="aside" />
+          </div>
         )
       }
     </div>
   </div>
+
+  {
+    meta.length > 0 && (
+      <div class="border-t border-line bg-sheet">
+        <dl class="container-x spec-strip">
+          {meta.map((cell) => (
+            <div>
+              <dt>{cell.label}</dt>
+              <dd>{cell.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    )
+  }
 </section>
 
 <style>
-  .title-block {
-    position: relative;
+  .page-head {
     border-bottom: 1px solid var(--c-line);
   }
 
   .tick {
     width: 1.5rem;
     height: 1px;
+    flex: none;
     background: var(--c-accent);
   }
 
@@ -101,27 +111,9 @@ const { eyebrow, title, lead, meta = [], trail = [] } = Astro.props;
     color: var(--c-ink);
   }
 
-  .facts > div {
-    display: grid;
-    grid-template-columns: 7rem minmax(0, 1fr);
-    gap: 1rem;
-    padding-block: 0.85rem;
-    border-bottom: 1px solid var(--c-line);
-  }
-
-  .facts > div:first-child {
-    border-top: 1px solid var(--c-line);
-  }
-
-  .facts dt {
-    font-size: 0.875rem;
-    color: var(--c-ink-3);
-  }
-
-  .facts dd {
-    font-size: 0.975rem;
-    font-weight: 500;
-    line-height: 1.45;
-    color: var(--c-ink);
+  .aside {
+    width: 100%;
+    max-width: 34rem;
+    justify-self: center;
   }
 </style>

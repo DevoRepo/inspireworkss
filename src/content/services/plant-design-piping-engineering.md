@@ -1,7 +1,7 @@
 ---
 title: Plant Design & Piping Engineering
 order: 2
-summary: Piping design, routing and supports, plant and equipment layout, pipe stress analysis and pressure vessel design — coordinated in 3D and checked against the relevant codes.
+summary: Piping design, routing and supports, plant and equipment layout, pipe stress analysis and pressure vessel design, coordinated in 3D and checked against the relevant codes.
 scope:
   - Pressure Vessel Design (PV Elite)
   - Pipe Stress Analysis (Caesar II)

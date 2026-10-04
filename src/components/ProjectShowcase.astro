@@ -2,47 +2,38 @@
 import { Image } from 'astro:assets';
 import { url } from '../lib/url';
 import type { Project } from '../lib/content';
-import { pad, resolveTools } from '../lib/content';
+import { resolveTools } from '../lib/content';
 import Icon from './Icon.astro';
 
 interface Props {
   project: Project;
-  index: number;
   reverse?: boolean;
   headingLevel?: 'h2' | 'h3';
   eager?: boolean;
 }
 
-const { project, index, reverse = false, headingLevel = 'h3', eager = false } = Astro.props;
+const { project, reverse = false, headingLevel = 'h3', eager = false } = Astro.props;
 const { data } = project;
 const tools = await resolveTools(data.tools);
 const Heading = headingLevel;
 const href = url(`/projects/${project.id}/`);
-const meta = [
-  { label: 'Discipline', value: data.discipline },
-  { label: 'Category', value: data.category },
-  { label: 'Format', value: data.format },
-  ...(tools.length ? [{ label: 'Software', value: tools.map((t) => t.data.name).join(', ') }] : []),
-];
+const facts = [data.discipline, data.format, ...tools.map((t) => t.data.name)];
 ---
 
 <article class:list={['showcase', { reverse }]} data-reveal>
   <a href={href} class="media" tabindex="-1" aria-hidden="true">
-    <span class="frame">
-      <Image
-        src={data.cover}
-        alt=""
-        widths={[480, 720, 960, 1280]}
-        sizes="(min-width: 64rem) 58vw, 100vw"
-        loading={eager ? 'eager' : 'lazy'}
-        fetchpriority={eager ? 'high' : 'auto'}
-      />
-    </span>
-    <span class="fig mono">Fig. {pad(index)}</span>
+    <Image
+      src={data.cover}
+      alt=""
+      widths={[480, 720, 960, 1280]}
+      sizes="(min-width: 64rem) 58vw, 100vw"
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : 'auto'}
+    />
     {
       data.youtubeId && (
         <span class="play">
-          <Icon name="play" size={16} />
+          <Icon name="play" size={14} />
           Video
         </span>
       )
@@ -50,22 +41,15 @@ const meta = [
   </a>
 
   <div class="info">
-    <p class="eyebrow">Project {pad(index)} · {data.category}</p>
-    <Heading class="heading-lg mt-3">
+    <p class="label">{data.category}</p>
+    <Heading class="heading-lg mt-2">
       <a href={href} class="title-link">{data.title}</a>
     </Heading>
     <p class="mt-4 text-ink-2">{data.summary}</p>
-    <dl class="meta">
-      {
-        meta.map((m) => (
-          <div>
-            <dt>{m.label}</dt>
-            <dd>{m.value}</dd>
-          </div>
-        ))
-      }
-    </dl>
-    <a href={href} class="link-arrow mt-6" aria-label={`View project: ${data.title}`}>
+    <ul class="facts">
+      {facts.map((fact) => <li>{fact}</li>)}
+    </ul>
+    <a href={href} class="link-arrow mt-7" aria-label={`View project: ${data.title}`}>
       View project <Icon name="arrow" />
     </a>
   </div>
@@ -81,77 +65,45 @@ const meta = [
   .media {
     position: relative;
     display: block;
-    padding: 0.9rem;
-    background: var(--c-sheet);
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-card);
+    background: #fff;
     box-shadow: inset 0 0 0 1px var(--c-line);
   }
 
-  /* Crop / registration marks at the four corners of the frame. */
-  .media::before {
+  /* Hairline drawn above the image so white renders keep a crisp edge. */
+  .media::after {
     content: '';
     position: absolute;
-    inset: 0.35rem;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px var(--c-line);
     pointer-events: none;
-    z-index: 1;
-    --m: var(--c-ink-3);
-    background:
-      linear-gradient(var(--m), var(--m)) top left / 14px 1px,
-      linear-gradient(var(--m), var(--m)) top left / 1px 14px,
-      linear-gradient(var(--m), var(--m)) top right / 14px 1px,
-      linear-gradient(var(--m), var(--m)) top right / 1px 14px,
-      linear-gradient(var(--m), var(--m)) bottom left / 14px 1px,
-      linear-gradient(var(--m), var(--m)) bottom left / 1px 14px,
-      linear-gradient(var(--m), var(--m)) bottom right / 14px 1px,
-      linear-gradient(var(--m), var(--m)) bottom right / 1px 14px;
-    background-repeat: no-repeat;
   }
 
-  .frame {
-    display: block;
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: #fff;
-  }
-
-  .frame :global(img) {
+  .media :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
-  .showcase:hover .frame :global(img) {
+  .showcase:hover .media :global(img) {
     transform: scale(1.035);
   }
 
-  .fig {
-    border-radius: 999px;
-    position: absolute;
-    left: 1.6rem;
-    bottom: 1.6rem;
-    z-index: 2;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.6875rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    background: var(--c-ink);
-    color: var(--c-paper);
-  }
-
   .play {
-    border-radius: 999px;
     position: absolute;
-    right: 1.6rem;
-    bottom: 1.6rem;
-    z-index: 2;
+    right: 1rem;
+    bottom: 1rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.3rem 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem 0.35rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
     background: var(--c-accent);
     color: var(--c-accent-ink);
   }
@@ -166,34 +118,26 @@ const meta = [
     background-size: 100% 2px;
   }
 
-  .meta {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: 1.5rem;
-    border-top: 1px solid var(--c-ink);
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
   }
 
-  .meta > div {
-    padding: 0.65rem 0.75rem 0.7rem 0;
-    border-bottom: 1px solid var(--c-line);
-    min-width: 0;
-  }
-
-  .meta dt {
+  .facts li {
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--c-line);
+    border-radius: 999px;
     font-size: 0.8125rem;
-    color: var(--c-ink-3);
-  }
-
-  .meta dd {
-    margin-top: 0.2rem;
-    font-size: 0.95rem;
-    font-weight: 500;
+    color: var(--c-ink-2);
+    background: var(--c-sheet);
   }
 
   @media (min-width: 64rem) {
     .showcase {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: 3.5rem;
+      gap: 4rem;
     }
 
     .showcase.reverse .media {

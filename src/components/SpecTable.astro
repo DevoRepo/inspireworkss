@@ -28,7 +28,7 @@ const hasLinks = rows.some((r) => r.links?.length);
 
 <div class="spec-wrap">
   <table class:list={['spec', { 'has-links': hasLinks }]}>
-    <caption class:list={[hideCaption ? 'sr-only' : 'eyebrow']}>{caption}</caption>
+    <caption class:list={[hideCaption ? 'sr-only' : 'heading-md']}>{caption}</caption>
     <thead>
       <tr>
         <th scope="col">{itemLabel}</th>
@@ -45,8 +45,11 @@ const hasLinks = rows.some((r) => r.links?.length);
               {row.note && <span class="note-sm">{row.note}</span>}
               {row.links?.length ? (
                 <span class="links-sm">
-                  {row.links.map((l) => (
-                    <a href={url(l.href)}>{l.label}</a>
+                  {row.links.map((l, i) => (
+                    <>
+                      {i > 0 && ', '}
+                      <a href={url(l.href)}>{l.label}</a>
+                    </>
                   ))}
                 </span>
               ) : null}
@@ -55,8 +58,11 @@ const hasLinks = rows.some((r) => r.links?.length);
             {hasLinks && (
               <td class="col-wide">
                 <span class="links">
-                  {row.links?.map((l) => (
-                    <a href={url(l.href)}>{l.label}</a>
+                  {row.links?.map((l, i) => (
+                    <>
+                      {i > 0 && ', '}
+                      <a href={url(l.href)}>{l.label}</a>
+                    </>
                   ))}
                 </span>
               </td>
@@ -82,7 +88,7 @@ const hasLinks = rows.some((r) => r.links?.length);
 
   caption {
     text-align: left;
-    padding-bottom: 0.75rem;
+    padding-bottom: 1rem;
   }
 
   thead th {
@@ -125,17 +131,15 @@ const hasLinks = rows.some((r) => r.links?.length);
 
   .links,
   .links-sm {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.35rem;
+    display: block;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--c-ink-3);
   }
 
   .links a,
   .links-sm a {
-    font-size: 0.9375rem;
     font-weight: 450;
-    line-height: 1.4;
     color: var(--c-ink-2);
     text-decoration: underline;
     text-decoration-color: var(--c-line-strong);

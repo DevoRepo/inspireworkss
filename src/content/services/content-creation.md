@@ -1,7 +1,7 @@
 ---
 title: Content Creation
 order: 6
-summary: Engineering tutorials, courses and explainers that simplify complex mechanical concepts — the same approach behind the INSPIREWORKSS YouTube channel and blog.
+summary: Engineering tutorials, courses and explainers that simplify complex mechanical concepts, in the same style as the INSPIREWORKSS YouTube channel and blog.
 audience:
   - Learners who want engineering explained clearly
   - Educators and platforms looking for technical tutorials and courses

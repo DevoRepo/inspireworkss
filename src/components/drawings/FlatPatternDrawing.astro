@@ -1,0 +1,91 @@
+---
+/**
+ * Sheet-metal flat pattern of an open box: base and four flanges, bend lines, R4 corner reliefs
+ * and perforated front and rear panels. Dimensions are the drawing's own geometry (1 unit = 1 mm).
+ */
+const f = (n: number) => n.toFixed(1);
+
+const bx0 = 190; // base
+const by0 = 130;
+const bW = 220;
+const bD = 140;
+const fl = 60; // flange height
+const rr = 4; // relief radius
+const bx1 = bx0 + bW;
+const by1 = by0 + bD;
+
+// Outline with a circular relief at each inner corner (arc swept through the material).
+const outline = [
+  `M${bx0} ${by0 - fl}`,
+  `H${bx1}`,
+  `V${by0 - rr}`,
+  `A${rr} ${rr} 0 1 0 ${bx1 + rr} ${by0}`,
+  `H${bx1 + fl}`,
+  `V${by1}`,
+  `H${bx1 + rr}`,
+  `A${rr} ${rr} 0 1 0 ${bx1} ${by1 + rr}`,
+  `V${by1 + fl}`,
+  `H${bx0}`,
+  `V${by1 + rr}`,
+  `A${rr} ${rr} 0 1 0 ${bx0 - rr} ${by1}`,
+  `H${bx0 - fl}`,
+  `V${by0}`,
+  `H${bx0 - rr}`,
+  `A${rr} ${rr} 0 1 0 ${bx0} ${by0 - rr}`,
+  'Z',
+].join(' ');
+
+// Staggered perforations on the rear (top) and front (bottom) panels.
+const perf = (top: number) =>
+  Array.from({ length: 5 }, (_, row) =>
+    Array.from({ length: row % 2 ? 16 : 17 }, (_, col) => ({ x: bx0 + 16 + col * 11.75 + (row % 2 ? 5.9 : 0), y: top + 12 + row * 9 })),
+  ).flat();
+const dots = [...perf(by0 - fl), ...perf(by1)];
+---
+
+<svg class="drawing" viewBox="0 0 600 420" role="img" aria-labelledby="flat-title">
+  <title id="flat-title">Sheet-metal flat pattern of an open box with bend lines, corner reliefs and perforated panels</title>
+  <defs>
+    <marker id="dwg-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 1.5 10 5 0 8.5z" class="arrowhead"></path>
+    </marker>
+  </defs>
+
+  <!-- Outline -->
+  <path d={outline} pathLength="1" class="obj draw" style="--d: 0.05s"></path>
+
+  <!-- Bend lines -->
+  <g class="later" style="--d: 0.9s">
+    <line x1={bx0 + rr} y1={by0} x2={bx1 - rr} y2={by0} class="bend"></line>
+    <line x1={bx0 + rr} y1={by1} x2={bx1 - rr} y2={by1} class="bend"></line>
+    <line x1={bx0} y1={by0 + rr} x2={bx0} y2={by1 - rr} class="bend"></line>
+    <line x1={bx1} y1={by0 + rr} x2={bx1} y2={by1 - rr} class="bend"></line>
+  </g>
+
+  <!-- Perforations -->
+  <g class="later" style="--d: 1s">
+    {dots.map((d) => <circle cx={f(d.x)} cy={f(d.y)} r="2.3" class="thin" style="stroke: var(--c-ink-3)" />)}
+  </g>
+
+  <!-- Dimensions and notes -->
+  <g class="later" style="--d: 1.25s">
+    <path d={`M${bx0 - fl} ${by0 - 4}V40M${bx1 + fl} ${by0 - 4}V40`} class="thin"></path>
+    <line x1={bx0 - fl} y1="48" x2={bx1 + fl} y2="48" class="thin" marker-start="url(#dwg-arrow)" marker-end="url(#dwg-arrow)"></line>
+    <text x={(bx0 + bx1) / 2} y="52" text-anchor="middle">340</text>
+
+    <path d={`M${bx0 - 4} ${by0 - fl}H96M${bx0 - 4} ${by1 + fl}H96`} class="thin"></path>
+    <line x1="104" y1={by0 - fl} x2="104" y2={by1 + fl} class="thin" marker-start="url(#dwg-arrow)" marker-end="url(#dwg-arrow)"></line>
+    <text x="104" y={(by0 + by1) / 2} text-anchor="middle" dy="4" transform={`rotate(-90 104 ${(by0 + by1) / 2})`}>260</text>
+
+    <path d={`M${bx1 + fl + 4} ${by1}H508M${bx1 + 4} ${by1 + fl}H508`} class="thin"></path>
+    <line x1="500" y1={by1} x2="500" y2={by1 + fl} class="thin" marker-start="url(#dwg-arrow)" marker-end="url(#dwg-arrow)"></line>
+    <text x="500" y={by1 + fl / 2} text-anchor="middle" dy="4" transform={`rotate(-90 500 ${by1 + fl / 2})`}>60</text>
+
+    <polyline points={`${bx1 + 2.8},${by0 - 2.8} 440,96 520,96`} class="thin" marker-start="url(#dwg-arrow)"></polyline>
+    <text x="443" y="90">4× R4 RELIEF</text>
+
+    <line x1="404" y1="400" x2="440" y2="400" class="bend"></line>
+    <text x="448" y="404" class="t-small">BEND LINE · UP 90°</text>
+    <text x="24" y="404" class="t-small">FLAT PATTERN · MM</text>
+  </g>
+</svg>

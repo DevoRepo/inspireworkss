@@ -1,7 +1,7 @@
 ---
 title: Freelance & Remote Engineering Support
 order: 7
-summary: Flexible, remote engineering capacity for design, drafting, piping and documentation work — for teams that need reliable support without adding headcount.
+summary: Flexible, remote engineering support for design, drafting, piping and documentation work, for teams that need extra capacity without adding headcount.
 audience:
   - Engineering teams with peaks in workload
   - Small companies without an in-house mechanical engineer

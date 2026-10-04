@@ -1,5 +1,5 @@
 ---
-/** Numbered pagination styled as a drawing sheet index ("Sheet 2 of 4"). */
+/** Numbered pagination ("Page 2 of 4") with previous / next links. */
 interface Props {
   current: number;
   last: number;
@@ -22,7 +22,7 @@ function pageList(): (number | null)[] {
 {
   last > 1 && (
     <nav aria-label={label} class="pager">
-      <p class="eyebrow">
+      <p class="label">
         Page {current} of {last}
       </p>
       <div class="flex flex-wrap items-center gap-2">

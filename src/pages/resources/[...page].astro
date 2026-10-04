@@ -10,7 +10,7 @@ import Icon from '../../components/Icon.astro';
 import { site } from '../../config/site';
 import youtubeConfig from '../../config/youtube.json';
 import youtubeMeta from '../../content/youtube-meta.json';
-import { formatDate, getYouTubeVideos, pad, youtubeUrl, type YouTubeVideo } from '../../lib/content';
+import { formatDate, getYouTubeVideos, youtubeUrl, type YouTubeVideo } from '../../lib/content';
 import { url } from '../../lib/url';
 
 /** Long-form videos only (Shorts are excluded when fetched), most viewed first, paginated. */
@@ -35,20 +35,6 @@ const updated = youtubeMeta.fetchedAt ? formatDate(new Date(youtubeMeta.fetchedA
 const trail = [{ name: 'Resources', href: '/resources/' }];
 const suffix = current > 1 ? ` — Page ${current}` : '';
 
-const channels = [
-  {
-    ...site.social.youtube,
-    icon: 'youtube' as const,
-    title: 'INSPIREWORKSS on YouTube',
-    text: 'SolidWorks builds, modelling techniques and engineering-drawing exercises.',
-  },
-  {
-    ...site.social.blog,
-    icon: 'blog' as const,
-    title: 'The blog',
-    text: 'Written engineering notes and articles by Avani Jangam.',
-  },
-];
 
 const schema = videos.length
   ? [
@@ -70,8 +56,8 @@ const schema = videos.length
 <BaseLayout
   title={`Engineering Tutorials & Resources${suffix}`}
   description={current > 1
-    ? `More SolidWorks and mechanical engineering tutorials from INSPIREWORKSS, ranked by views — page ${current} of ${last}.`
-    : 'Free mechanical engineering tutorials from INSPIREWORKSS — SolidWorks modelling builds, design techniques and engineering-drawing exercises, ranked by views and updated automatically.'}
+    ? `More SolidWorks and mechanical engineering tutorials from INSPIREWORKSS, ranked by views. Page ${current} of ${last}.`
+    : 'Free mechanical engineering tutorials from INSPIREWORKSS: SolidWorks modelling builds, design techniques and engineering-drawing exercises, ranked by views and updated automatically.'}
   trail={trail}
   schema={schema}
 >
@@ -83,16 +69,35 @@ const schema = videos.length
   }
 
   <TitleBlock
-    eyebrow="Learn with INSPIREWORKSS"
-    title="Resources"
-    lead="Complex engineering concepts, simplified — with a focus on both the how and the why."
+    eyebrow="Resources"
+    title="Engineering tutorials"
+    lead="Free long-form tutorials from the INSPIREWORKSS YouTube channel. Complex concepts, explained with a focus on both the how and the why."
     meta={[
-      { label: 'Page', value: `${pad(current)} of ${pad(last)}` },
-      { label: 'Videos', value: `${pad(total)} long-form` },
-      { label: 'Order', value: 'Most watched first' },
+      { label: 'Tutorials', value: String(total) },
+      { label: 'Sorted by', value: 'Most watched' },
+      ...(updated ? [{ label: 'Updated', value: updated }] : []),
     ]}
     trail={trail}
-  />
+  >
+    <div slot="aside" class="card channel-card">
+      <span class="channel-icon" aria-hidden="true"><Icon name="youtube" size={22} /></span>
+      <h2 class="heading-md mt-5">INSPIREWORKSS on YouTube</h2>
+      <p class="mt-2 text-ink-2">SolidWorks builds, modelling techniques and engineering-drawing exercises.</p>
+      <a href={site.social.youtube.url} class="btn btn-primary mt-6" target="_blank" rel="me noopener">
+        Visit the channel <Icon name="arrow-up-right" />
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+      <a href={site.social.blog.url} class="blog-row" target="_blank" rel="me noopener">
+        <Icon name="blog" size={20} />
+        <span class="flex-1">
+          <span class="block font-semibold">The blog</span>
+          <span class="block text-sm text-ink-3">Written engineering notes by {site.owner}</span>
+        </span>
+        <Icon name="arrow-up-right" size={18} />
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    </div>
+  </TitleBlock>
 
   <section class="py-16 sm:py-20 lg:py-24" aria-labelledby="videos-title">
     <div class="container-x">
@@ -100,16 +105,16 @@ const schema = videos.length
         <SectionHeading
           eyebrow="YouTube"
           id="videos-title"
-          title="Tutorials, most watched first."
-          intro="Long-form tutorials from the INSPIREWORKSS channel, ranked by views and updated automatically."
+          title="Most watched first"
+          intro="Ranked by views and refreshed automatically from the channel. Shorts are not included."
         />
-        {updated && <p class="eyebrow shrink-0" data-reveal>Updated {updated}</p>}
+        {last > 1 && <p class="label shrink-0" data-reveal>Page {current} of {last}</p>}
       </div>
 
       {
         videos.length > 0 ? (
           <>
-            <div class="mt-10 border-t border-ink">
+            <div class="mt-10 border-t border-line-strong">
               {videos.map((v, i) => (
                 <VideoListItem video={v} rank={(page?.start ?? 0) + i + 1} eager={i === 0} />
               ))}
@@ -117,7 +122,7 @@ const schema = videos.length
             <Pagination current={current} last={last} href={pageHref} label="Tutorial pages" />
           </>
         ) : (
-          <div class="mt-10 border-t border-ink py-12" data-reveal>
+          <div class="mt-10 border-t border-line-strong py-12" data-reveal>
             <p class="lead max-w-xl">New tutorials are on their way. In the meantime, the full library is on the YouTube channel.</p>
             <a href={site.social.youtube.url} class="btn btn-primary mt-8" target="_blank" rel="noopener">
               Visit the channel <Icon name="arrow-up-right" />
@@ -129,44 +134,39 @@ const schema = videos.length
     </div>
   </section>
 
-  <section class="grid-paper border-y border-line py-20 sm:py-24" aria-labelledby="channels-title">
-    <div class="container-x">
-      <SectionHeading eyebrow="Follow along" id="channels-title" title="Keep learning." />
-      <ul class="mt-12 grid gap-px border border-line bg-line md:grid-cols-2">
-        {
-          channels.map((c, i) => (
-            <li class="bg-sheet" data-reveal style={`--reveal-i: ${i}`}>
-              <a href={c.url} target="_blank" rel="me noopener" class="channel">
-                <Icon name={c.icon} size={28} />
-                <span class="heading-lg mt-6 block">{c.title}</span>
-                <span class="mt-2 block text-ink-2">{c.text}</span>
-                <span class="link-arrow mt-6">
-                  {c.handle} <Icon name="arrow-up-right" />
-                </span>
-                <span class="sr-only">(opens in a new tab)</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
-  <CTABand title="Want a tutorial or training for your team?" subject="Training / content enquiry — INSPIREWORKSS" />
+  <CTABand
+    title="Want a tutorial or training for your team?"
+    text="Send a short email about the software, the topics you need and who the training is for."
+    subject="Training or content enquiry: INSPIREWORKSS"
+  />
 </BaseLayout>
 
 <style>
-  .channel {
-    display: block;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    transition: background-color 0.25s ease;
+  .channel-card {
+    padding: 1.75rem;
   }
 
-  .channel:hover {
-    background: var(--c-paper);
+  .channel-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.875rem;
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
   }
 
-  .channel:hover .heading-lg {
+  .blog-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--c-line);
+    transition: color 0.2s ease;
+  }
+
+  .blog-row:hover {
     color: var(--c-accent);
   }
 </style>

@@ -4,7 +4,6 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TitleBlock from '../components/TitleBlock.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import DimensionLine from '../components/DimensionLine.astro';
 import CTABand from '../components/CTABand.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
@@ -44,73 +43,97 @@ const trail = [{ name: 'About', href: '/about/' }];
 
 <BaseLayout
   title={`About ${site.owner}`}
-  description={`Meet ${site.owner}, the engineer behind INSPIREWORKSS — mechanical, piping and marine engineering, CAD/CAE expertise, codes & standards, and a passion for teaching the how and the why.`}
+  description={`Meet ${site.owner}, the engineer behind INSPIREWORKSS: mechanical, piping and marine engineering, CAD/CAE software, codes and standards, and a focus on teaching the how and the why.`}
   type="profile"
   trail={trail}
 >
   <TitleBlock
-    eyebrow="The engineer behind INSPIREWORKSS"
+    eyebrow="About"
     title={site.owner}
-    lead="An engineer on a never-ending journey of exploring the world of mechanical, piping and marine engineering."
+    lead="An engineer on a never-ending journey of exploring mechanical, piping and marine engineering, and the person behind INSPIREWORKSS."
     meta={[
       { label: 'Disciplines', value: site.disciplines.join(' · ') },
-      { label: 'Practice', value: site.name },
+      { label: 'Software', value: `${tools.filter(isEngineeringTool).length} CAD/CAE packages, Python` },
+      { label: 'Standards', value: 'ASME · API · ISO · GD&T' },
+      { label: 'Teaching', value: 'YouTube · Blog · Courses' },
     ]}
     trail={trail}
-  />
+  >
+    <figure slot="aside" class="plate">
+      <Image
+        src={logo}
+        alt="The INSPIREWORKSS IW monogram: an isometric hexagon in brushed steel and red with drafting construction lines."
+        widths={[400, 640, 900]}
+        sizes="(min-width: 64rem) 34vw, 90vw"
+        loading="eager"
+      />
+    </figure>
+  </TitleBlock>
 
   <!-- Profile -->
   <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="profile-title">
-    <div class="container-x grid gap-14 lg:grid-cols-12">
+    <div class="container-x grid gap-14 lg:grid-cols-12 lg:gap-12">
       <div class="lg:col-span-7">
-        <SectionHeading eyebrow="Profile" id="profile-title" title="Complex challenges, practical solutions." />
+        <SectionHeading eyebrow="Profile" id="profile-title" title="Design, analysis and teaching" />
         <div class="prose-body mt-8 max-w-2xl text-lg" data-reveal>
           <p>
-            For {site.owner}, every project is an opportunity to translate complex engineering challenges into practical,
-            optimised solutions.
+            {site.owner} works across mechanical, piping and marine engineering, and treats every project as a chance to turn a
+            complex engineering challenge into a practical, optimised solution.
           </p>
           <p>
-            Beyond professional work, {site.owner} is passionate about teaching and sharing engineering knowledge through the{' '}
-            {site.name} website and YouTube channel — simplifying complex concepts with a focus on both the{' '}
-            <strong class="font-semibold text-ink">“how”</strong> and the <strong class="font-semibold text-ink">“why”</strong>.
+            Beyond professional work, {site.owner} teaches and shares engineering knowledge through the {site.name} website and
+            YouTube channel, simplifying complex concepts with a focus on both the <strong class="font-semibold text-ink">how</strong> and
+            the <strong class="font-semibold text-ink">why</strong>.
           </p>
           <p>
-            The expertise spans CAD/CAE tools including AutoCAD, SolidWorks, Creo, NX, Inventor, E3D, Navisworks, Plant 3D, PV
-            Elite and Caesar II — complemented by strong knowledge of design, codes &amp; standards, GD&amp;T and Python-based
-            automation.
+            The toolset covers AutoCAD, SolidWorks, Creo, NX, Inventor, E3D, Navisworks, Plant 3D, PV Elite and Caesar II, backed by
+            strong knowledge of design, codes and standards, GD&amp;T and Python-based automation.
           </p>
-          <p>
-            Driven by curiosity and continuous learning, the aim is simple: to make engineering more accessible, engaging and
-            impactful.
-          </p>
+          <p>Driven by curiosity and continuous learning, the aim is to make engineering more accessible, engaging and impactful.</p>
         </div>
       </div>
 
-      <aside class="lg:col-span-5 lg:pl-6" aria-label="Software" data-reveal>
-        <div class="plate chamfer">
-          <Image src={logo} alt="" widths={[320, 480]} sizes="(min-width: 64rem) 20vw, 50vw" class="plate-img" />
-          <div class="plate-body">
-            <p class="eyebrow plate-eyebrow">Toolset</p>
-            <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
-              {
-                tools.map((t) => (
-                  <li class="flex items-center gap-2 text-[0.95rem]">
-                    <span class="tool-mark" aria-hidden="true" />
-                    {t.data.name}
-                  </li>
-                ))
-              }
-            </ul>
-          </div>
+      <aside class="lg:col-span-5" aria-labelledby="toolset-title" data-reveal>
+        <div class="card toolset">
+          <h2 id="toolset-title" class="heading-md">Toolset</h2>
+          <p class="mt-1 text-sm text-ink-3">CAD, plant design, analysis and automation</p>
+          <ul class="mt-5 grid grid-cols-2 gap-x-5">
+            {
+              tools.map((t) => (
+                <li class="tool-item">
+                  <span class="tool-dot" aria-hidden="true" />
+                  {t.data.name}
+                </li>
+              ))
+            }
+          </ul>
+          <a href={url('/expertise/')} class="link-arrow mt-6">All skills and software <Icon name="arrow" /></a>
         </div>
       </aside>
     </div>
   </section>
 
-  <!-- Domains -->
-  <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="domains-title">
+  <!-- In Avani's words (verbatim from the Notion profile) -->
+  <section aria-label="In Avani Jangam's words">
     <div class="container-x">
-      <SectionHeading eyebrow="Domains" id="domains-title" title="Three engineering worlds, one way of working." />
+      <figure class="surface surface-blush quote" data-reveal>
+        <span class="quote-mark" aria-hidden="true">“</span>
+        <blockquote>
+          <p>For me, every project is an opportunity to translate complex engineering challenges into practical, optimized solutions.</p>
+        </blockquote>
+        <figcaption class="mt-8 flex items-center gap-3">
+          <span class="h-px w-8 bg-accent" aria-hidden="true"></span>
+          <span class="font-semibold">{site.owner}</span>
+          <span class="text-ink-3">· {site.name}</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Domains -->
+  <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="domains-title">
+    <div class="container-x">
+      <SectionHeading eyebrow="Domains" id="domains-title" title="Three engineering domains" />
       <ul class="mt-12 grid gap-5 md:grid-cols-3">
         {
           domains.map((d, i) => (
@@ -126,29 +149,28 @@ const trail = [{ name: 'About', href: '/about/' }];
   </section>
 
   <!-- Teaching -->
-  <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="teaching-title">
+  <section class="border-t border-line py-20 sm:py-24 lg:py-28" aria-labelledby="teaching-title">
     <div class="container-x grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-6">
         <SectionHeading
-          eyebrow="Teaching & mentoring"
+          eyebrow="Teaching and mentoring"
           id="teaching-title"
-          title="Making engineering accessible."
-          intro="Teaching is part of the practice, not a side project — the same rigour that goes into a design goes into explaining it."
+          title="Making engineering accessible"
         />
       </div>
       <div class="lg:col-span-6" data-reveal>
-        <ul class="border-t border-ink">
+        <ul class="border-t border-line-strong">
           {
             teaching.map((t, i) => (
               <li class="flex items-baseline gap-5 border-b border-line py-4 text-lg">
-                <span class="mono text-xs text-ink-3">{pad(i + 1)}</span>
+                <span class="teach-num">{pad(i + 1)}</span>
                 {t}
               </li>
             ))
           }
         </ul>
         <div class="mt-8 flex flex-wrap gap-6">
-          <a href={url('/resources/')} class="link-arrow">Tutorials & resources <Icon name="arrow" /></a>
+          <a href={url('/resources/')} class="link-arrow">Tutorials <Icon name="arrow" /></a>
           <a href={url('/services/corporate-cad-cae-training/')} class="link-arrow">CAD/CAE training <Icon name="arrow" /></a>
         </div>
       </div>
@@ -159,21 +181,21 @@ const trail = [{ name: 'About', href: '/about/' }];
     credentials.length > 0 && (
       <section class="border-t border-line py-20 sm:py-24 lg:py-28" aria-labelledby="record-title">
         <div class="container-x">
-          <SectionHeading eyebrow="Record" id="record-title" title="Experience & qualifications." />
+          <SectionHeading eyebrow="Record" id="record-title" title="Experience and qualifications" />
           <div class="mt-12 grid gap-12 lg:grid-cols-3">
             {credentialGroups.map((group) => {
               const items = credentials.filter((c) => c.data.type === group.type);
               return (
                 items.length > 0 && (
                   <div data-reveal>
-                    <h3 class="eyebrow">{group.label}</h3>
-                    <ul class="mt-4 border-t border-ink">
+                    <h3 class="heading-md">{group.label}</h3>
+                    <ul class="mt-4 border-t border-line-strong">
                       {items.map((c) => (
                         <li class="border-b border-line py-4">
                           <p class="heading-md">{c.data.title}</p>
                           <p class="mt-1 text-ink-2">
                             {c.data.organisation}
-                            {c.data.period && <span class="mono ml-2 text-xs text-ink-3">{c.data.period}</span>}
+                            {c.data.period && <span class="ml-2 text-sm text-ink-3">{c.data.period}</span>}
                           </p>
                           {c.data.description && <p class="mt-2 text-[0.95rem] text-ink-2">{c.data.description}</p>}
                         </li>
@@ -189,20 +211,19 @@ const trail = [{ name: 'About', href: '/about/' }];
     )
   }
 
-  <!-- Off the drawing board + links -->
+  <!-- Outside engineering + links -->
   <section class="border-t border-line bg-sheet py-20 sm:py-24" aria-labelledby="off-title">
     <div class="container-x grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-6" data-reveal>
         <p class="eyebrow">Off the drawing board</p>
-        <h2 id="off-title" class="heading-xl mt-3">Outside engineering</h2>
+        <h2 id="off-title" class="heading-xl mt-4">Outside engineering</h2>
         <ul class="mt-8 flex flex-wrap gap-2">
           {hobbies.map((h) => <li class="chip !text-sm">{h}</li>)}
         </ul>
-        <DimensionLine label="Curiosity · continuous learning" class="mt-10 max-w-md" style="--dim-bg: var(--c-sheet)" />
       </div>
       <div class="lg:col-span-6" data-reveal>
-        <p class="eyebrow">Find {site.owner} online</p>
-        <ul class="mt-6 border-t border-ink">
+        <h2 class="heading-md">Find {site.owner} online</h2>
+        <ul class="mt-5 border-t border-line-strong">
           {
             links.map((l) => (
               <li class="border-b border-line">
@@ -223,40 +244,72 @@ const trail = [{ name: 'About', href: '/about/' }];
     </div>
   </section>
 
-  <CTABand title="Work with INSPIREWORKSS." />
+  <CTABand title="Work with INSPIREWORKSS" />
 </BaseLayout>
 
 <style>
   .plate {
-    --cut: 22px;
-    position: relative;
+    max-width: 26rem;
+    margin-inline: auto;
+    overflow: hidden;
+    aspect-ratio: 1;
+    border-radius: var(--radius-block);
     background: var(--c-plate);
-    color: #eceae4;
+    box-shadow: 0 30px 60px -36px rgb(17 18 20 / 0.55);
+  }
+
+  .plate :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .toolset {
+    padding: 1.75rem;
+  }
+
+  .tool-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-block: 0.55rem;
+    border-bottom: 1px solid var(--c-line);
+    font-size: 0.95rem;
+  }
+
+  .tool-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    flex: none;
+    border-radius: 999px;
+    background: var(--c-accent);
+  }
+
+  .quote {
+    position: relative;
     overflow: hidden;
   }
 
-  .plate :global(.plate-img) {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    object-position: center 45%;
+  .quote-mark {
+    position: absolute;
+    top: -0.15em;
+    right: 0.1em;
+    font-size: clamp(9rem, 6rem + 12vw, 18rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--c-accent);
+    opacity: 0.14;
+    pointer-events: none;
   }
 
-  .plate-body {
-    padding: 1.5rem 1.75rem 1.75rem;
-    border-top: 1px solid #2a2f35;
-  }
-
-  .plate-eyebrow {
-    color: #9aa1a8;
-  }
-
-  .tool-mark {
-    width: 0.5rem;
-    height: 0.5rem;
-    flex: none;
-    background: #ff4b3e;
-    transform: rotate(45deg);
+  .quote blockquote p {
+    position: relative;
+    max-width: 52rem;
+    font-size: clamp(1.6rem, 1.1rem + 2.1vw, 2.9rem);
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
   }
 
   .domain-rule {
@@ -264,6 +317,13 @@ const trail = [{ name: 'About', href: '/about/' }];
     width: 2rem;
     height: 2px;
     background: var(--c-accent);
+  }
+
+  .teach-num {
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--c-ink-3);
   }
 
   .online-link {

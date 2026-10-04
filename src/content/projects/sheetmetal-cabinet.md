@@ -1,7 +1,7 @@
 ---
 title: Sheetmetal Cabinet
 order: 1
-summary: A sheet-metal enclosure modelled in SolidWorks — a folded body with perforated front and rear panels, corner reliefs and flanged edges designed for fabrication from flat stock.
+summary: "A sheet-metal enclosure modelled in SolidWorks: a folded body with perforated front and rear panels, corner reliefs and flanged edges, designed to be made from flat stock."
 discipline: Mechanical Design
 category: Sheet metal
 format: Design model

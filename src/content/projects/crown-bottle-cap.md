@@ -1,7 +1,7 @@
 ---
 title: Crown Bottle Cap
 order: 4
-summary: A crown-style bottle cap created in SolidWorks with only a handful of tools — a domed top and a crimped, fluted skirt.
+summary: "A crown-style bottle cap created in SolidWorks with only a handful of tools: a domed top and a crimped, fluted skirt."
 discipline: Product Design
 category: Formed metal part
 format: YouTube build

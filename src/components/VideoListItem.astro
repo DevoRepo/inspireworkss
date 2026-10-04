@@ -1,7 +1,7 @@
 ---
 import VideoFacade from './VideoFacade.astro';
 import Icon from './Icon.astro';
-import { formatDate, formatDuration, formatViews, pad, youtubeUrl, type YouTubeVideo } from '../lib/content';
+import { formatDate, formatDuration, formatViews, youtubeUrl, type YouTubeVideo } from '../lib/content';
 
 interface Props {
   video: YouTubeVideo;
@@ -12,11 +12,7 @@ interface Props {
 
 const { video, rank, eager = false } = Astro.props;
 const { data } = video;
-const stats = [
-  { label: 'Views', value: formatViews(data.views) },
-  { label: 'Published', value: formatDate(data.publishedAt) },
-  ...(data.duration ? [{ label: 'Length', value: formatDuration(data.duration) }] : []),
-];
+const stats = [formatViews(data.views), formatDate(data.publishedAt), ...(data.duration ? [formatDuration(data.duration)] : [])];
 ---
 
 <article class="row" data-reveal>
@@ -25,32 +21,27 @@ const stats = [
   </div>
 
   <div class="info">
-    <p class="flex flex-wrap items-center gap-3">
-      <span class="rank mono">No. {pad(rank)}</span>
-      {rank === 1 && <span class="badge mono">Most watched</span>}
+    <p class="flex flex-wrap items-center gap-2.5">
+      <span class="rank">#{rank}</span>
+      {rank === 1 && <span class="badge">Most watched</span>}
     </p>
-    <h3 class="heading-lg mt-3">{data.title}</h3>
-
-    <dl class="stats">
-      {
-        stats.map((s) => (
-          <div>
-            <dt>{s.label}</dt>
-            <dd>{s.value}</dd>
-          </div>
-        ))
-      }
-    </dl>
+    <h3 class="heading-lg mt-2">{data.title}</h3>
+    <p class="stats">
+      {stats.map((s) => <span>{s}</span>)}
+    </p>
 
     {data.summary && <p class="mt-4 text-ink-2">{data.summary}</p>}
 
     {
       data.topics.length > 0 && (
-        <div class="mt-5">
-          <p class="eyebrow">What you'll learn</p>
+        <div class="mt-6">
+          <p class="label">What you'll learn</p>
           <ul class="topics mt-3">
             {data.topics.map((t) => (
-              <li>{t}</li>
+              <li>
+                <Icon name="check" size={16} />
+                {t}
+              </li>
             ))}
           </ul>
         </div>
@@ -73,18 +64,17 @@ const stats = [
   }
 
   .rank {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
     color: var(--c-accent);
   }
 
   .badge {
+    padding: 0.2rem 0.65rem;
     border-radius: 999px;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.6875rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 0.8125rem;
+    font-weight: 500;
     background: var(--c-ink);
     color: var(--c-paper);
   }
@@ -92,41 +82,33 @@ const stats = [
   .stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1.75rem;
-    margin-top: 1rem;
-    padding-block: 0.75rem;
-    border-block: 1px solid var(--c-line);
-  }
-
-  .stats dt {
-    font-size: 0.8125rem;
+    gap: 0.25rem 0;
+    margin-top: 0.6rem;
+    font-size: 0.9375rem;
     color: var(--c-ink-3);
   }
 
-  .stats dd {
-    margin-top: 0.15rem;
-    font-weight: 500;
+  .stats span + span::before {
+    content: '·';
+    margin-inline: 0.55rem;
   }
 
   .topics {
     display: grid;
-    gap: 0.4rem 1.5rem;
+    gap: 0.45rem 1.5rem;
     font-size: 0.95rem;
     color: var(--c-ink-2);
   }
 
   .topics li {
     display: flex;
-    gap: 0.6rem;
+    gap: 0.55rem;
   }
 
-  .topics li::before {
-    content: '';
+  .topics li :global(svg) {
     flex: none;
-    width: 0.75rem;
-    height: 2px;
-    margin-top: 0.7em;
-    background: var(--c-accent);
+    margin-top: 0.2em;
+    color: var(--c-accent);
   }
 
   @media (min-width: 40rem) {

@@ -1,7 +1,7 @@
 ---
 title: Engineering Design & CAD
 order: 1
-summary: Mechanical, product and machine design taken from concept to fully detailed 3D models and engineering drawings — modelled to be manufactured, not just visualised.
+summary: Mechanical, product and machine design, taken from concept to fully detailed 3D models and engineering drawings that are ready for manufacturing.
 audience:
   - Product teams and start-ups developing a new mechanical product
   - Manufacturers who need production-ready models and drawings

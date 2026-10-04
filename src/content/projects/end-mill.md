@@ -1,7 +1,7 @@
 ---
 title: Realistic End Mill
 order: 3
-summary: A solid end mill modelled in SolidWorks — a cylindrical shank flowing into helical cutting flutes, built to look and read like a real cutting tool.
+summary: A solid end mill modelled in SolidWorks, with a cylindrical shank flowing into helical cutting flutes, built to look and read like a real cutting tool.
 discipline: Mechanical Design
 category: Cutting tool
 format: YouTube build

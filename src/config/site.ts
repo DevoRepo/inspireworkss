@@ -6,9 +6,9 @@ export const site = {
   name: 'INSPIREWORKSS',
   owner: 'Avani Jangam',
   locale: 'en_US',
-  tagline: 'Mechanical, piping & plant engineering — with the how and the why.',
+  tagline: 'Mechanical, piping and plant engineering, with the how and the why.',
   description:
-    'INSPIREWORKSS is the mechanical engineering practice of Avani Jangam — mechanical design & CAD, plant design & piping engineering, pressure vessel and pipe stress analysis, and CAD/CAE training.',
+    'INSPIREWORKSS is the mechanical engineering practice of Avani Jangam: mechanical design and CAD, plant design and piping engineering, pressure vessel and pipe stress analysis, and CAD/CAE training.',
   email: 'inspireeworkss@gmail.com',
   disciplines: ['Mechanical', 'Piping', 'Marine'],
   social: {
