@@ -5,13 +5,15 @@ import SectionHeading from '../components/SectionHeading.astro';
 import SpecTable from '../components/SpecTable.astro';
 import CTABand from '../components/CTABand.astro';
 import { expertiseCategories } from '../content.config';
-import { getSkills, getTools, groupBy, pad } from '../lib/content';
+import { getSkillApplications, getSkills, getTools, groupBy, isEngineeringTool, pad } from '../lib/content';
 
 const skills = await getSkills();
 const byCategory = expertiseCategories.map((c) => [c, skills.filter((s) => s.data.category === c)] as const);
 const tools = await getTools();
 const toolGroups = groupBy(tools, (t) => t.data.group);
-const advanced = skills.filter((s) => s.data.level === 'Advanced').length;
+const applications = await getSkillApplications();
+const engineeringTools = tools.filter(isEngineeringTool);
+const appliedIn = (id: string) => (applications.get(id) ?? []).map((svc) => ({ label: svc.data.title, href: `/services/${svc.id}/` }));
 const slug = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 const marks = 'ABCDEFGH';
 const trail = [{ name: 'Expertise', href: '/expertise/' }];
@@ -25,12 +27,12 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
   <TitleBlock
     eyebrow="Specification sheet"
     title="Expertise"
-    lead="Every documented skill, standard and software package — with its working level and what it covers in practice."
+    lead="Every skill, standard and software package behind INSPIREWORKSS — and where each one is put to work."
     sheet="05 / 07"
     meta={[
       { label: 'Title', value: 'Expertise' },
-      { label: 'Skills', value: `${skills.length} · ${advanced} advanced` },
-      { label: 'Software', value: `${pad(tools.length)} packages` },
+      { label: 'Skills', value: `${skills.length} across ${byCategory.length} disciplines` },
+      { label: 'Software', value: `${pad(engineeringTools.length)} CAD / CAE packages` },
     ]}
     trail={trail}
   >
@@ -63,7 +65,7 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
                 caption={`${category} skills`}
                 hideCaption
                 itemLabel="Skill"
-                rows={items.map((s) => ({ name: s.data.skill, level: s.data.level, note: s.data.note }))}
+                rows={items.map((s) => ({ name: s.data.skill, note: s.data.note, links: appliedIn(s.id) }))}
               />
             </div>
           </div>
@@ -79,13 +81,13 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
         eyebrow="Software"
         id="software-title"
         title="CAD, plant design and analysis packages."
-        intro="Rated Expert or Intermediate; productivity tools are listed without a rating."
+        intro="From 2D drafting to pipe stress analysis — the packages behind every deliverable."
       />
       <div class="mt-12 grid gap-10 md:grid-cols-2">
         {
           toolGroups.map(([group, items], i) => (
             <div class="bg-sheet p-6 shadow-[inset_0_0_0_1px_var(--c-line)]" data-reveal style={`--reveal-i: ${i % 2}`}>
-              <SpecTable caption={group} itemLabel="Package" rows={items.map((t) => ({ name: t.data.name, level: t.data.level }))} />
+              <SpecTable caption={group} itemLabel="Package" noteLabel="Used for" rows={items.map((t) => ({ name: t.data.name, note: t.data.use }))} />
             </div>
           ))
         }

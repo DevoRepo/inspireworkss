@@ -323,41 +323,6 @@
     color: var(--c-ink-2);
   }
 
-  /* Level badge used in spec tables. */
-  .level {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .level::before {
-    content: '';
-    width: 0.55rem;
-    height: 0.55rem;
-    border: 1.5px solid currentColor;
-    transform: rotate(45deg);
-  }
-
-  .level[data-level='Expert']::before,
-  .level[data-level='Advanced']::before {
-    background: currentColor;
-  }
-
-  .level[data-level='Expert'],
-  .level[data-level='Advanced'] {
-    color: var(--c-accent);
-  }
-
-  .level[data-level='Intermediate'] {
-    color: var(--c-ink-3);
-  }
-
   .chip {
     display: inline-flex;
     align-items: center;

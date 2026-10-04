@@ -6,10 +6,10 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import ServiceIndex from '../../components/ServiceIndex.astro';
 import CTABand from '../../components/CTABand.astro';
 import { site } from '../../config/site';
-import { getServices, getTools, pad } from '../../lib/content';
+import { getServices, getTools, isEngineeringTool, pad } from '../../lib/content';
 
 const services = await getServices();
-const rated = (await getTools()).filter((t) => t.data.level);
+const engineeringTools = (await getTools()).filter(isEngineeringTool);
 const trail = [{ name: 'Services', href: '/services/' }];
 
 const audiences = [
@@ -41,7 +41,7 @@ const schema = [
   <TitleBlock
     eyebrow="Services"
     title="What INSPIREWORKSS can do"
-    lead={`${services.length} engineering services covering design, piping, analysis, consulting and training — backed by ${rated.length} rated CAD/CAE packages and the ASME, API and ISO standards that govern the work.`}
+    lead={`${services.length} engineering services covering design, piping, analysis, consulting and training — backed by ${engineeringTools.length} professional CAD/CAE packages and the ASME, API and ISO standards that govern the work.`}
     sheet="03 / 07"
     meta={[
       { label: 'Title', value: 'Services' },

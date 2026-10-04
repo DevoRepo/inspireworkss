@@ -1,15 +1,15 @@
 [
-  { "id": "autocad", "name": "AutoCAD", "level": "Expert", "group": "CAD — 2D & 3D" },
-  { "id": "solidworks", "name": "SolidWorks", "level": "Expert", "group": "CAD — 2D & 3D" },
-  { "id": "autodesk-inventor", "name": "Autodesk Inventor", "level": "Expert", "group": "CAD — 2D & 3D" },
-  { "id": "ptc-creo", "name": "PTC Creo", "level": "Intermediate", "group": "CAD — 2D & 3D" },
-  { "id": "siemens-nx", "name": "Siemens NX", "level": "Intermediate", "group": "CAD — 2D & 3D" },
-  { "id": "autocad-plant-3d", "name": "AutoCAD Plant 3D", "level": "Expert", "group": "Plant design & review" },
-  { "id": "navisworks", "name": "Autodesk Navisworks", "level": "Expert", "group": "Plant design & review" },
-  { "id": "aveva-e3d", "name": "AVEVA E3D", "level": "Intermediate", "group": "Plant design & review" },
-  { "id": "pv-elite", "name": "PV Elite", "level": "Expert", "group": "Analysis" },
-  { "id": "caesar-ii", "name": "Caesar II", "level": "Expert", "group": "Analysis" },
-  { "id": "python", "name": "Python", "level": "Intermediate", "group": "Automation & productivity" },
-  { "id": "microsoft-excel", "name": "Microsoft Excel", "group": "Automation & productivity" },
-  { "id": "microsoft-office", "name": "Microsoft Word & PowerPoint", "group": "Automation & productivity" }
+  {"id": "autocad", "name": "AutoCAD", "use": "2D drafting, detailing and engineering drawings", "group": "CAD — 2D & 3D"},
+  {"id": "solidworks", "name": "SolidWorks", "use": "3D parts, assemblies, sheet metal and product design", "group": "CAD — 2D & 3D"},
+  {"id": "autodesk-inventor", "name": "Autodesk Inventor", "use": "3D mechanical design and assembly modelling", "group": "CAD — 2D & 3D"},
+  {"id": "ptc-creo", "name": "PTC Creo", "use": "Parametric modelling of parts and assemblies", "group": "CAD — 2D & 3D"},
+  {"id": "siemens-nx", "name": "Siemens NX", "use": "3D CAD for product design and development", "group": "CAD — 2D & 3D"},
+  {"id": "autocad-plant-3d", "name": "AutoCAD Plant 3D", "use": "Plant layout, piping design and isometrics", "group": "Plant design & review"},
+  {"id": "navisworks", "name": "Autodesk Navisworks", "use": "3D model review, coordination and clash detection", "group": "Plant design & review"},
+  {"id": "aveva-e3d", "name": "AVEVA E3D", "use": "3D plant design, piping and equipment layout", "group": "Plant design & review"},
+  {"id": "pv-elite", "name": "PV Elite", "use": "Pressure vessel design and code calculations", "group": "Analysis"},
+  {"id": "caesar-ii", "name": "Caesar II", "use": "Pipe stress analysis and code compliance", "group": "Analysis"},
+  {"id": "python", "name": "Python", "use": "Engineering workflow automation and scripting", "group": "Automation & productivity"},
+  {"id": "microsoft-excel", "name": "Microsoft Excel", "use": "Engineering calculations and data analysis", "group": "Automation & productivity"},
+  {"id": "microsoft-office", "name": "Microsoft Word & PowerPoint", "use": "Engineering documentation and training material", "group": "Automation & productivity"}
 ]

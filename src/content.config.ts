@@ -17,17 +17,16 @@ const expertise = defineCollection({
   schema: z.object({
     skill: z.string(),
     category: z.enum(expertiseCategories),
-    level: z.enum(['Advanced', 'Intermediate']),
     note: z.string(),
   }),
 });
 
-/** Software database (Notion → "Tools"). `level` is optional for tools listed without a rating. */
+/** Software toolset (Notion → "Tools"). `use` is the one-line "used for" shown next to each package. */
 const tools = defineCollection({
   loader: file('src/content/tools.json'),
   schema: z.object({
     name: z.string(),
-    level: z.enum(['Expert', 'Intermediate']).optional(),
+    use: z.string(),
     group: z.string(),
   }),
 });

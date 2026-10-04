@@ -79,8 +79,8 @@ Content is kept separate from presentation. Most updates are a single file edit:
 | Brand name, email, social links, navigation | [`src/config/site.ts`](src/config/site.ts) |
 | Services (one Markdown file each) | [`src/content/services/`](src/content/services/) |
 | Projects (one Markdown file each, plus a cover image) | [`src/content/projects/`](src/content/projects/) |
-| Skills (Notion → Expertise) | [`src/content/expertise.json`](src/content/expertise.json) |
-| Software and levels (Notion → Tools) | [`src/content/tools.json`](src/content/tools.json) |
+| Skills | [`src/content/expertise.json`](src/content/expertise.json). There are no levels; the "Applied in" links come from each service's `skills` list |
+| Software, with a "used for" line | [`src/content/tools.json`](src/content/tools.json) |
 | Resources page videos | Automatic, see [YouTube videos on Resources](#youtube-videos-on-resources) |
 | Homepage "Learn" videos | [`src/content/videos.json`](src/content/videos.json), with the thumbnail saved as `src/assets/videos/<id>.jpg` |
 | Experience, education, certifications | [`src/content/credentials.json`](src/content/credentials.json) |

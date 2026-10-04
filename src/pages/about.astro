@@ -8,10 +8,11 @@ import DimensionLine from '../components/DimensionLine.astro';
 import CTABand from '../components/CTABand.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
-import { getCredentials, getTools, pad } from '../lib/content';
+import { getCredentials, getTools, isEngineeringTool, pad } from '../lib/content';
 import logo from '../assets/brand/inspireworkss-logo.png';
 
-const tools = (await getTools()).filter((t) => t.data.level);
+// CAD/CAE packages plus Python (named in the profile); general office tools are left out.
+const tools = (await getTools()).filter((t) => isEngineeringTool(t) || t.id === 'python');
 const credentials = await getCredentials();
 const credentialGroups = [
   { type: 'experience', label: 'Experience' },
@@ -91,22 +92,17 @@ const trail = [{ name: 'About', href: '/about/' }];
         <div class="plate chamfer">
           <Image src={logo} alt="" widths={[320, 480]} sizes="(min-width: 64rem) 20vw, 50vw" class="plate-img" />
           <div class="plate-body">
-            <p class="eyebrow plate-eyebrow">Toolset · rated</p>
+            <p class="eyebrow plate-eyebrow">Toolset</p>
             <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
               {
                 tools.map((t) => (
                   <li class="flex items-center gap-2 text-[0.95rem]">
-                    <span class="level-dot" data-level={t.data.level} aria-hidden="true" />
+                    <span class="tool-mark" aria-hidden="true" />
                     {t.data.name}
-                    <span class="sr-only">({t.data.level})</span>
                   </li>
                 ))
               }
             </ul>
-            <p class="mono mt-5 text-[0.7rem] tracking-widest uppercase plate-key">
-              <span class="level-dot inline-block" data-level="Expert"></span> Expert &nbsp;
-              <span class="level-dot inline-block" data-level="Intermediate"></span> Intermediate
-            </p>
           </div>
         </div>
       </aside>
@@ -254,25 +250,16 @@ const trail = [{ name: 'About', href: '/about/' }];
     border-top: 1px solid #2a2f35;
   }
 
-  .plate-eyebrow,
-  .plate-key {
+  .plate-eyebrow {
     color: #9aa1a8;
   }
 
-  .level-dot {
-    width: 0.55rem;
-    height: 0.55rem;
+  .tool-mark {
+    width: 0.5rem;
+    height: 0.5rem;
     flex: none;
-    border: 1.5px solid #ff4b3e;
-    transform: rotate(45deg);
-  }
-
-  .level-dot[data-level='Expert'] {
     background: #ff4b3e;
-  }
-
-  .level-dot[data-level='Intermediate'] {
-    border-color: #9aa1a8;
+    transform: rotate(45deg);
   }
 
   .online-link {

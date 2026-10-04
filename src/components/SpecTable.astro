@@ -1,21 +1,29 @@
 ---
-/** Specification-sheet table: item · level · note. */
+/**
+ * Specification-sheet table: item · description · applied in.
+ * No self-rated levels — evidence of use (linked services) is shown instead.
+ */
+import { url } from '../lib/url';
+
 interface Row {
   name: string;
-  level?: string;
   note?: string;
+  /** Where the item is applied, e.g. services that use the skill. */
+  links?: { label: string; href: string }[];
 }
 
 interface Props {
   caption: string;
   rows: Row[];
   itemLabel?: string;
+  noteLabel?: string;
   /** Visually hide the caption when a visible heading already describes the table. */
   hideCaption?: boolean;
 }
 
-const { caption, rows, itemLabel = 'Item', hideCaption = false } = Astro.props;
+const { caption, rows, itemLabel = 'Item', noteLabel = 'Description', hideCaption = false } = Astro.props;
 const hasNotes = rows.some((r) => r.note);
+const hasLinks = rows.some((r) => r.links?.length);
 ---
 
 <div class="spec-wrap">
@@ -25,8 +33,8 @@ const hasNotes = rows.some((r) => r.note);
       <tr>
         <th scope="col" class="w-[3rem]">No.</th>
         <th scope="col">{itemLabel}</th>
-        <th scope="col">Level</th>
-        {hasNotes && <th scope="col" class="hidden md:table-cell">Note</th>}
+        {hasNotes && <th scope="col" class="col-wide">{noteLabel}</th>}
+        {hasLinks && <th scope="col" class="col-wide">Applied in</th>}
       </tr>
     </thead>
     <tbody>
@@ -37,9 +45,24 @@ const hasNotes = rows.some((r) => r.note);
             <th scope="row">
               {row.name}
               {row.note && <span class="note-sm">{row.note}</span>}
+              {row.links?.length ? (
+                <span class="links-sm">
+                  {row.links.map((l) => (
+                    <a href={url(l.href)}>{l.label}</a>
+                  ))}
+                </span>
+              ) : null}
             </th>
-            <td>{row.level ? <span class="level" data-level={row.level}>{row.level}</span> : <span class="text-ink-3">—</span>}</td>
-            {hasNotes && <td class="hidden text-ink-2 md:table-cell">{row.note}</td>}
+            {hasNotes && <td class="col-wide text-ink-2">{row.note}</td>}
+            {hasLinks && (
+              <td class="col-wide">
+                <span class="links">
+                  {row.links?.map((l) => (
+                    <a href={url(l.href)}>{l.label}</a>
+                  ))}
+                </span>
+              </td>
+            )}
           </tr>
         ))
       }
@@ -102,6 +125,30 @@ const hasNotes = rows.some((r) => r.note);
     background: var(--c-sheet);
   }
 
+  .links,
+  .links-sm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+  }
+
+  .links a,
+  .links-sm a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--c-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--c-accent);
+    text-underline-offset: 0.2em;
+    transition: color 0.2s;
+  }
+
+  .links a:hover,
+  .links-sm a:hover {
+    color: var(--c-accent);
+  }
+
+  /* Small screens: description and links stack under the item name. */
   .note-sm {
     display: block;
     margin-top: 0.2rem;
@@ -110,10 +157,23 @@ const hasNotes = rows.some((r) => r.note);
     color: var(--c-ink-2);
   }
 
-  /* Scoped styles sit outside Tailwind's layers, so responsive hiding is done here. */
+  .links-sm {
+    margin-top: 0.4rem;
+  }
+
+  .col-wide {
+    display: none;
+  }
+
+  /* Scoped styles sit outside Tailwind's layers, so responsive switching is done here. */
   @media (min-width: 48rem) {
-    .note-sm {
+    .note-sm,
+    .links-sm {
       display: none;
+    }
+
+    .col-wide {
+      display: table-cell;
     }
   }
 </style>

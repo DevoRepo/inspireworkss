@@ -139,13 +139,13 @@ const schema = [
                 <SpecTable
                   caption="Skills"
                   itemLabel="Skill"
-                  rows={skills.map((s) => ({ name: s.data.skill, level: s.data.level, note: s.data.note }))}
+                  rows={skills.map((s) => ({ name: s.data.skill, note: s.data.note }))}
                 />
               </div>
             )}
             {tools.length > 0 && (
               <div class="lg:col-span-4" data-reveal style="--reveal-i: 1">
-                <SpecTable caption="Software" itemLabel="Package" rows={tools.map((t) => ({ name: t.data.name, level: t.data.level }))} />
+                <SpecTable caption="Software" itemLabel="Package" noteLabel="Used for" rows={tools.map((t) => ({ name: t.data.name, note: t.data.use }))} />
               </div>
             )}
           </div>

@@ -1,6 +1,7 @@
 import { getCollection, getEntries, type CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 import { expertiseCategories } from '../content.config';
+import toolsData from '../content/tools.json';
 
 export type Service = CollectionEntry<'services'>;
 export type Project = CollectionEntry<'projects'>;
@@ -23,23 +24,21 @@ export async function getVideos(): Promise<Video[]> {
   return (await getCollection('videos')).sort(byOrder);
 }
 
-const levelRank: Record<string, number> = { Expert: 0, Advanced: 0, Intermediate: 1 };
-const rank = (level?: string) => (level ? (levelRank[level] ?? 2) : 2);
+const toolOrder = toolsData.map((t) => t.id);
 
 /** Display order for software groups. */
 export const toolGroups = ['CAD — 2D & 3D', 'Plant design & review', 'Analysis', 'Automation & productivity'];
 
-/** Skills ordered by category (as defined in the content config), then level, then name. */
+/** Skills ordered by category (as defined in the content config), then name. */
 export async function getSkills(): Promise<Skill[]> {
   return (await getCollection('expertise')).sort(
     (a, b) =>
       expertiseCategories.indexOf(a.data.category) - expertiseCategories.indexOf(b.data.category) ||
-      rank(a.data.level) - rank(b.data.level) ||
       a.data.skill.localeCompare(b.data.skill),
   );
 }
 
-/** Tools ordered by group, then level (Expert first), then name. */
+/** Tools ordered by group (see toolGroups), keeping the order of src/content/tools.json within a group. */
 /** Long-form channel videos, most viewed first (newest first when views are equal). */
 export async function getYouTubeVideos(): Promise<YouTubeVideo[]> {
   return (await getCollection('youtube')).sort(
@@ -51,10 +50,23 @@ export async function getTools(): Promise<Tool[]> {
   const groupIndex = (g: string) => (toolGroups.includes(g) ? toolGroups.indexOf(g) : toolGroups.length);
   return (await getCollection('tools')).sort(
     (a, b) =>
-      groupIndex(a.data.group) - groupIndex(b.data.group) ||
-      rank(a.data.level) - rank(b.data.level) ||
-      a.data.name.localeCompare(b.data.name),
+      groupIndex(a.data.group) - groupIndex(b.data.group) || toolOrder.indexOf(a.id) - toolOrder.indexOf(b.id),
   );
+}
+
+/** Groups that hold engineering (CAD/CAE) software, as opposed to general productivity tools. */
+export const isEngineeringTool = (t: Tool) => t.data.group !== 'Automation & productivity';
+
+/**
+ * Where each skill is applied: skill id → services that list it (from src/content/services/*.md).
+ * Replaces self-rated levels with evidence of use.
+ */
+export async function getSkillApplications(): Promise<Map<string, Service[]>> {
+  const map = new Map<string, Service[]>();
+  for (const service of await getServices()) {
+    for (const ref of service.data.skills) map.set(ref.id, [...(map.get(ref.id) ?? []), service]);
+  }
+  return map;
 }
 
 export async function getCredentials() {

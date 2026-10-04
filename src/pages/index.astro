@@ -13,7 +13,7 @@ import CTABand from '../components/CTABand.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
 import { expertiseCategories } from '../content.config';
-import { getProjects, getServices, getSkills, getTools, getVideos, groupBy, pad } from '../lib/content';
+import { getProjects, getServices, getSkills, getTools, getVideos, groupBy, isEngineeringTool, pad } from '../lib/content';
 import logo from '../assets/brand/inspireworkss-logo.png';
 
 const services = await getServices();
@@ -21,7 +21,7 @@ const projects = await getProjects();
 const featured = projects.find((p) => p.data.featured) ?? projects[0];
 const others = projects.filter((p) => p.id !== featured.id).slice(0, 4);
 const tools = await getTools();
-const rated = tools.filter((t) => t.data.level);
+const engineeringTools = tools.filter(isEngineeringTool);
 const skills = await getSkills();
 const byCategory = groupBy(skills, (s) => s.data.category);
 const videos = (await getVideos()).slice(0, 3);
@@ -30,7 +30,7 @@ const specs = [
   { label: 'Practice', value: site.name },
   { label: 'Engineer', value: site.owner },
   { label: 'Disciplines', value: site.disciplines.join(' · ') },
-  { label: 'Software', value: `${rated.length} CAD / CAE packages` },
+  { label: 'Software', value: `${engineeringTools.length} CAD / CAE packages` },
   { label: 'Standards', value: 'ASME · API · ISO · GD&T' },
 ];
 
@@ -192,7 +192,7 @@ const principles = [
         eyebrow="Expertise"
         id="expertise-title"
         title="Specification: skills, standards and software."
-        intro={`${skills.length} documented skills in ${expertiseCategories.length} categories, and ${rated.length} rated CAD/CAE packages.`}
+        intro={`${skills.length} skills across ${expertiseCategories.length} disciplines, and ${engineeringTools.length} professional CAD/CAE packages.`}
       />
 
       <div class="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12">
@@ -202,10 +202,10 @@ const principles = [
               <li class="bg-sheet p-6" data-reveal style={`--reveal-i: ${i % 2}`}>
                 <div class="flex items-baseline justify-between gap-4">
                   <h3 class="heading-md">{category}</h3>
-                  <span class="mono text-xs text-ink-3">{pad(items.length)} items</span>
+                  <span class="mono text-xs text-ink-3">{pad(items.length)} skills</span>
                 </div>
                 <ul class="mt-4 space-y-1.5 text-[0.95rem] text-ink-2">
-                  {items.slice(0, 4).map((s) => (
+                  {items.map((s) => (
                     <li class="flex gap-2">
                       <span class="mt-[0.7em] h-0.5 w-3 flex-none bg-accent" aria-hidden="true" />
                       {s.data.skill}
@@ -218,15 +218,13 @@ const principles = [
         </ul>
 
         <div class="lg:col-span-4" data-reveal>
-          <h3 class="eyebrow">Software · rated</h3>
+          <h3 class="eyebrow">Software toolset</h3>
           <ul class="mt-4 border-t border-ink">
             {
-              rated.map((t) => (
-                <li class="flex items-center justify-between gap-4 border-b border-line py-3">
-                  <span class="font-medium">{t.data.name}</span>
-                  <span class="level" data-level={t.data.level}>
-                    {t.data.level}
-                  </span>
+              engineeringTools.map((t) => (
+                <li class="border-b border-line py-3">
+                  <span class="block font-semibold">{t.data.name}</span>
+                  <span class="mt-0.5 block text-sm text-ink-2">{t.data.use}</span>
                 </li>
               ))
             }
