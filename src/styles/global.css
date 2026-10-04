@@ -12,7 +12,7 @@
   --c-paper: #f4f3ee;
   --c-sheet: #ffffff;
   --c-ink: #15171a;
-  --c-ink-2: #3e434a;
+  --c-ink-2: #32363c;
   --c-ink-3: #5b6169;
   --c-line: #d9d7d0;
   --c-line-strong: #b4b1a8;
@@ -34,7 +34,7 @@
   --c-paper: #0f1113;
   --c-sheet: #16191c;
   --c-ink: #eceae4;
-  --c-ink-2: #c0c4c9;
+  --c-ink-2: #cdd1d5;
   --c-ink-3: #8f969e;
   --c-line: #2a2f35;
   --c-line-strong: #414850;
@@ -62,7 +62,7 @@
   --color-accent-soft: var(--c-accent-soft);
   --color-annot: var(--c-annot);
 
-  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-barlow-condensed), 'Arial Narrow', ui-sans-serif, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, 'SF Mono', Menlo, monospace;
 }
@@ -81,11 +81,17 @@
     color: var(--c-ink);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
-    line-height: 1.6;
-    font-feature-settings: 'kern', 'tnum' 0;
-    -webkit-font-smoothing: antialiased;
+    line-height: 1.65;
+    font-feature-settings: 'kern';
     text-rendering: optimizeLegibility;
     transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Light text on dark backgrounds reads too heavy with subpixel smoothing. */
+  [data-theme='dark'] body,
+  .cta {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,

@@ -42,8 +42,8 @@ export default defineConfig({
       fallbacks: ['Arial Narrow', 'sans-serif'],
     },
     {
-      name: 'Barlow',
-      cssVariable: '--font-barlow',
+      name: 'IBM Plex Sans',
+      cssVariable: '--font-plex-sans',
       provider: fontProviders.fontsource(),
       weights: [400, 500, 600],
       styles: ['normal'],

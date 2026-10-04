@@ -105,7 +105,7 @@ These items were left out on purpose because the Notion source does not support 
   - a faint 8 px / 64 px drafting grid
   - chamfered corners that echo the hexagonal IW mark
 - **Light theme is the default.** Dark mode is a separately designed palette (graphite with blueline annotations), toggled from the header's top-right corner. The choice is saved in `localStorage`.
-- **Typefaces:** Barlow Condensed for display, Barlow for body text and IBM Plex Mono for annotations. All three are self-hosted through the Astro Fonts API.
+- **Typefaces:** Barlow Condensed for display headings, IBM Plex Sans for body text and IBM Plex Mono for annotations. All three are self-hosted through the Astro Fonts API.
 - Design tokens live in [`src/styles/global.css`](src/styles/global.css). Tailwind CSS v4 is used for layout utilities.
 - **Motion:** native cross-document view transitions with no JavaScript, plus scroll reveals and the hero line-drawing. Everything is disabled under `prefers-reduced-motion`.
 
