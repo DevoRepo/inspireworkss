@@ -87,8 +87,9 @@ const schema = videos.length
     title="Resources"
     lead="Complex engineering concepts, simplified — with a focus on both the how and the why."
     meta={[
-      { label: 'Long-form tutorials', value: pad(total) },
-      { label: 'Sorted by', value: 'Most watched' },
+      { label: 'Page', value: `${pad(current)} of ${pad(last)}` },
+      { label: 'Videos', value: `${pad(total)} long-form` },
+      { label: 'Order', value: 'Most watched first' },
     ]}
     trail={trail}
   />

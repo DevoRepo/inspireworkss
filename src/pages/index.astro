@@ -1,6 +1,5 @@
 ---
 import { url } from '../lib/url';
-import SoftwareIcon from '../components/SoftwareIcon.astro';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroDrawing from '../components/HeroDrawing.astro';
@@ -218,12 +217,9 @@ const principles = [
           <ul class="mt-4 border-t border-line-strong">
             {
               engineeringTools.map((t) => (
-                <li class="flex items-start gap-3.5 border-b border-line py-3">
-                  <SoftwareIcon tool={t} />
-                  <span class="min-w-0">
-                    <span class="block font-semibold">{t.data.name}</span>
-                    <span class="mt-0.5 block text-sm text-ink-2">{t.data.use}</span>
-                  </span>
+                <li class="border-b border-line py-3">
+                  <span class="block font-semibold">{t.data.name}</span>
+                  <span class="mt-0.5 block text-sm text-ink-2">{t.data.use}</span>
                 </li>
               ))
             }

@@ -26,8 +26,6 @@ const tools = defineCollection({
   loader: file('src/content/tools.json'),
   schema: z.object({
     name: z.string(),
-    /** Short code shown on the software icon tile (e.g. "SW", "E3D"). */
-    code: z.string().max(3),
     use: z.string(),
     group: z.string(),
   }),

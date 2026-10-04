@@ -4,16 +4,12 @@
  * No self-rated levels — evidence of use (linked services) is shown instead.
  */
 import { url } from '../lib/url';
-import type { Tool } from '../lib/content';
-import SoftwareIcon from './SoftwareIcon.astro';
 
 interface Row {
   name: string;
   note?: string;
   /** Where the item is applied, e.g. services that use the skill. */
   links?: { label: string; href: string }[];
-  /** Shows the software icon tile before the name. */
-  tool?: Tool;
 }
 
 interface Props {
@@ -45,14 +41,7 @@ const hasLinks = rows.some((r) => r.links?.length);
         rows.map((row) => (
           <tr>
             <th scope="row">
-              {row.tool ? (
-                <span class="flex items-center gap-3">
-                  <SoftwareIcon tool={row.tool} />
-                  {row.name}
-                </span>
-              ) : (
-                row.name
-              )}
+              {row.name}
               {row.note && <span class="note-sm">{row.note}</span>}
               {row.links?.length ? (
                 <span class="links-sm">

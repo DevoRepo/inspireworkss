@@ -1,6 +1,5 @@
 ---
 import { url } from '../lib/url';
-import SoftwareIcon from './SoftwareIcon.astro';
 import type { Service } from '../lib/content';
 import { pad, resolveTools } from '../lib/content';
 import Icon from './Icon.astro';
@@ -26,12 +25,7 @@ const rows = await Promise.all(services.map(async (s) => ({ s, tools: await reso
             <span class="svc-summary">{s.data.summary}</span>
           </span>
           <span class="svc-tools">
-            {tools.slice(0, 3).map((t) => (
-              <span class="chip gap-2 !pl-1">
-                <SoftwareIcon tool={t} size="sm" />
-                {t.data.name}
-              </span>
-            ))}
+            {tools.slice(0, 3).map((t) => <span class="chip">{t.data.name}</span>)}
             {tools.length > 3 && <span class="chip">+{tools.length - 3}</span>}
           </span>
           <span class="svc-arrow" aria-hidden="true">
@@ -125,7 +119,6 @@ const rows = await Promise.all(services.map(async (s) => ({ s, tools: await reso
     width: 2.75rem;
     height: 2.75rem;
     color: var(--c-ink);
-    border-radius: 999px;
     box-shadow: inset 0 0 0 1px var(--c-line-strong);
     transition: background-color 0.25s, color 0.25s, box-shadow 0.25s;
   }

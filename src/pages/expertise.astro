@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SoftwareIcon from '../components/SoftwareIcon.astro';
 import TitleBlock from '../components/TitleBlock.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SpecTable from '../components/SpecTable.astro';
@@ -29,8 +28,8 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
     title="Expertise"
     lead="Every skill, standard and software package behind INSPIREWORKSS — and where each one is put to work."
     meta={[
-      { label: `Skills across ${byCategory.length} disciplines`, value: String(skills.length) },
-      { label: 'CAD / CAE packages', value: pad(engineeringTools.length) },
+      { label: 'Skills', value: `${skills.length} across ${byCategory.length} disciplines` },
+      { label: 'Software', value: `${pad(engineeringTools.length)} CAD / CAE packages` },
     ]}
     trail={trail}
   >
@@ -88,11 +87,8 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
               <ul class="mt-4">
                 {items.map((t) => (
                   <li class="tool-row">
-                    <SoftwareIcon tool={t} />
-                    <span class="min-w-0">
-                      <span class="block font-semibold tracking-[-0.01em]">{t.data.name}</span>
-                      <span class="mt-0.5 block text-[0.95rem] text-ink-2">{t.data.use}</span>
-                    </span>
+                    <span class="font-semibold tracking-[-0.01em]">{t.data.name}</span>
+                    <span class="text-[0.95rem] text-ink-2">{t.data.use}</span>
                   </li>
                 ))}
               </ul>
@@ -112,9 +108,8 @@ const trail = [{ name: 'Expertise', href: '/expertise/' }];
   }
 
   .tool-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
+    display: grid;
+    gap: 0.15rem;
     padding-block: 0.9rem;
     border-top: 1px solid var(--c-line);
   }
