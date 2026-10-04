@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TitleBlock from '../../components/TitleBlock.astro';
+import ProjectShowcase from '../../components/ProjectShowcase.astro';
+import CTABand from '../../components/CTABand.astro';
+import { site } from '../../config/site';
+import { getProjects, pad } from '../../lib/content';
+
+const projects = await getProjects();
+const disciplines = [...new Set(projects.map((p) => p.data.discipline))];
+const trail = [{ name: 'Projects', href: '/projects/' }];
+
+const schema = [
+  {
+    '@type': 'CollectionPage',
+    name: `${site.name} projects`,
+    hasPart: projects.map((p) => ({
+      '@type': 'CreativeWork',
+      name: p.data.title,
+      url: new URL(`/projects/${p.id}/`, Astro.site).href,
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title="Projects & Engineering Portfolio"
+  description="Mechanical design projects by INSPIREWORKSS — sheet-metal, product and cutting-tool models in SolidWorks, plus engineering-drawing exercises, presented with discipline, software and design highlights."
+  trail={trail}
+  schema={schema}
+>
+  <TitleBlock
+    eyebrow="Portfolio"
+    title="Projects"
+    lead="Design models and step-by-step builds — each presented like a drawing sheet, with the discipline, software and design features that make it work."
+    sheet="04 / 07"
+    meta={[
+      { label: 'Title', value: 'Projects' },
+      { label: 'Items', value: `${pad(projects.length)} figures` },
+      { label: 'Disciplines', value: disciplines.join(' · ') },
+    ]}
+    trail={trail}
+  />
+
+  <section class="py-16 sm:py-20 lg:py-28" aria-label="Project list">
+    <div class="container-x">
+      <ol class="space-y-20 lg:space-y-32">
+        {
+          projects.map((p, i) => (
+            <li>
+              <ProjectShowcase project={p} index={p.data.order} reverse={i % 2 === 1} headingLevel="h2" eager={i === 0} />
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <CTABand title="Have a part or product to design?" />
+</BaseLayout>

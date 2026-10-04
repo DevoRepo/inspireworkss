@@ -1,0 +1,119 @@
+---
+/** Specification-sheet table: item · level · note. */
+interface Row {
+  name: string;
+  level?: string;
+  note?: string;
+}
+
+interface Props {
+  caption: string;
+  rows: Row[];
+  itemLabel?: string;
+  /** Visually hide the caption when a visible heading already describes the table. */
+  hideCaption?: boolean;
+}
+
+const { caption, rows, itemLabel = 'Item', hideCaption = false } = Astro.props;
+const hasNotes = rows.some((r) => r.note);
+---
+
+<div class="spec-wrap">
+  <table class="spec">
+    <caption class:list={[hideCaption ? 'sr-only' : 'eyebrow']}>{caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="w-[3rem]">No.</th>
+        <th scope="col">{itemLabel}</th>
+        <th scope="col">Level</th>
+        {hasNotes && <th scope="col" class="hidden md:table-cell">Note</th>}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row, i) => (
+          <tr>
+            <td class="mono text-ink-3">{String(i + 1).padStart(2, '0')}</td>
+            <th scope="row">
+              {row.name}
+              {row.note && <span class="note-sm">{row.note}</span>}
+            </th>
+            <td>{row.level ? <span class="level" data-level={row.level}>{row.level}</span> : <span class="text-ink-3">—</span>}</td>
+            {hasNotes && <td class="hidden text-ink-2 md:table-cell">{row.note}</td>}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .spec-wrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .spec {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.98rem;
+  }
+
+  caption {
+    text-align: left;
+    padding-bottom: 0.75rem;
+  }
+
+  thead th {
+    padding: 0.55rem 0.75rem 0.55rem 0;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+    border-top: 1px solid var(--c-ink);
+    border-bottom: 1px solid var(--c-ink);
+  }
+
+  tbody th,
+  tbody td {
+    padding: 0.85rem 0.75rem 0.85rem 0;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  tbody th {
+    font-weight: 600;
+  }
+
+  tbody td:first-child {
+    font-size: 0.75rem;
+    padding-top: 1.05rem;
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+  }
+
+  tbody tr:hover {
+    background: var(--c-sheet);
+  }
+
+  .note-sm {
+    display: block;
+    margin-top: 0.2rem;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--c-ink-2);
+  }
+
+  /* Scoped styles sit outside Tailwind's layers, so responsive hiding is done here. */
+  @media (min-width: 48rem) {
+    .note-sm {
+      display: none;
+    }
+  }
+</style>

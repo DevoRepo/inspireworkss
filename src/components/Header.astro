@@ -1,0 +1,244 @@
+---
+import { nav, site, mailto } from '../config/site';
+import { pad } from '../lib/content';
+import Icon from './Icon.astro';
+import LogoBadge from './LogoBadge.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="container-x flex h-16 items-center gap-4 lg:h-[4.5rem]">
+    <a href="/" class="brand">
+      <LogoBadge size={36} />
+      <span class="brand-text">
+        <span class="brand-name">{site.name}</span>
+        <span class="brand-sub">Mechanical engineering</span>
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="ml-auto hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {
+          nav.slice(1).map((item) => (
+            <li>
+              <a href={item.href} class="nav-link" aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2 lg:ml-4">
+      <a href={mailto('Project enquiry — INSPIREWORKSS')} class="btn btn-primary hidden !min-h-11 md:inline-flex">
+        Start a project
+      </a>
+      <ThemeToggle />
+      <button type="button" class="menu-btn lg:hidden" aria-controls="mobile-nav" aria-expanded="false" data-menu-open>
+        <Icon name="menu" size={22} />
+        <span class="sr-only">Open menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<dialog id="mobile-nav" class="mobile-nav" aria-label="Site menu">
+  <div class="flex h-full flex-col">
+    <div class="container-x flex h-16 items-center justify-between border-b border-line">
+      <span class="eyebrow">Index / Sheet list</span>
+      <button type="button" class="menu-btn" data-menu-close>
+        <Icon name="close" size={22} />
+        <span class="sr-only">Close menu</span>
+      </button>
+    </div>
+    <nav aria-label="Mobile" class="container-x flex-1 overflow-y-auto py-6">
+      <ol>
+        {
+          nav.map((item, i) => (
+            <li>
+              <a href={item.href} class="mobile-link" aria-current={isActive(item.href) ? 'page' : undefined}>
+                <span class="mono text-xs text-ink-3">{pad(i + 1)}</span>
+                <span>{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <div class="container-x border-t border-line py-5">
+      <a href={mailto()} class="link-arrow">
+        <Icon name="mail" />
+        {site.email}
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid var(--c-line);
+    background: color-mix(in srgb, var(--c-paper) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+  }
+
+  .brand-sub {
+    margin-top: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 2.75rem;
+    padding-inline: 0.8rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--c-ink-2);
+    transition: color 0.2s ease;
+  }
+
+  /* Active / hover marker: a small dimension line with end ticks. */
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 0.45rem;
+    height: 5px;
+    border-inline: 1px solid var(--c-accent);
+    background: linear-gradient(var(--c-accent), var(--c-accent)) center / 100% 1px no-repeat;
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .nav-link:hover,
+  .nav-link[aria-current='page'] {
+    color: var(--c-ink);
+  }
+
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .menu-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--c-ink);
+    box-shadow: inset 0 0 0 1px var(--c-line-strong);
+    background: var(--c-sheet);
+    cursor: pointer;
+  }
+
+  @media (min-width: 64rem) {
+    [data-menu-open] {
+      display: none;
+    }
+  }
+
+  .mobile-nav {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--c-paper);
+    color: var(--c-ink);
+  }
+
+  .mobile-nav::backdrop {
+    background: transparent;
+  }
+
+  .mobile-nav[open] {
+    animation: sheet-in 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+
+  .mobile-link {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--c-line);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 8vw, 2.75rem);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .mobile-link[aria-current='page'] {
+    color: var(--c-accent);
+  }
+
+  @media (max-width: 380px) {
+    .brand-sub {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('mobile-nav') as HTMLDialogElement | null;
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+
+  if (dialog && openBtn) {
+    openBtn.addEventListener('click', () => {
+      dialog.showModal();
+      openBtn.setAttribute('aria-expanded', 'true');
+    });
+    closeBtn?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => {
+      openBtn.setAttribute('aria-expanded', 'false');
+      openBtn.focus();
+    });
+    dialog.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => dialog.close()));
+    // Close the sheet if the viewport grows into the desktop layout.
+    matchMedia('(min-width: 64rem)').addEventListener('change', (e) => e.matches && dialog.open && dialog.close());
+  }
+</script>

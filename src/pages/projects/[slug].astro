@@ -1,0 +1,284 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import { getEntries, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TitleBlock from '../../components/TitleBlock.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import VideoFacade from '../../components/VideoFacade.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import CTABand from '../../components/CTABand.astro';
+import Icon from '../../components/Icon.astro';
+import { getProjects, pad, resolveTools, youtubeUrl, type Project } from '../../lib/content';
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length], all: projects },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  project: Project;
+  next: Project;
+  all: Project[];
+}
+
+const { project, next, all } = Astro.props;
+const { data } = project;
+const tools = await resolveTools(data.tools);
+const services = data.services.length ? await getEntries(data.services) : [];
+const { Content } = await render(project);
+const hasBody = Boolean(project.body?.trim());
+const others = all.filter((p) => p.id !== project.id && p.id !== next.id).slice(0, 3);
+
+/** Problem → approach → outcome, only for the parts that exist. */
+const story = [
+  { key: 'Problem', text: data.problem },
+  { key: 'Approach', text: data.approach },
+  { key: 'Outcome', text: data.outcome },
+].filter((s): s is { key: string; text: string } => Boolean(s.text));
+
+const trail = [
+  { name: 'Projects', href: '/projects/' },
+  { name: data.title, href: `/projects/${project.id}/` },
+];
+
+const meta = [
+  { label: 'Discipline', value: data.discipline },
+  { label: 'Category', value: data.category },
+  { label: 'Format', value: data.format },
+  ...(tools.length ? [{ label: 'Software', value: tools.map((t) => t.data.name).join(', ') }] : []),
+];
+
+const schema = [
+  {
+    '@type': 'CreativeWork',
+    name: data.title,
+    description: data.summary,
+    genre: data.discipline,
+    creator: { '@id': new URL('/#avani-jangam', Astro.site).href },
+    url: new URL(`/projects/${project.id}/`, Astro.site).href,
+    ...(data.youtubeId ? { sameAs: youtubeUrl(data.youtubeId) } : {}),
+  },
+];
+---
+
+<BaseLayout
+  title={`${data.title} — ${data.category}`}
+  description={data.summary}
+  image={data.cover}
+  imageAlt={data.coverAlt}
+  type="article"
+  trail={trail}
+  schema={schema}
+>
+  <TitleBlock eyebrow={`Project ${pad(data.order)} · ${data.discipline}`} title={data.title} lead={data.summary} sheet={`04.${pad(data.order)}`} meta={meta} trail={trail} />
+
+  <!-- Media -->
+  <section class="pt-12 sm:pt-16" aria-label="Project media">
+    <div class="container-x">
+      <figure class="media-frame" data-reveal>
+        {
+          data.youtubeId ? (
+            <VideoFacade id={data.youtubeId} title={data.title} sizes="(min-width: 84rem) 1280px, 100vw" eager />
+          ) : (
+            <div class="still">
+              <Image src={data.cover} alt={data.coverAlt} widths={[640, 960, 1280, 1600]} sizes="(min-width: 84rem) 1280px, 100vw" loading="eager" fetchpriority="high" />
+            </div>
+          )
+        }
+        <figcaption class="mt-4 flex flex-wrap items-baseline justify-between gap-3">
+          <span class="eyebrow">Fig. {pad(data.order)} — {data.title}</span>
+          {
+            data.youtubeId && (
+              <a href={youtubeUrl(data.youtubeId)} class="link-arrow" target="_blank" rel="noopener">
+                Watch on YouTube <Icon name="arrow-up-right" />
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            )
+          }
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Highlights / story -->
+  <section class="py-20 sm:py-24" aria-labelledby="detail-title">
+    <div class="container-x grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <SectionHeading mark="A" eyebrow="Design detail" id="detail-title" title="What the model demonstrates." />
+
+        {
+          data.highlights.length > 0 && (
+            <ol class="mt-10 border-t border-ink" data-reveal>
+              {data.highlights.map((h, i) => (
+                <li class="flex gap-5 border-b border-line py-4 text-lg">
+                  <span class="mono pt-1 text-xs text-accent">{pad(i + 1)}</span>
+                  {h}
+                </li>
+              ))}
+            </ol>
+          )
+        }
+
+        {
+          story.length > 0 && (
+            <dl class="mt-12 space-y-8" data-reveal>
+              {story.map((s, i) => (
+                <div class="grid gap-2 sm:grid-cols-[9rem_1fr]">
+                  <dt class="eyebrow pt-1">
+                    {pad(i + 1)} · {s.key}
+                  </dt>
+                  <dd class="text-lg text-ink-2">{s.text}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+
+        {
+          hasBody && (
+            <div class="prose-body mt-12 text-lg" data-reveal>
+              <Content />
+            </div>
+          )
+        }
+      </div>
+
+      <aside class="lg:col-span-4 lg:col-start-9" aria-label="Project data" data-reveal>
+        <div class="datasheet">
+          <p class="eyebrow">Data sheet</p>
+          <dl class="mt-4">
+            {
+              meta.map((m) => (
+                <div>
+                  <dt>{m.label}</dt>
+                  <dd>{m.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          {
+            services.length > 0 && (
+              <div class="mt-6">
+                <p class="eyebrow">Related services</p>
+                <ul class="mt-3 space-y-2">
+                  {services.map((s) => (
+                    <li>
+                      <a href={`/services/${s.id}/`} class="link-arrow !normal-case !tracking-normal">
+                        {s.data.title} <Icon name="arrow" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Next project -->
+  <section class="border-t border-line bg-sheet" aria-labelledby="next-title">
+    <a href={`/projects/${next.id}/`} class="next container-x grid items-center gap-8 py-14 md:grid-cols-12">
+      <div class="md:col-span-7">
+        <p class="eyebrow">Next figure →</p>
+        <h2 id="next-title" class="display-lg mt-3">{next.data.title}</h2>
+        <p class="mt-3 text-ink-2">{next.data.category} · {next.data.format}</p>
+      </div>
+      <div class="next-thumb md:col-span-5">
+        <Image src={next.data.cover} alt="" widths={[480, 720]} sizes="(min-width: 48rem) 40vw, 100vw" />
+      </div>
+    </a>
+  </section>
+
+  {
+    others.length > 0 && (
+      <section class="py-20 sm:py-24" aria-labelledby="more-title">
+        <div class="container-x">
+          <h2 id="more-title" class="eyebrow">More projects</h2>
+          <ul class="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-3">
+            {others.map((p, i) => (
+              <li data-reveal style={`--reveal-i: ${i}`}>
+                <ProjectCard project={p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <CTABand title={`Need something like this designed?`} subject={`Enquiry about: ${data.title}`} />
+</BaseLayout>
+
+<style>
+  .media-frame {
+    padding: clamp(0.5rem, 1.5vw, 1rem);
+    background: var(--c-sheet);
+    box-shadow: inset 0 0 0 1px var(--c-line);
+  }
+
+  .still {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .still :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .datasheet {
+    position: sticky;
+    top: 6.5rem;
+    padding: 1.5rem;
+    background: var(--c-sheet);
+    border: 1px solid var(--c-ink);
+  }
+
+  .datasheet dl > div {
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .datasheet dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+
+  .datasheet dd {
+    margin-top: 0.2rem;
+    font-weight: 600;
+  }
+
+  .next-thumb {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px var(--c-line);
+  }
+
+  .next-thumb :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .next:hover .next-thumb :global(img) {
+    transform: scale(1.04);
+  }
+
+  .next:hover h2 {
+    color: var(--c-accent);
+  }
+</style>

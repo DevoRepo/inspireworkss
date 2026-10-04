@@ -20,3 +20,10 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+
+## Project notes (INSPIREWORKSS)
+
+- Content source of truth: the INSPIREWORKSS Notion page. Never invent clients, stats, testimonials or credentials.
+- Content lives in `src/content/` + `src/config/site.ts`; see README for the drafted-copy review list.
+- Scoped `<style>` in `.astro` files is unlayered and overrides Tailwind utilities — use component media queries for responsive display changes.
+- Never hard-code the production domain; `site` comes from `SITE_URL` / `CF_PAGES_URL`.

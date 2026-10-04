@@ -1,11 +1,347 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroDrawing from '../components/HeroDrawing.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceIndex from '../components/ServiceIndex.astro';
+import ProjectShowcase from '../components/ProjectShowcase.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import VideoFacade from '../components/VideoFacade.astro';
+import DimensionLine from '../components/DimensionLine.astro';
+import CTABand from '../components/CTABand.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+import { expertiseCategories } from '../content.config';
+import { getProjects, getServices, getSkills, getTools, getVideos, groupBy, pad } from '../lib/content';
+import logo from '../assets/brand/inspireworkss-logo.png';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const services = await getServices();
+const projects = await getProjects();
+const featured = projects.find((p) => p.data.featured) ?? projects[0];
+const others = projects.filter((p) => p.id !== featured.id).slice(0, 4);
+const tools = await getTools();
+const rated = tools.filter((t) => t.data.level);
+const skills = await getSkills();
+const byCategory = groupBy(skills, (s) => s.data.category);
+const videos = (await getVideos()).slice(0, 3);
+
+const specs = [
+  { label: 'Practice', value: site.name },
+  { label: 'Engineer', value: site.owner },
+  { label: 'Disciplines', value: site.disciplines.join(' · ') },
+  { label: 'Software', value: `${rated.length} CAD / CAE packages` },
+  { label: 'Standards', value: 'ASME · API · ISO · GD&T' },
+];
+
+const principles = [
+  { title: 'Practical, optimised solutions', text: 'Complex engineering challenges translated into designs that can be built, installed and maintained.' },
+  { title: 'Codes, standards & GD&T', text: 'Design work grounded in ASME, API and ISO standards, engineering documentation and geometric tolerancing.' },
+  { title: 'The how — and the why', text: 'Every concept explained from first principles, through tutorials, courses and one-to-one mentoring.' },
+];
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout
+  title={`${site.name} — Mechanical & Piping Engineering by ${site.owner}`}
+  description="INSPIREWORKSS is the mechanical engineering practice of Avani Jangam: mechanical design & CAD, plant design & piping engineering, pipe stress and pressure vessel analysis, and CAD/CAE training."
+>
+  <!-- ─────────────── Hero ─────────────── -->
+  <section class="hero grid-paper" aria-labelledby="hero-title">
+    <div class="container-x grid items-center gap-10 pb-12 pt-10 sm:pt-14 lg:grid-cols-12 lg:gap-6 lg:pb-16 lg:pt-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow flex items-center gap-3" data-reveal>
+          <span class="h-px w-6 bg-accent" aria-hidden="true"></span>
+          Mechanical · Piping · Plant engineering
+        </p>
+        <h1 id="hero-title" class="display-xl mt-6" data-reveal style="--reveal-i: 1">
+          Engineering<br />with the how <br />and the <span class="text-accent">why.</span>
+        </h1>
+        <p class="lead mt-7 max-w-xl" data-reveal style="--reveal-i: 2">
+          {site.name} is the engineering practice of {site.owner} — translating complex mechanical, piping and plant challenges
+          into practical, optimised designs, and teaching the reasoning behind every one of them.
+        </p>
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row" data-reveal style="--reveal-i: 3">
+          <a href="/services/" class="btn btn-primary">Explore services <Icon name="arrow" /></a>
+          <a href="/projects/" class="btn btn-ghost">View projects</a>
+        </div>
+      </div>
+      <div class="mx-auto w-full max-w-md sm:max-w-lg lg:col-span-5 lg:max-w-none">
+        <HeroDrawing />
+      </div>
+    </div>
+
+    <div class="border-t border-line bg-sheet">
+      <dl class="container-x spec-strip">
+        {
+          specs.map((s) => (
+            <div>
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- ─────────────── A–A Practice ─────────────── -->
+  <section class="py-20 sm:py-24 lg:py-32" aria-labelledby="practice-title">
+    <div class="container-x grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <figure class="plate" data-reveal>
+          <div class="plate-frame chamfer">
+            <Image src={logo} alt="The INSPIREWORKSS IW monogram: an isometric hexagon in brushed steel and red with drafting construction lines." widths={[400, 640, 900]} sizes="(min-width: 64rem) 36vw, 90vw" />
+          </div>
+          <DimensionLine label="The IW mark" class="mt-4" />
+          <figcaption class="eyebrow mt-3">Fig. 00 — Brand mark, drawn like a part</figcaption>
+        </figure>
+      </div>
+
+      <div class="lg:col-span-7 lg:pl-8">
+        <SectionHeading
+          mark="A"
+          eyebrow="The practice"
+          id="practice-title"
+          title="A mechanical engineering practice built on design, analysis and teaching."
+        />
+        <div class="prose-body mt-8 max-w-2xl text-lg" data-reveal>
+          <p>
+            {site.owner} is an engineer on a never-ending journey of exploring mechanical, piping and marine engineering —
+            treating every project as an opportunity to translate complex engineering challenges into practical, optimised
+            solutions.
+          </p>
+          <p>
+            Beyond professional work, {site.name} shares engineering knowledge through tutorials, technical courses and
+            mentoring — simplifying complex concepts with a focus on both the how and the why.
+          </p>
+        </div>
+
+        <ol class="mt-10 grid gap-px bg-line sm:grid-cols-3" data-reveal>
+          {
+            principles.map((p, i) => (
+              <li class="bg-paper p-5 sm:pr-6">
+                <span class="mono text-xs text-accent">{pad(i + 1)}</span>
+                <h3 class="heading-md mt-3">{p.title}</h3>
+                <p class="mt-2 text-[0.95rem] text-ink-2">{p.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+
+        <a href="/about/" class="link-arrow mt-10">About {site.owner} <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── B–B Services ─────────────── -->
+  <section class="border-t border-line bg-sheet py-20 sm:py-24 lg:py-32" aria-labelledby="services-title">
+    <div class="container-x">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading
+          mark="B"
+          eyebrow="Services"
+          id="services-title"
+          title="Engineering services, from first sketch to stress check."
+          intro="Design, piping, analysis, training and support — each service backed by the same toolset and standards."
+        />
+        <a href="/services/" class="link-arrow shrink-0" data-reveal>All services <Icon name="arrow" /></a>
+      </div>
+      <div class="mt-12 lg:mt-16">
+        <ServiceIndex services={services} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── C–C Projects ─────────────── -->
+  <section class="py-20 sm:py-24 lg:py-32" aria-labelledby="projects-title">
+    <div class="container-x">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading
+          mark="C"
+          eyebrow="Selected work"
+          id="projects-title"
+          title="Models built to be made — and explained."
+          intro="Design models and step-by-step builds from the INSPIREWORKSS studio and YouTube channel."
+        />
+        <a href="/projects/" class="link-arrow shrink-0" data-reveal>All projects <Icon name="arrow" /></a>
+      </div>
+
+      <div class="mt-12 lg:mt-16">
+        <ProjectShowcase project={featured} index={featured.data.order} />
+      </div>
+
+      {
+        others.length > 0 && (
+          <ul class="mt-16 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {others.map((p, i) => (
+              <li data-reveal style={`--reveal-i: ${i}`}>
+                <ProjectCard project={p} />
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ─────────────── D–D Expertise ─────────────── -->
+  <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-32" aria-labelledby="expertise-title">
+    <div class="container-x">
+      <SectionHeading
+        mark="D"
+        eyebrow="Expertise"
+        id="expertise-title"
+        title="Specification: skills, standards and software."
+        intro={`${skills.length} documented skills in ${expertiseCategories.length} categories, and ${rated.length} rated CAD/CAE packages.`}
+      />
+
+      <div class="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12">
+        <ul class="grid gap-px border border-line bg-line sm:grid-cols-2 lg:col-span-8">
+          {
+            byCategory.map(([category, items], i) => (
+              <li class="bg-sheet p-6" data-reveal style={`--reveal-i: ${i % 2}`}>
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="heading-md">{category}</h3>
+                  <span class="mono text-xs text-ink-3">{pad(items.length)} items</span>
+                </div>
+                <ul class="mt-4 space-y-1.5 text-[0.95rem] text-ink-2">
+                  {items.slice(0, 4).map((s) => (
+                    <li class="flex gap-2">
+                      <span class="mt-[0.7em] h-0.5 w-3 flex-none bg-accent" aria-hidden="true" />
+                      {s.data.skill}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="lg:col-span-4" data-reveal>
+          <h3 class="eyebrow">Software · rated</h3>
+          <ul class="mt-4 border-t border-ink">
+            {
+              rated.map((t) => (
+                <li class="flex items-center justify-between gap-4 border-b border-line py-3">
+                  <span class="font-medium">{t.data.name}</span>
+                  <span class="level" data-level={t.data.level}>
+                    {t.data.level}
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+          <a href="/expertise/" class="link-arrow mt-8">Full specification <Icon name="arrow" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── E–E Learning ─────────────── -->
+  <section class="py-20 sm:py-24 lg:py-32" aria-labelledby="learn-title">
+    <div class="container-x">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading
+          mark="E"
+          eyebrow="Learn"
+          id="learn-title"
+          title="Engineering, simplified on YouTube."
+          intro="Tutorials on the INSPIREWORKSS channel break down CAD modelling and engineering drawing — the how, and the why."
+        />
+        <div class="flex shrink-0 flex-wrap gap-6" data-reveal>
+          <a href="/resources/" class="link-arrow">All resources <Icon name="arrow" /></a>
+          <a href={site.social.youtube.url} class="link-arrow" target="_blank" rel="noopener me">
+            YouTube channel <Icon name="arrow-up-right" /><span class="sr-only">(opens in a new tab)</span>
+          </a>
+        </div>
+      </div>
+
+      <ul class="mt-12 grid gap-8 md:grid-cols-3 lg:mt-16">
+        {
+          videos.map((v, i) => (
+            <li data-reveal style={`--reveal-i: ${i}`}>
+              <VideoFacade id={v.id} title={v.data.title} />
+              <p class="eyebrow mt-4">{v.data.topic}</p>
+              <h3 class="heading-md mt-2">{v.data.title}</h3>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>
+
+<style>
+  .hero {
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .spec-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .spec-strip > div {
+    padding: 0.9rem 1rem 1rem 0;
+    border-bottom: 1px solid var(--c-line);
+    min-width: 0;
+  }
+
+  .spec-strip > div:last-child {
+    grid-column: 1 / -1;
+    border-bottom: 0;
+  }
+
+  .spec-strip dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+
+  .spec-strip dd {
+    margin-top: 0.25rem;
+    font-weight: 600;
+  }
+
+  @media (min-width: 64rem) {
+    .spec-strip {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .spec-strip > div,
+    .spec-strip > div:last-child {
+      grid-column: auto;
+      border-bottom: 0;
+      padding-left: 1.25rem;
+      border-left: 1px solid var(--c-line);
+    }
+
+    .spec-strip > div:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
+  .plate-frame {
+    --cut: 22px;
+    background: var(--c-plate);
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+
+  .plate-frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (min-width: 64rem) {
+    .plate {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+</style>

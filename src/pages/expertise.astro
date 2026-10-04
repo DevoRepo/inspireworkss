@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TitleBlock from '../components/TitleBlock.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import SpecTable from '../components/SpecTable.astro';
+import CTABand from '../components/CTABand.astro';
+import { expertiseCategories } from '../content.config';
+import { getSkills, getTools, groupBy, pad } from '../lib/content';
+
+const skills = await getSkills();
+const byCategory = expertiseCategories.map((c) => [c, skills.filter((s) => s.data.category === c)] as const);
+const tools = await getTools();
+const toolGroups = groupBy(tools, (t) => t.data.group);
+const advanced = skills.filter((s) => s.data.level === 'Advanced').length;
+const slug = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const marks = 'ABCDEFGH';
+const trail = [{ name: 'Expertise', href: '/expertise/' }];
+---
+
+<BaseLayout
+  title="Engineering Skills & Software Expertise"
+  description="INSPIREWORKSS expertise: mechanical design, piping engineering, pipe stress analysis, pressure vessel design, CAD/CAE, GD&T, ASME/API/ISO standards and Python automation — with AutoCAD, SolidWorks, Creo, NX, Inventor, E3D, Plant 3D, Navisworks, PV Elite and Caesar II."
+  trail={trail}
+>
+  <TitleBlock
+    eyebrow="Specification sheet"
+    title="Expertise"
+    lead="Every documented skill, standard and software package — with its working level and what it covers in practice."
+    sheet="05 / 07"
+    meta={[
+      { label: 'Title', value: 'Expertise' },
+      { label: 'Skills', value: `${skills.length} · ${advanced} advanced` },
+      { label: 'Software', value: `${pad(tools.length)} packages` },
+    ]}
+    trail={trail}
+  >
+    <nav aria-label="Expertise categories" class="mt-8">
+      <ul class="flex flex-wrap gap-2">
+        {
+          byCategory.map(([c]) => (
+            <li>
+              <a href={`#${slug(c)}`} class="chip !px-3 !py-2 hover:!text-accent">
+                {c}
+              </a>
+            </li>
+          ))
+        }
+        <li><a href="#software" class="chip !px-3 !py-2 hover:!text-accent">Software</a></li>
+      </ul>
+    </nav>
+  </TitleBlock>
+
+  <section class="py-16 sm:py-20 lg:py-24" aria-label="Skills by category">
+    <div class="container-x space-y-20 lg:space-y-28">
+      {
+        byCategory.map(([category, items], i) => (
+          <div class="grid gap-8 lg:grid-cols-12" id={slug(category)}>
+            <div class="lg:col-span-4">
+              <SectionHeading mark={marks[i]} eyebrow={`${pad(items.length)} skills`} title={category} />
+            </div>
+            <div class="lg:col-span-8" data-reveal>
+              <SpecTable
+                caption={`${category} skills`}
+                hideCaption
+                itemLabel="Skill"
+                rows={items.map((s) => ({ name: s.data.skill, level: s.data.level, note: s.data.note }))}
+              />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section id="software" class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="software-title">
+    <div class="container-x">
+      <SectionHeading
+        mark={marks[byCategory.length]}
+        eyebrow="Software"
+        id="software-title"
+        title="CAD, plant design and analysis packages."
+        intro="Rated Expert or Intermediate; productivity tools are listed without a rating."
+      />
+      <div class="mt-12 grid gap-10 md:grid-cols-2">
+        {
+          toolGroups.map(([group, items], i) => (
+            <div class="bg-sheet p-6 shadow-[inset_0_0_0_1px_var(--c-line)]" data-reveal style={`--reveal-i: ${i % 2}`}>
+              <SpecTable caption={group} itemLabel="Package" rows={items.map((t) => ({ name: t.data.name, level: t.data.level }))} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CTABand title="Need these skills on your project?" />
+</BaseLayout>

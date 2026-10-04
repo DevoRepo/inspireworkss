@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TitleBlock from '../../components/TitleBlock.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceIndex from '../../components/ServiceIndex.astro';
+import CTABand from '../../components/CTABand.astro';
+import { site } from '../../config/site';
+import { getServices, getTools, pad } from '../../lib/content';
+
+const services = await getServices();
+const rated = (await getTools()).filter((t) => t.data.level);
+const trail = [{ name: 'Services', href: '/services/' }];
+
+const audiences = [
+  { title: 'Companies & manufacturers', text: 'Design, drafting, piping and analysis support — delivered in the software your team already uses.' },
+  { title: 'EPC & plant teams', text: 'Piping design, layout, pipe stress and pressure vessel work, checked against ASME and API standards.' },
+  { title: 'Students & professionals', text: 'CAD/CAE training and mentoring that explains the how and the why behind every tool.' },
+];
+
+const schema = [
+  {
+    '@type': 'ItemList',
+    name: `${site.name} engineering services`,
+    itemListElement: services.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: s.data.title,
+      url: new URL(`/services/${s.id}/`, Astro.site).href,
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title="Mechanical Engineering Services"
+  description="Mechanical engineering services by INSPIREWORKSS: engineering design & CAD, plant design & piping engineering, mechanical analysis, technical consulting, CAD/CAE training, reverse engineering and remote engineering support."
+  trail={trail}
+  schema={schema}
+>
+  <TitleBlock
+    eyebrow="Services"
+    title="What INSPIREWORKSS can do"
+    lead={`${services.length} engineering services covering design, piping, analysis, consulting and training — backed by ${rated.length} rated CAD/CAE packages and the ASME, API and ISO standards that govern the work.`}
+    sheet="03 / 07"
+    meta={[
+      { label: 'Title', value: 'Services' },
+      { label: 'Items', value: `${pad(services.length)} services` },
+      { label: 'Standards', value: 'ASME · API · ISO' },
+    ]}
+    trail={trail}
+  />
+
+  <section class="py-16 sm:py-20 lg:py-24" aria-label="Service list">
+    <div class="container-x">
+      <ServiceIndex services={services} headingLevel="h2" />
+    </div>
+  </section>
+
+  <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="who-title">
+    <div class="container-x">
+      <SectionHeading mark="A" eyebrow="Who it helps" id="who-title" title="Built for the people who make and maintain things." />
+      <ol class="mt-12 grid gap-px border border-line bg-line md:grid-cols-3">
+        {
+          audiences.map((a, i) => (
+            <li class="bg-sheet p-6 sm:p-8" data-reveal style={`--reveal-i: ${i}`}>
+              <span class="mono text-xs text-accent">{pad(i + 1)}</span>
+              <h3 class="heading-lg mt-4">{a.title}</h3>
+              <p class="mt-3 text-ink-2">{a.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <CTABand title="Not sure which service fits?" text="Describe the problem rather than the service — the component or system, what you need delivered, and any drawings, models or standards involved." />
+</BaseLayout>

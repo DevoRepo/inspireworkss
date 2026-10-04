@@ -1,0 +1,105 @@
+import { defineCollection, reference } from 'astro:content';
+import { file, glob } from 'astro/loaders';
+import { z } from 'astro/zod';
+
+export const expertiseCategories = [
+  'Mechanical Engineering',
+  'Piping Engineering',
+  'CAD & CAE',
+  'Engineering Standards',
+  'Programming & Automation',
+  'Technical & Professional',
+] as const;
+
+/** Skills database (Notion → "Expertise"). */
+const expertise = defineCollection({
+  loader: file('src/content/expertise.json'),
+  schema: z.object({
+    skill: z.string(),
+    category: z.enum(expertiseCategories),
+    level: z.enum(['Advanced', 'Intermediate']),
+    note: z.string(),
+  }),
+});
+
+/** Software database (Notion → "Tools"). `level` is optional for tools listed without a rating. */
+const tools = defineCollection({
+  loader: file('src/content/tools.json'),
+  schema: z.object({
+    name: z.string(),
+    level: z.enum(['Expert', 'Intermediate']).optional(),
+    group: z.string(),
+  }),
+});
+
+/** YouTube videos from the INSPIREWORKSS channel. Thumbnails live in src/assets/videos/<id>.jpg */
+const videos = defineCollection({
+  loader: file('src/content/videos.json'),
+  schema: z.object({
+    title: z.string(),
+    topic: z.string(),
+    order: z.number(),
+  }),
+});
+
+/** Services (Notion → "My Services"). One Markdown file per service; the body is optional long-form copy. */
+const services = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/services' }),
+  schema: z.object({
+    title: z.string(),
+    order: z.number(),
+    summary: z.string(),
+    /** Optional sub-scopes stated explicitly in the source (e.g. "Pipe Stress Analysis (Caesar II)"). */
+    scope: z.array(z.string()).default([]),
+    audience: z.array(z.string()).min(1),
+    value: z.array(z.string()).min(1),
+    skills: z.array(reference('expertise')).default([]),
+    tools: z.array(reference('tools')).default([]),
+    /** true = copy drafted from Notion facts and awaiting owner review. */
+    draft: z.boolean().default(false),
+  }),
+});
+
+/** Portfolio projects. Problem / approach / outcome are optional and hidden when empty. */
+const projects = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      order: z.number(),
+      summary: z.string(),
+      discipline: z.string(),
+      category: z.string(),
+      format: z.string(),
+      tools: z.array(reference('tools')).default([]),
+      services: z.array(reference('services')).default([]),
+      cover: image(),
+      coverAlt: z.string(),
+      youtubeId: z.string().optional(),
+      highlights: z.array(z.string()).default([]),
+      problem: z.string().optional(),
+      approach: z.string().optional(),
+      outcome: z.string().optional(),
+      featured: z.boolean().default(false),
+      draft: z.boolean().default(false),
+    }),
+});
+
+/**
+ * Experience, education and certifications. Empty until real entries are added —
+ * every section that uses this collection renders only when entries exist.
+ */
+const credentials = defineCollection({
+  loader: file('src/content/credentials.json'),
+  schema: z.object({
+    type: z.enum(['experience', 'education', 'certification']),
+    title: z.string(),
+    organisation: z.string(),
+    period: z.string().optional(),
+    description: z.string().optional(),
+    url: z.url().optional(),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { expertise, tools, videos, services, projects, credentials };

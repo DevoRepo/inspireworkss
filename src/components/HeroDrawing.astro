@@ -1,0 +1,223 @@
+---
+/**
+ * Isometric construction drawing of the IW mark: the hexagon is read as a cube in isometric
+ * projection, with "I" projected onto the left face and "W" onto the right face (as in the logo).
+ * Strokes draw themselves in on load; construction lines and dimensions fade in after.
+ *
+ * Geometry: centre (280,280), circumradius 200 → across corners 400, across flats 346.4.
+ */
+const C = 280;
+const R = 200;
+const s = (R * Math.sqrt(3)) / 2; // 173.2
+const top = [C, C - R];
+const ur = [C + s, C - R / 2];
+const lr = [C + s, C + R / 2];
+const bot = [C, C + R];
+const ll = [C - s, C + R / 2];
+const ul = [C - s, C - R / 2];
+const p = (pt: number[]) => pt.map((n) => n.toFixed(1)).join(' ');
+---
+
+<figure class="hero-drawing" aria-labelledby="hero-drawing-caption">
+  <svg viewBox="0 0 560 580" role="img" aria-labelledby="hero-drawing-title">
+    <title id="hero-drawing-title">Isometric construction drawing of the INSPIREWORKSS IW mark with centre lines and dimensions</title>
+    <defs>
+      <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="10" class="hatch-line"></line>
+      </pattern>
+      <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+        <path d="M0 1.5 10 5 0 8.5z" class="arrowhead"></path>
+      </marker>
+    </defs>
+
+    <!-- Construction geometry -->
+    <g class="construction">
+      <circle cx={C} cy={C} r="226" class="c-dash"></circle>
+      <line x1={C} y1="28" x2={C} y2="532" class="c-chain"></line>
+      <line x1="28" y1={C} x2="532" y2={C} class="c-chain"></line>
+      {
+        [top, ur, lr, bot, ll, ul].map(([x, y]) => (
+          <path d={`M${x - 7} ${y}h14M${x} ${y - 7}v14`} class="c-cross" />
+        ))
+      }
+    </g>
+
+    <!-- Top face: section hatch -->
+    <path d={`M${p(top)} L${p(ur)} L${C} ${C} L${p(ul)} Z`} class="face-top"></path>
+
+    <!-- Visible edges -->
+    <path d={`M${p(top)} L${p(ul)} L${p(ll)} L${p(bot)}`} pathLength="1" class="draw edge-steel" style="--d: 0.1s"></path>
+    <path d={`M${p(top)} L${p(ur)} L${p(lr)} L${p(bot)}`} pathLength="1" class="draw edge-red" style="--d: 0.25s"></path>
+    <path d={`M${p(ul)} L${C} ${C} L${p(ur)} M${C} ${C} L${p(bot)}`} pathLength="1" class="draw edge-inner" style="--d: 0.5s"></path>
+
+    <!-- "I" projected onto the left face -->
+    <g transform={`matrix(0.866 0.5 0 1 ${ul[0].toFixed(1)} ${ul[1]})`}>
+      <path d="M68 34H132M100 34V166M68 166H132" pathLength="1" class="draw letter-i" style="--d: 0.8s"></path>
+    </g>
+
+    <!-- "W" projected onto the right face -->
+    <g transform={`matrix(0.866 -0.5 0 1 ${C} ${C})`}>
+      <path d="M32 52 64 166 100 88 136 166 168 52" pathLength="1" class="draw letter-w" style="--d: 1s"></path>
+    </g>
+
+    <!-- Dimensions -->
+    <g class="dims">
+      <path d={`M${ll[0].toFixed(1)} ${ll[1] + 12}V548M${lr[0].toFixed(1)} ${lr[1] + 12}V548`} class="ext"></path>
+      <line x1={ll[0].toFixed(1)} y1="538" x2={lr[0].toFixed(1)} y2="538" class="dim" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+      <text x={C} y="542" text-anchor="middle" class="dim-text">A/F 346.4</text>
+
+      <path d={`M${ur[0] + 12} ${ur[1]}H544M${lr[0] + 12} ${lr[1]}H544`} class="ext"></path>
+      <line x1="534" y1={ur[1]} x2="534" y2={lr[1]} class="dim" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+      <text x="534" y={C} text-anchor="middle" class="dim-text" transform={`rotate(-90 534 ${C})`} dy="4">200.0</text>
+
+      <text x="16" y="24" class="note">DWG IW-001</text>
+      <text x="16" y="572" class="note">ISO VIEW · SCALE 1:1</text>
+    </g>
+  </svg>
+  <figcaption id="hero-drawing-caption" class="sr-only">The IW monogram drawn as an isometric cube, the brand mark of INSPIREWORKSS.</figcaption>
+</figure>
+
+<style>
+  .hero-drawing {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .c-dash,
+  .c-chain,
+  .c-cross,
+  .ext,
+  .dim {
+    fill: none;
+    stroke: var(--c-annot);
+    stroke-width: 1;
+  }
+
+  .c-dash {
+    stroke-dasharray: 3 6;
+    opacity: 0.7;
+  }
+
+  .c-chain {
+    stroke-dasharray: 26 6 4 6;
+    opacity: 0.8;
+  }
+
+  .ext {
+    opacity: 0.8;
+  }
+
+  .arrowhead {
+    fill: var(--c-annot);
+  }
+
+  .hatch-line {
+    stroke: var(--c-annot);
+    stroke-width: 1;
+    opacity: 0.35;
+  }
+
+  .face-top {
+    fill: url(#hatch);
+  }
+
+  .draw {
+    fill: none;
+    stroke-linejoin: miter;
+    stroke-linecap: square;
+  }
+
+  .edge-steel {
+    stroke: var(--c-ink);
+    stroke-width: 6;
+  }
+
+  .edge-red {
+    stroke: var(--c-accent);
+    stroke-width: 6;
+  }
+
+  .edge-inner {
+    stroke: var(--c-ink-3);
+    stroke-width: 1.5;
+  }
+
+  .letter-i {
+    stroke: var(--c-ink);
+    stroke-width: 18;
+  }
+
+  .letter-w {
+    stroke: var(--c-accent);
+    stroke-width: 18;
+  }
+
+  .dim-text,
+  .note {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    fill: var(--c-ink-3);
+    paint-order: stroke;
+    stroke: var(--c-paper);
+    stroke-width: 8px;
+  }
+
+  .note {
+    font-size: 11px;
+  }
+
+  /* ── Motion ── */
+  .draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    animation: draw 1.4s cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-delay: var(--d, 0s);
+  }
+
+  .construction,
+  .dims,
+  .face-top {
+    animation: fade 1s ease both;
+  }
+
+  .construction {
+    animation-delay: 0s;
+  }
+
+  .face-top {
+    animation-delay: 1.3s;
+  }
+
+  .dims {
+    animation-delay: 1.6s;
+  }
+
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .draw,
+    .construction,
+    .dims,
+    .face-top {
+      animation: none;
+    }
+  }
+</style>

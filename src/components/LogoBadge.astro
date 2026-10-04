@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/inspireworkss-logo.png';
+
+interface Props {
+  size?: number;
+  class?: string;
+  /** Decorative when placed next to the visible wordmark. */
+  decorative?: boolean;
+}
+
+const { size = 36, class: className, decorative = true } = Astro.props;
+---
+
+<span class:list={['logo-badge chamfer', className]} style={`--size:${size}px`}>
+  <Image
+    src={logo}
+    alt={decorative ? '' : 'INSPIREWORKSS IW monogram'}
+    width={size * 2}
+    height={size * 2}
+    loading="eager"
+    decoding="async"
+  />
+</span>
+
+<style>
+  .logo-badge {
+    --cut: calc(var(--size) * 0.18);
+    display: inline-block;
+    flex: none;
+    width: var(--size);
+    height: var(--size);
+    background: var(--c-plate);
+    overflow: hidden;
+  }
+
+  .logo-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.18);
+  }
+</style>

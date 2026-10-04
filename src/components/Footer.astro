@@ -1,0 +1,146 @@
+---
+import { nav, site, mailto } from '../config/site';
+import { getServices } from '../lib/content';
+import Icon from './Icon.astro';
+import LogoBadge from './LogoBadge.astro';
+
+const services = await getServices();
+const year = new Date().getFullYear();
+const socials = [
+  { ...site.social.linkedin, icon: 'linkedin' as const },
+  { ...site.social.youtube, icon: 'youtube' as const },
+  { ...site.social.blog, icon: 'blog' as const },
+];
+---
+
+<footer class="site-footer">
+  <div class="container-x grid gap-12 py-16 md:grid-cols-12 lg:py-20">
+    <div class="md:col-span-12 lg:col-span-5">
+      <div class="flex items-center gap-3">
+        <LogoBadge size={44} />
+        <span class="font-display text-2xl font-bold tracking-[0.06em]">{site.name}</span>
+      </div>
+      <p class="mt-5 max-w-sm text-ink-2">{site.tagline}</p>
+      <a href={mailto()} class="footer-email mt-8">
+        <span class="eyebrow block">Write to the studio</span>
+        <span class="mt-2 block break-all">{site.email}</span>
+      </a>
+    </div>
+
+    <nav aria-label="Footer" class="md:col-span-4 lg:col-span-2">
+      <h2 class="eyebrow">Index</h2>
+      <ul class="mt-4 space-y-2">
+        {nav.map((item) => <li><a class="footer-link" href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="md:col-span-4 lg:col-span-3">
+      <h2 class="eyebrow">Services</h2>
+      <ul class="mt-4 space-y-2">
+        {services.map((s) => <li><a class="footer-link" href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="md:col-span-4 lg:col-span-2">
+      <h2 class="eyebrow">Connect</h2>
+      <ul class="mt-4 space-y-2">
+        {
+          socials.map((s) => (
+            <li>
+              <a class="footer-link inline-flex items-center gap-2" href={s.url} rel="me noopener" target="_blank">
+                <Icon name={s.icon} size={16} />
+                {s.label}
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Drawing title block -->
+  <div class="border-t border-line">
+    <div class="container-x">
+      <dl class="title-strip">
+        <div><dt>Practice</dt><dd>{site.name}</dd></div>
+        <div><dt>Drawn by</dt><dd>{site.owner}</dd></div>
+        <div><dt>Disciplines</dt><dd>{site.disciplines.join(' · ')}</dd></div>
+        <div><dt>Rev</dt><dd>© {year}</dd></div>
+      </dl>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--c-line);
+    background: var(--c-sheet);
+  }
+
+  .footer-link {
+    color: var(--c-ink-2);
+    transition: color 0.2s ease;
+  }
+
+  .footer-link:hover {
+    color: var(--c-accent);
+  }
+
+  .footer-email {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+    line-height: 1.05;
+    border-bottom: 1px solid var(--c-line-strong);
+    padding-bottom: 0.4rem;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .footer-email:hover {
+    color: var(--c-accent);
+    border-color: var(--c-accent);
+  }
+
+  .title-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .title-strip > div {
+    padding: 0.9rem 1rem 1rem 0;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .title-strip dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+
+  .title-strip dd {
+    margin-top: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+
+  @media (min-width: 48rem) {
+    .title-strip {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .title-strip > div {
+      border-bottom: 0;
+      padding-left: 1rem;
+      border-left: 1px solid var(--c-line);
+    }
+
+    .title-strip > div:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+</style>

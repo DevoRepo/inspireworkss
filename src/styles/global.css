@@ -1,0 +1,459 @@
+@import 'tailwindcss';
+
+/* Dark mode is driven by <html data-theme="dark">, never by the OS preference (light is the default). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ───────────────────────── Tokens ───────────────────────── */
+
+:root {
+  color-scheme: light;
+
+  /* Drawing-office light: paper, graphite ink, steel, signal red (from the IW mark). */
+  --c-paper: #f4f3ee;
+  --c-sheet: #ffffff;
+  --c-ink: #15171a;
+  --c-ink-2: #3e434a;
+  --c-ink-3: #5b6169;
+  --c-line: #d9d7d0;
+  --c-line-strong: #b4b1a8;
+  --c-grid: rgb(21 23 26 / 0.05);
+  --c-grid-major: rgb(21 23 26 / 0.08);
+  --c-accent: #c8231b;
+  --c-accent-ink: #ffffff;
+  --c-accent-soft: #f6e2df;
+  --c-annot: #5b6169; /* construction / annotation lines */
+  --c-plate: #111214; /* the logo plate is always dark */
+
+  --shadow-lift: 0 1px 0 var(--c-line), 0 18px 40px -24px rgb(21 23 26 / 0.35);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Night drawing office: graphite panels, blueline annotations, lifted signal red. */
+  --c-paper: #0f1113;
+  --c-sheet: #16191c;
+  --c-ink: #eceae4;
+  --c-ink-2: #c0c4c9;
+  --c-ink-3: #8f969e;
+  --c-line: #2a2f35;
+  --c-line-strong: #414850;
+  --c-grid: rgb(127 184 201 / 0.05);
+  --c-grid-major: rgb(127 184 201 / 0.09);
+  --c-accent: #ff4b3e;
+  --c-accent-ink: #140605;
+  --c-accent-soft: #2b1614;
+  --c-annot: #6fa8ba;
+  --c-plate: #0a0b0c;
+
+  --shadow-lift: 0 1px 0 var(--c-line), 0 18px 40px -24px rgb(0 0 0 / 0.8);
+}
+
+@theme inline {
+  --color-paper: var(--c-paper);
+  --color-sheet: var(--c-sheet);
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-3);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-accent: var(--c-accent);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-annot: var(--c-annot);
+
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow-condensed), 'Arial Narrow', ui-sans-serif, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-feature-settings: 'kern', 'tnum' 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ───────────────────────── Components ───────────────────────── */
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 3rem);
+  }
+
+  /* Mono annotation label — the "dimension text" of the system. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+
+  .display-xl {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: clamp(2.9rem, 1.4rem + 6.4vw, 7rem);
+    line-height: 0.9;
+    letter-spacing: -0.015em;
+  }
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: clamp(2.5rem, 1.5rem + 4.4vw, 5.25rem);
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+  }
+
+  .heading-xl {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 1.35rem + 2.6vw, 3.5rem);
+    line-height: 1;
+  }
+
+  .heading-lg {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 1.25rem + 1.3vw, 2.35rem);
+    line-height: 1.05;
+  }
+
+  .heading-md {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.65rem);
+    line-height: 1.1;
+  }
+
+  .lead {
+    font-size: clamp(1.125rem, 1.03rem + 0.4vw, 1.35rem);
+    line-height: 1.55;
+    color: var(--c-ink-2);
+  }
+
+  /* Faint drafting grid: 8px minor, 64px major. */
+  .grid-paper {
+    background-color: var(--c-paper);
+    background-image:
+      linear-gradient(var(--c-grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--c-grid-major) 1px, transparent 1px),
+      linear-gradient(var(--c-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--c-grid) 1px, transparent 1px);
+    background-size: 64px 64px, 64px 64px, 8px 8px, 8px 8px;
+    background-position: -1px -1px;
+  }
+
+  /* Chamfered corners echo the hexagonal IW mark. */
+  .chamfer {
+    --cut: 10px;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    --cut: 9px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    min-height: 3rem;
+    padding: 0.7rem 1.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .btn svg {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .btn:hover svg {
+    transform: translateX(3px);
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn-primary {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  .btn-primary:hover {
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  .btn-secondary {
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  .btn-secondary:hover {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--c-ink);
+    box-shadow: inset 0 0 0 1px var(--c-line-strong);
+    clip-path: none;
+  }
+
+  .btn-ghost:hover {
+    box-shadow: inset 0 0 0 1px var(--c-ink);
+  }
+
+  /* Underlined text link with a dimension-style tick. */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-ink);
+    background: linear-gradient(var(--c-accent), var(--c-accent)) left bottom / 0 1px no-repeat;
+    padding-bottom: 3px;
+    transition: background-size 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.2s;
+  }
+
+  .link-arrow:hover {
+    background-size: 100% 1px;
+    color: var(--c-accent);
+  }
+
+  .link-arrow svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .prose-body > * + * {
+    margin-top: 1.1em;
+  }
+
+  .prose-body p {
+    color: var(--c-ink-2);
+  }
+
+  /* Level badge used in spec tables. */
+  .level {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .level::before {
+    content: '';
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 1.5px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .level[data-level='Expert']::before,
+  .level[data-level='Advanced']::before {
+    background: currentColor;
+  }
+
+  .level[data-level='Expert'],
+  .level[data-level='Advanced'] {
+    color: var(--c-accent);
+  }
+
+  .level[data-level='Intermediate'] {
+    color: var(--c-ink-3);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--c-ink-2);
+    box-shadow: inset 0 0 0 1px var(--c-line);
+    background: var(--c-sheet);
+    white-space: nowrap;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--c-ink);
+    color: var(--c-paper);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+}
+
+/* ───────────────────────── Motion ───────────────────────── */
+
+/* Native cross-document page transitions — zero JavaScript. */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 180ms ease both vt-out;
+}
+
+::view-transition-new(root) {
+  animation: 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both vt-in;
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Reveal-on-scroll: content is only hidden when JS is present to reveal it again. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--reveal-i, 0) * 70ms);
+}
+
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Dimension lines "extend" from their centre when revealed. */
+.js [data-reveal] .dim-line {
+  transform: scaleX(0);
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s;
+}
+
+.js [data-reveal].is-in .dim-line {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js [data-reveal],
+  .js [data-reveal] .dim-line {
+    opacity: 1;
+    transform: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

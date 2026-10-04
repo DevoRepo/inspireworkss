@@ -1,0 +1,65 @@
+---
+/**
+ * Section heading marked like a section view: a cutting-plane line with "A — A" labels.
+ */
+interface Props {
+  mark: string;
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  id?: string;
+  level?: 'h2' | 'h3';
+}
+
+const { mark, eyebrow, title, intro, id, level = 'h2' } = Astro.props;
+const Tag = level;
+---
+
+<div class="section-head" data-reveal>
+  <div class="cut" aria-hidden="true">
+    <span class="cut-mark">{mark}</span>
+    <span class="cut-line dim-line"></span>
+    <span class="cut-mark">{mark}</span>
+  </div>
+  <p class="eyebrow mt-5">Section {mark}–{mark} · {eyebrow}</p>
+  <Tag id={id} class="heading-xl mt-3 max-w-3xl">{title}</Tag>
+  {intro && <p class="lead mt-5 max-w-2xl">{intro}</p>}
+  <slot />
+</div>
+
+<style>
+  .cut {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 22rem;
+  }
+
+  .cut-mark {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--c-accent);
+    border: 1px solid var(--c-accent);
+    border-radius: 50%;
+  }
+
+  /* Chain line (long dash · short dash) — the drafting convention for cutting planes. */
+  .cut-line {
+    flex: 1;
+    height: 2px;
+    transform-origin: left center;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--c-accent) 0 22px,
+      transparent 22px 28px,
+      var(--c-accent) 28px 32px,
+      transparent 32px 38px
+    );
+  }
+</style>

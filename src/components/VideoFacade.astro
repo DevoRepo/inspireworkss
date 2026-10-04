@@ -1,0 +1,98 @@
+---
+/**
+ * Lightweight YouTube embed: shows an optimised local thumbnail and only loads the
+ * privacy-enhanced (youtube-nocookie) player after the visitor presses play.
+ */
+import { Image } from 'astro:assets';
+import { videoThumbnail, youtubeUrl } from '../lib/content';
+import Icon from './Icon.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  sizes?: string;
+  eager?: boolean;
+}
+
+const { id, title, sizes = '(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw', eager = false } = Astro.props;
+---
+
+<div class="yt" data-yt={id} data-yt-title={title}>
+  <button type="button" class="yt-btn" aria-label={`Play video: ${title}`}>
+    <Image src={videoThumbnail(id)} alt="" widths={[480, 720, 960, 1280]} sizes={sizes} loading={eager ? 'eager' : 'lazy'} />
+    <span class="yt-play" aria-hidden="true"><Icon name="play" size={22} /></span>
+  </button>
+  <noscript>
+    <a href={youtubeUrl(id)} class="link-arrow mt-3">Watch on YouTube</a>
+  </noscript>
+</div>
+
+<style>
+  .yt {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--c-plate);
+    overflow: hidden;
+  }
+
+  .yt-btn {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .yt-btn :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.4s;
+  }
+
+  .yt-btn:hover :global(img) {
+    transform: scale(1.04);
+  }
+
+  .yt-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    translate: -50% -50%;
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .yt-btn:hover .yt-play,
+  .yt-btn:focus-visible .yt-play {
+    transform: scale(1.08);
+  }
+
+  .yt :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-yt]').forEach((el) => {
+    el.querySelector('button')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${el.dataset.yt}?autoplay=1&rel=0`;
+      iframe.title = el.dataset.ytTitle ?? 'YouTube video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      el.replaceChildren(iframe);
+      iframe.focus();
+    });
+  });
+</script>

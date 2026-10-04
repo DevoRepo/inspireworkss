@@ -1,0 +1,86 @@
+---
+/** Decorative dimension line with extension lines, arrowheads and a centred label. */
+interface Props {
+  label: string;
+  class?: string;
+  style?: string;
+}
+
+const { label, class: className, style } = Astro.props;
+---
+
+<div class:list={['dim', className]} style={style} aria-hidden="true">
+  <span class="dim-line"></span>
+  <span class="dim-label">{label}</span>
+</div>
+
+<style>
+  .dim {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.25rem;
+    color: var(--c-annot);
+  }
+
+  /* Extension lines */
+  .dim::before,
+  .dim::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: currentColor;
+  }
+
+  .dim::before {
+    left: 0;
+  }
+
+  .dim::after {
+    right: 0;
+  }
+
+  .dim-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: currentColor;
+  }
+
+  /* Arrowheads */
+  .dim-line::before,
+  .dim-line::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 9px;
+    height: 7px;
+    background: currentColor;
+  }
+
+  .dim-line::before {
+    left: 0;
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  }
+
+  .dim-line::after {
+    right: 0;
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+  }
+
+  .dim-label {
+    position: relative;
+    padding-inline: 0.6rem;
+    background: var(--dim-bg, var(--c-paper));
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+</style>

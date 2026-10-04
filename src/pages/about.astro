@@ -1,0 +1,289 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TitleBlock from '../components/TitleBlock.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import DimensionLine from '../components/DimensionLine.astro';
+import CTABand from '../components/CTABand.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+import { getCredentials, getTools, pad } from '../lib/content';
+import logo from '../assets/brand/inspireworkss-logo.png';
+
+const tools = (await getTools()).filter((t) => t.data.level);
+const credentials = await getCredentials();
+const credentialGroups = [
+  { type: 'experience', label: 'Experience' },
+  { type: 'education', label: 'Education' },
+  { type: 'certification', label: 'Certifications' },
+] as const;
+
+const domains = [
+  { name: 'Mechanical engineering', text: 'Mechanical, product and machine design, engineering calculations, design optimisation and DFM.' },
+  { name: 'Piping engineering', text: 'Piping design, routing and supports, plant and equipment layout, pipe stress analysis and pressure vessels.' },
+  { name: 'Marine engineering', text: 'Part of the same ongoing journey of exploring how engineered systems are designed and built.' },
+];
+
+const teaching = [
+  'Mentors students and professionals',
+  'Creates technical courses and tutorials',
+  'Runs the INSPIREWORKSS YouTube channel and blog',
+  'Encourages practical problem-solving and critical thinking',
+];
+
+const hobbies = ['Reading books', 'Watching anime', 'Listening to podcasts', 'Martial arts', 'Content creation'];
+const links = [
+  { ...site.social.linkedin, icon: 'linkedin' as const },
+  { ...site.social.youtube, icon: 'youtube' as const },
+  { ...site.social.blog, icon: 'blog' as const },
+];
+const trail = [{ name: 'About', href: '/about/' }];
+---
+
+<BaseLayout
+  title={`About ${site.owner}`}
+  description={`Meet ${site.owner}, the engineer behind INSPIREWORKSS — mechanical, piping and marine engineering, CAD/CAE expertise, codes & standards, and a passion for teaching the how and the why.`}
+  type="profile"
+  trail={trail}
+>
+  <TitleBlock
+    eyebrow="The engineer behind INSPIREWORKSS"
+    title={site.owner}
+    lead="An engineer on a never-ending journey of exploring the world of mechanical, piping and marine engineering."
+    sheet="02 / 07"
+    meta={[
+      { label: 'Title', value: 'About' },
+      { label: 'Disciplines', value: site.disciplines.join(' · ') },
+      { label: 'Practice', value: site.name },
+    ]}
+    trail={trail}
+  />
+
+  <!-- Profile -->
+  <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="profile-title">
+    <div class="container-x grid gap-14 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <SectionHeading mark="A" eyebrow="Profile" id="profile-title" title="Complex challenges, practical solutions." />
+        <div class="prose-body mt-8 max-w-2xl text-lg" data-reveal>
+          <p>
+            For {site.owner}, every project is an opportunity to translate complex engineering challenges into practical,
+            optimised solutions.
+          </p>
+          <p>
+            Beyond professional work, {site.owner} is passionate about teaching and sharing engineering knowledge through the{' '}
+            {site.name} website and YouTube channel — simplifying complex concepts with a focus on both the{' '}
+            <strong class="font-semibold text-ink">“how”</strong> and the <strong class="font-semibold text-ink">“why”</strong>.
+          </p>
+          <p>
+            The expertise spans CAD/CAE tools including AutoCAD, SolidWorks, Creo, NX, Inventor, E3D, Navisworks, Plant 3D, PV
+            Elite and Caesar II — complemented by strong knowledge of design, codes &amp; standards, GD&amp;T and Python-based
+            automation.
+          </p>
+          <p>
+            Driven by curiosity and continuous learning, the aim is simple: to make engineering more accessible, engaging and
+            impactful.
+          </p>
+        </div>
+      </div>
+
+      <aside class="lg:col-span-5 lg:pl-6" aria-label="Software" data-reveal>
+        <div class="plate chamfer">
+          <Image src={logo} alt="" widths={[320, 480]} sizes="(min-width: 64rem) 20vw, 50vw" class="plate-img" />
+          <div class="plate-body">
+            <p class="eyebrow plate-eyebrow">Toolset · rated</p>
+            <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
+              {
+                tools.map((t) => (
+                  <li class="flex items-center gap-2 text-[0.95rem]">
+                    <span class="level-dot" data-level={t.data.level} aria-hidden="true" />
+                    {t.data.name}
+                    <span class="sr-only">({t.data.level})</span>
+                  </li>
+                ))
+              }
+            </ul>
+            <p class="mono mt-5 text-[0.7rem] tracking-widest uppercase plate-key">
+              <span class="level-dot inline-block" data-level="Expert"></span> Expert &nbsp;
+              <span class="level-dot inline-block" data-level="Intermediate"></span> Intermediate
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Domains -->
+  <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="domains-title">
+    <div class="container-x">
+      <SectionHeading mark="B" eyebrow="Domains" id="domains-title" title="Three engineering worlds, one way of working." />
+      <ol class="mt-12 grid gap-px border border-line bg-line md:grid-cols-3">
+        {
+          domains.map((d, i) => (
+            <li class="bg-sheet p-6 sm:p-8" data-reveal style={`--reveal-i: ${i}`}>
+              <span class="mono text-xs text-accent">{pad(i + 1)}</span>
+              <h3 class="heading-lg mt-4">{d.name}</h3>
+              <p class="mt-3 text-ink-2">{d.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Teaching -->
+  <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="teaching-title">
+    <div class="container-x grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-6">
+        <SectionHeading
+          mark="C"
+          eyebrow="Teaching & mentoring"
+          id="teaching-title"
+          title="Making engineering accessible."
+          intro="Teaching is part of the practice, not a side project — the same rigour that goes into a design goes into explaining it."
+        />
+      </div>
+      <div class="lg:col-span-6" data-reveal>
+        <ul class="border-t border-ink">
+          {
+            teaching.map((t, i) => (
+              <li class="flex items-baseline gap-5 border-b border-line py-4 text-lg">
+                <span class="mono text-xs text-ink-3">{pad(i + 1)}</span>
+                {t}
+              </li>
+            ))
+          }
+        </ul>
+        <div class="mt-8 flex flex-wrap gap-6">
+          <a href="/resources/" class="link-arrow">Tutorials & resources <Icon name="arrow" /></a>
+          <a href="/services/corporate-cad-cae-training/" class="link-arrow">CAD/CAE training <Icon name="arrow" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    credentials.length > 0 && (
+      <section class="border-t border-line py-20 sm:py-24 lg:py-28" aria-labelledby="record-title">
+        <div class="container-x">
+          <SectionHeading mark="D" eyebrow="Record" id="record-title" title="Experience & qualifications." />
+          <div class="mt-12 grid gap-12 lg:grid-cols-3">
+            {credentialGroups.map((group) => {
+              const items = credentials.filter((c) => c.data.type === group.type);
+              return (
+                items.length > 0 && (
+                  <div data-reveal>
+                    <h3 class="eyebrow">{group.label}</h3>
+                    <ul class="mt-4 border-t border-ink">
+                      {items.map((c) => (
+                        <li class="border-b border-line py-4">
+                          <p class="heading-md">{c.data.title}</p>
+                          <p class="mt-1 text-ink-2">
+                            {c.data.organisation}
+                            {c.data.period && <span class="mono ml-2 text-xs text-ink-3">{c.data.period}</span>}
+                          </p>
+                          {c.data.description && <p class="mt-2 text-[0.95rem] text-ink-2">{c.data.description}</p>}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Off the drawing board + links -->
+  <section class="border-t border-line bg-sheet py-20 sm:py-24" aria-labelledby="off-title">
+    <div class="container-x grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-6" data-reveal>
+        <p class="eyebrow">Off the drawing board</p>
+        <h2 id="off-title" class="heading-xl mt-3">Outside engineering</h2>
+        <ul class="mt-8 flex flex-wrap gap-2">
+          {hobbies.map((h) => <li class="chip !text-sm">{h}</li>)}
+        </ul>
+        <DimensionLine label="Curiosity · continuous learning" class="mt-10 max-w-md" style="--dim-bg: var(--c-sheet)" />
+      </div>
+      <div class="lg:col-span-6" data-reveal>
+        <p class="eyebrow">Find {site.owner} online</p>
+        <ul class="mt-6 border-t border-ink">
+          {
+            links.map((l) => (
+              <li class="border-b border-line">
+                <a href={l.url} target="_blank" rel="me noopener" class="online-link">
+                  <Icon name={l.icon} size={20} />
+                  <span class="flex-1">
+                    <span class="block font-semibold">{l.label}</span>
+                    <span class="mono block text-xs text-ink-3">{l.handle}</span>
+                  </span>
+                  <Icon name="arrow-up-right" size={20} />
+                  <span class="sr-only">(opens in a new tab)</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <CTABand title="Work with INSPIREWORKSS." />
+</BaseLayout>
+
+<style>
+  .plate {
+    --cut: 22px;
+    position: relative;
+    background: var(--c-plate);
+    color: #eceae4;
+    overflow: hidden;
+  }
+
+  .plate :global(.plate-img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: center 45%;
+  }
+
+  .plate-body {
+    padding: 1.5rem 1.75rem 1.75rem;
+    border-top: 1px solid #2a2f35;
+  }
+
+  .plate-eyebrow,
+  .plate-key {
+    color: #9aa1a8;
+  }
+
+  .level-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: none;
+    border: 1.5px solid #ff4b3e;
+    transform: rotate(45deg);
+  }
+
+  .level-dot[data-level='Expert'] {
+    background: #ff4b3e;
+  }
+
+  .level-dot[data-level='Intermediate'] {
+    border-color: #9aa1a8;
+  }
+
+  .online-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0.25rem;
+    transition: color 0.2s ease, padding 0.3s ease;
+  }
+
+  .online-link:hover {
+    color: var(--c-accent);
+    padding-left: 0.75rem;
+  }
+</style>

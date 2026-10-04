@@ -1,0 +1,203 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '../lib/content';
+import { pad, resolveTools } from '../lib/content';
+import Icon from './Icon.astro';
+
+interface Props {
+  project: Project;
+  index: number;
+  reverse?: boolean;
+  headingLevel?: 'h2' | 'h3';
+  eager?: boolean;
+}
+
+const { project, index, reverse = false, headingLevel = 'h3', eager = false } = Astro.props;
+const { data } = project;
+const tools = await resolveTools(data.tools);
+const Heading = headingLevel;
+const href = `/projects/${project.id}/`;
+const meta = [
+  { label: 'Discipline', value: data.discipline },
+  { label: 'Category', value: data.category },
+  { label: 'Format', value: data.format },
+  ...(tools.length ? [{ label: 'Software', value: tools.map((t) => t.data.name).join(', ') }] : []),
+];
+---
+
+<article class:list={['showcase', { reverse }]} data-reveal>
+  <a href={href} class="media" tabindex="-1" aria-hidden="true">
+    <span class="frame">
+      <Image
+        src={data.cover}
+        alt=""
+        widths={[480, 720, 960, 1280]}
+        sizes="(min-width: 64rem) 58vw, 100vw"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+      />
+    </span>
+    <span class="fig mono">Fig. {pad(index)}</span>
+    {
+      data.youtubeId && (
+        <span class="play">
+          <Icon name="play" size={16} />
+          Video
+        </span>
+      )
+    }
+  </a>
+
+  <div class="info">
+    <p class="eyebrow">Project {pad(index)} · {data.category}</p>
+    <Heading class="heading-lg mt-3">
+      <a href={href} class="title-link">{data.title}</a>
+    </Heading>
+    <p class="mt-4 text-ink-2">{data.summary}</p>
+    <dl class="meta">
+      {
+        meta.map((m) => (
+          <div>
+            <dt>{m.label}</dt>
+            <dd>{m.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <a href={href} class="link-arrow mt-6" aria-label={`View project: ${data.title}`}>
+      View project <Icon name="arrow" />
+    </a>
+  </div>
+</article>
+
+<style>
+  .showcase {
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+  }
+
+  .media {
+    position: relative;
+    display: block;
+    padding: 0.9rem;
+    background: var(--c-sheet);
+    box-shadow: inset 0 0 0 1px var(--c-line);
+  }
+
+  /* Crop / registration marks at the four corners of the frame. */
+  .media::before {
+    content: '';
+    position: absolute;
+    inset: 0.35rem;
+    pointer-events: none;
+    z-index: 1;
+    --m: var(--c-ink-3);
+    background:
+      linear-gradient(var(--m), var(--m)) top left / 14px 1px,
+      linear-gradient(var(--m), var(--m)) top left / 1px 14px,
+      linear-gradient(var(--m), var(--m)) top right / 14px 1px,
+      linear-gradient(var(--m), var(--m)) top right / 1px 14px,
+      linear-gradient(var(--m), var(--m)) bottom left / 14px 1px,
+      linear-gradient(var(--m), var(--m)) bottom left / 1px 14px,
+      linear-gradient(var(--m), var(--m)) bottom right / 14px 1px,
+      linear-gradient(var(--m), var(--m)) bottom right / 1px 14px;
+    background-repeat: no-repeat;
+  }
+
+  .frame {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: #fff;
+  }
+
+  .frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .showcase:hover .frame :global(img) {
+    transform: scale(1.035);
+  }
+
+  .fig {
+    position: absolute;
+    left: 1.6rem;
+    bottom: 1.6rem;
+    z-index: 2;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  .play {
+    position: absolute;
+    right: 1.6rem;
+    bottom: 1.6rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  .title-link {
+    background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
+    transition: background-size 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .showcase:hover .title-link,
+  .title-link:hover {
+    background-size: 100% 2px;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--c-ink);
+  }
+
+  .meta > div {
+    padding: 0.65rem 0.75rem 0.7rem 0;
+    border-bottom: 1px solid var(--c-line);
+    min-width: 0;
+  }
+
+  .meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+
+  .meta dd {
+    margin-top: 0.2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 64rem) {
+    .showcase {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: 3.5rem;
+    }
+
+    .showcase.reverse .media {
+      order: 2;
+    }
+  }
+</style>

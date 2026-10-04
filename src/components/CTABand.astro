@@ -1,0 +1,86 @@
+---
+import { site, mailto } from '../config/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+  subject?: string;
+}
+
+const {
+  title = 'Have a design, drawing or piping problem on the table?',
+  text = 'Share what you are working on — the component or system, the deliverable you need and any drawings or standards involved — and send it over by email.',
+  subject = 'Project enquiry — INSPIREWORKSS',
+} = Astro.props;
+---
+
+<section class="cta" aria-labelledby="cta-title">
+  <div class="container-x relative py-16 sm:py-20 lg:py-24">
+    <div class="grid gap-10 lg:grid-cols-12 lg:items-end" data-reveal>
+      <div class="lg:col-span-8">
+        <p class="eyebrow cta-eyebrow">Revision request · Open</p>
+        <h2 id="cta-title" class="display-lg mt-4">{title}</h2>
+        <p class="cta-text mt-6 max-w-2xl text-lg">{text}</p>
+      </div>
+      <div class="flex flex-col gap-3 sm:flex-row lg:col-span-4 lg:flex-col lg:items-end">
+        <a href={mailto(subject)} class="btn btn-primary w-full sm:w-auto">
+          Email the studio <Icon name="arrow" />
+        </a>
+        <a href="/contact/" class="btn cta-ghost w-full sm:w-auto">All contact options</a>
+      </div>
+    </div>
+    <p class="cta-mail mono mt-10 break-all">{site.email}</p>
+  </div>
+</section>
+
+<style>
+  /* Always a dark plate (like the logo) in both themes, with fixed light text. */
+  .cta {
+    --c-paper: #0f1113;
+    --c-ink: #eceae4;
+    --c-ink-3: #9aa1a8;
+    --c-grid: rgb(127 184 201 / 0.05);
+    --c-grid-major: rgb(127 184 201 / 0.09);
+    --c-accent: #ff4b3e;
+    --c-accent-ink: #140605;
+    position: relative;
+    background-color: var(--c-plate);
+    color: var(--c-ink);
+    background-image:
+      linear-gradient(var(--c-grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--c-grid-major) 1px, transparent 1px);
+    background-size: 64px 64px;
+    border-block: 1px solid #2a2f35;
+  }
+
+  .cta-eyebrow {
+    color: var(--c-accent);
+  }
+
+  .cta-text {
+    color: #c0c4c9;
+  }
+
+  .cta-ghost {
+    background: transparent;
+    color: var(--c-ink);
+    box-shadow: inset 0 0 0 1px #414850;
+    clip-path: none;
+  }
+
+  .cta-ghost:hover {
+    box-shadow: inset 0 0 0 1px var(--c-ink);
+  }
+
+  .cta :global(.btn-primary:hover) {
+    background: var(--c-ink);
+    color: #0f1113;
+  }
+
+  .cta-mail {
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    color: var(--c-ink-3);
+  }
+</style>

@@ -1,0 +1,222 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TitleBlock from '../../components/TitleBlock.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import SpecTable from '../../components/SpecTable.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import CTABand from '../../components/CTABand.astro';
+import Icon from '../../components/Icon.astro';
+import { site, mailto } from '../../config/site';
+import { getProjects, getServices, pad, resolveSkills, resolveTools, type Service } from '../../lib/content';
+import { render } from 'astro:content';
+
+export const getStaticPaths = (async () => {
+  const services = await getServices();
+  return services.map((service, i) => ({
+    params: { slug: service.id },
+    props: { service, prev: services[i - 1], next: services[i + 1], total: services.length },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  service: Service;
+  prev?: Service;
+  next?: Service;
+  total: number;
+}
+
+const { service, prev, next, total } = Astro.props;
+const { data } = service;
+const skills = await resolveSkills(data.skills);
+const tools = await resolveTools(data.tools);
+const related = (await getProjects()).filter((p) => p.data.services.some((s) => s.id === service.id)).slice(0, 4);
+const { Content } = await render(service);
+const hasBody = Boolean(service.body?.trim());
+
+const trail = [
+  { name: 'Services', href: '/services/' },
+  { name: data.title, href: `/services/${service.id}/` },
+];
+
+const schema = [
+  {
+    '@type': 'Service',
+    name: data.title,
+    description: data.summary,
+    serviceType: data.title,
+    provider: { '@id': new URL('/#organization', Astro.site).href },
+    url: new URL(`/services/${service.id}/`, Astro.site).href,
+  },
+];
+---
+
+<BaseLayout title={data.title} description={data.summary} trail={trail} schema={schema}>
+  <TitleBlock
+    eyebrow={`Service ${pad(data.order)} of ${pad(total)}`}
+    title={data.title}
+    lead={data.summary}
+    sheet={`03.${pad(data.order)}`}
+    meta={[
+      { label: 'Title', value: 'Service' },
+      { label: 'Skills', value: `${pad(skills.length)} referenced` },
+      { label: 'Software', value: tools.length ? tools.map((t) => t.data.name).slice(0, 3).join(', ') + (tools.length > 3 ? ' +' : '') : '—' },
+    ]}
+    trail={trail}
+  >
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+      <a href={mailto(`Enquiry: ${data.title}`)} class="btn btn-primary">Enquire about this service <Icon name="arrow" /></a>
+      <a href="/services/" class="btn btn-ghost">All services</a>
+    </div>
+  </TitleBlock>
+
+  <!-- Who / value -->
+  <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="fit-title">
+    <div class="container-x">
+      <SectionHeading mark="A" eyebrow="Fit" id="fit-title" title="Who it helps — and what it delivers." />
+      <div class="mt-12 grid gap-px border border-line bg-line lg:grid-cols-2">
+        <div class="bg-sheet p-6 sm:p-8" data-reveal>
+          <h3 class="eyebrow">Who it helps</h3>
+          <ul class="mt-5 space-y-4">
+            {
+              data.audience.map((a) => (
+                <li class="flex gap-4 text-lg">
+                  <span class="mt-[0.7em] h-px w-5 flex-none bg-ink-3" aria-hidden="true" />
+                  {a}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="bg-sheet p-6 sm:p-8" data-reveal style="--reveal-i: 1">
+          <h3 class="eyebrow">Value delivered</h3>
+          <ul class="mt-5 space-y-4">
+            {
+              data.value.map((v) => (
+                <li class="flex gap-4 text-lg">
+                  <span class="mt-[0.45em] h-3 w-3 flex-none rotate-45 bg-accent" aria-hidden="true" />
+                  {v}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      {
+        data.scope.length > 0 && (
+          <div class="mt-10" data-reveal>
+            <h3 class="eyebrow">Specific scope</h3>
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {data.scope.map((s) => (
+                <li class="chip !px-3 !py-2 !text-sm">{s}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        hasBody && (
+          <div class="prose-body mt-12 max-w-3xl text-lg" data-reveal>
+            <Content />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- Scope: skills + tools -->
+  {
+    (skills.length > 0 || tools.length > 0) && (
+      <section class="grid-paper border-y border-line py-20 sm:py-24 lg:py-28" aria-labelledby="scope-title">
+        <div class="container-x">
+          <SectionHeading mark="B" eyebrow="Specification" id="scope-title" title="Skills and software behind the service." />
+          <div class="mt-12 grid gap-12 lg:grid-cols-12">
+            {skills.length > 0 && (
+              <div class="lg:col-span-8" data-reveal>
+                <SpecTable
+                  caption="Skills"
+                  itemLabel="Skill"
+                  rows={skills.map((s) => ({ name: s.data.skill, level: s.data.level, note: s.data.note }))}
+                />
+              </div>
+            )}
+            {tools.length > 0 && (
+              <div class="lg:col-span-4" data-reveal style="--reveal-i: 1">
+                <SpecTable caption="Software" itemLabel="Package" rows={tools.map((t) => ({ name: t.data.name, level: t.data.level }))} />
+              </div>
+            )}
+          </div>
+          <a href="/expertise/" class="link-arrow mt-10">Full expertise specification <Icon name="arrow" /></a>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Related work -->
+  {
+    related.length > 0 && (
+      <section class="py-20 sm:py-24 lg:py-28" aria-labelledby="related-title">
+        <div class="container-x">
+          <SectionHeading mark="C" eyebrow="Related work" id="related-title" title="See it applied." />
+          <ul class="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((p, i) => (
+              <li data-reveal style={`--reveal-i: ${i}`}>
+                <ProjectCard project={p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Prev / next -->
+  <nav aria-label="More services" class="border-t border-line">
+    <div class="container-x grid sm:grid-cols-2">
+      {
+        prev ? (
+          <a href={`/services/${prev.id}/`} class="pager">
+            <span class="eyebrow">← Previous service</span>
+            <span class="heading-md mt-2 block">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a href={`/services/${next.id}/`} class="pager sm:text-right">
+            <span class="eyebrow">Next service →</span>
+            <span class="heading-md mt-2 block">{next.data.title}</span>
+          </a>
+        )
+      }
+    </div>
+  </nav>
+
+  <CTABand title={`Discuss ${data.title} with ${site.name}.`} subject={`Enquiry: ${data.title}`} />
+</BaseLayout>
+
+<style>
+  .pager {
+    display: block;
+    padding-block: 2rem;
+    transition: color 0.2s ease;
+  }
+
+  .pager:hover {
+    color: var(--c-accent);
+  }
+
+  .pager + .pager {
+    border-top: 1px solid var(--c-line);
+  }
+
+  @media (min-width: 40rem) {
+    .pager + .pager {
+      border-top: 0;
+    }
+  }
+</style>
