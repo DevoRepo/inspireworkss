@@ -60,10 +60,31 @@ Content is kept separate from presentation. Most updates are a single file edit:
 | Projects (one Markdown file each, plus a cover image) | [`src/content/projects/`](src/content/projects/) |
 | Skills (Notion → Expertise) | [`src/content/expertise.json`](src/content/expertise.json) |
 | Software and levels (Notion → Tools) | [`src/content/tools.json`](src/content/tools.json) |
-| YouTube videos | [`src/content/videos.json`](src/content/videos.json), with the thumbnail saved as `src/assets/videos/<id>.jpg` |
+| Resources page videos | Automatic, see [YouTube videos on Resources](#youtube-videos-on-resources) |
+| Homepage "Learn" videos | [`src/content/videos.json`](src/content/videos.json), with the thumbnail saved as `src/assets/videos/<id>.jpg` |
 | Experience, education, certifications | [`src/content/credentials.json`](src/content/credentials.json) |
 
 Schemas are in [`src/content.config.ts`](src/content.config.ts). The build fails with a clear message if a field is missing or mistyped.
+
+### YouTube videos on Resources
+
+The Resources page lists the channel's **long-form videos automatically**: title, summary, "what you'll learn" topics, views, date and thumbnail. Shorts are excluded. Videos are **sorted by views (most watched first)**, **5 per page** (`/resources/`, `/resources/2/`, …).
+
+- [`scripts/fetch-youtube.mjs`](scripts/fetch-youtube.mjs) runs before every `npm run build` (the `prebuild` script). Run it on its own with `npm run youtube`.
+- It writes `src/content/youtube.json`, `src/content/youtube-meta.json` and thumbnails to `src/assets/youtube/`. These are a committed snapshot, so builds still work if YouTube can't be reached.
+- Shorts are excluded by reading YouTube's long-form-only playlist (`UULF…`).
+- Channel ID and page size are in [`src/config/youtube.json`](src/config/youtube.json).
+- The GitHub workflow rebuilds **daily** (02:30 UTC), so new videos and view counts appear without anyone doing anything. GitHub pauses scheduled workflows after 60 days without repository activity; re-enable it from the Actions tab if that happens.
+
+**Without an API key (current setup)**, the public feed is used. It lists the latest 15 long-form videos. Older videos are kept from the committed snapshot, and running `npm run youtube` before a commit carries them forward.
+
+**With a YouTube API key**, the script reads every long-form video, with exact views and video length. Add the key before the channel passes 15 long-form videos:
+
+1. In [Google Cloud Console](https://console.cloud.google.com/), create a project and enable **YouTube Data API v3**.
+2. Under **Credentials**, create an **API key** and restrict it to the YouTube Data API v3.
+3. In the GitHub repo, go to **Settings → Secrets and variables → Actions → New repository secret**. Name it `YOUTUBE_API_KEY` and paste the key. On Cloudflare Pages, add the same name as an encrypted environment variable.
+
+The free quota (10,000 units a day) is far more than needed; one build uses only a few units.
 
 ### Adding a project
 

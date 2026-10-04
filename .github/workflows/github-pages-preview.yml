@@ -5,6 +5,9 @@ name: Deploy preview to GitHub Pages
 on:
   push:
     branches: [main]
+  # Daily rebuild so new YouTube videos and view counts appear on the Resources page.
+  schedule:
+    - cron: '30 2 * * *'
   workflow_dispatch:
 
 permissions:
@@ -26,8 +29,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # "prebuild" refreshes the long-form YouTube videos before the site is built.
       - run: npm run build
         env:
+          # Optional: add a YouTube Data API key as a repository secret to list every video
+          # (without it, the public feed of the latest 15 long-form videos is used).
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SITE_URL: https://${{ github.repository_owner }}.github.io
           BASE_PATH: /${{ github.event.repository.name }}
           NOINDEX: 'true'

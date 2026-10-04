@@ -1,0 +1,148 @@
+---
+import VideoFacade from './VideoFacade.astro';
+import Icon from './Icon.astro';
+import { formatDate, formatDuration, formatViews, pad, youtubeUrl, type YouTubeVideo } from '../lib/content';
+
+interface Props {
+  video: YouTubeVideo;
+  /** Popularity rank across all pages (1 = most viewed). */
+  rank: number;
+  eager?: boolean;
+}
+
+const { video, rank, eager = false } = Astro.props;
+const { data } = video;
+const stats = [
+  { label: 'Views', value: formatViews(data.views) },
+  { label: 'Published', value: formatDate(data.publishedAt) },
+  ...(data.duration ? [{ label: 'Length', value: formatDuration(data.duration) }] : []),
+];
+---
+
+<article class="row" data-reveal>
+  <div class="media">
+    <VideoFacade id={video.id} title={data.title} sizes="(min-width: 64rem) 42vw, 100vw" eager={eager} />
+  </div>
+
+  <div class="info">
+    <p class="flex flex-wrap items-center gap-3">
+      <span class="rank mono">No. {pad(rank)}</span>
+      {rank === 1 && <span class="badge mono">Most watched</span>}
+    </p>
+    <h3 class="heading-lg mt-3">{data.title}</h3>
+
+    <dl class="stats">
+      {
+        stats.map((s) => (
+          <div>
+            <dt>{s.label}</dt>
+            <dd>{s.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    {data.summary && <p class="mt-4 text-ink-2">{data.summary}</p>}
+
+    {
+      data.topics.length > 0 && (
+        <div class="mt-5">
+          <p class="eyebrow">What you'll learn</p>
+          <ul class="topics mt-3">
+            {data.topics.map((t) => (
+              <li>{t}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <a href={youtubeUrl(video.id)} class="link-arrow mt-6" target="_blank" rel="noopener">
+      Watch on YouTube <Icon name="arrow-up-right" />
+      <span class="sr-only">(opens in a new tab)</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .row {
+    display: grid;
+    gap: 1.5rem;
+    padding-block: 2.5rem;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .rank {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--c-accent);
+  }
+
+  .badge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    margin-top: 1rem;
+    padding-block: 0.75rem;
+    border-block: 1px solid var(--c-line);
+  }
+
+  .stats dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-ink-3);
+  }
+
+  .stats dd {
+    margin-top: 0.15rem;
+    font-weight: 500;
+  }
+
+  .topics {
+    display: grid;
+    gap: 0.4rem 1.5rem;
+    font-size: 0.95rem;
+    color: var(--c-ink-2);
+  }
+
+  .topics li {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .topics li::before {
+    content: '';
+    flex: none;
+    width: 0.75rem;
+    height: 2px;
+    margin-top: 0.7em;
+    background: var(--c-accent);
+  }
+
+  @media (min-width: 40rem) {
+    .topics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .row {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 3rem;
+      align-items: start;
+      padding-block: 3rem;
+    }
+  }
+</style>

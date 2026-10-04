@@ -1,0 +1,174 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TitleBlock from '../../components/TitleBlock.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import VideoListItem from '../../components/VideoListItem.astro';
+import Pagination from '../../components/Pagination.astro';
+import CTABand from '../../components/CTABand.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../config/site';
+import youtubeConfig from '../../config/youtube.json';
+import youtubeMeta from '../../content/youtube-meta.json';
+import { formatDate, getYouTubeVideos, pad, youtubeUrl, type YouTubeVideo } from '../../lib/content';
+import { url } from '../../lib/url';
+
+/** Long-form videos only (Shorts are excluded when fetched), most viewed first, paginated. */
+export const getStaticPaths = (async ({ paginate }) => {
+  const videos = await getYouTubeVideos();
+  // Always build page 1, even before any videos have been fetched.
+  return videos.length ? paginate(videos, { pageSize: youtubeConfig.pageSize }) : [{ params: { page: undefined }, props: { page: undefined } }];
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page?: Page<YouTubeVideo>;
+}
+
+const { page } = Astro.props;
+const videos = page?.data ?? [];
+const current = page?.currentPage ?? 1;
+const last = page?.lastPage ?? 1;
+const total = page?.total ?? 0;
+const pageHref = (n: number) => url(n === 1 ? '/resources/' : `/resources/${n}/`);
+const updated = youtubeMeta.fetchedAt ? formatDate(new Date(youtubeMeta.fetchedAt)) : null;
+
+const trail = [{ name: 'Resources', href: '/resources/' }];
+const suffix = current > 1 ? ` — Page ${current}` : '';
+
+const channels = [
+  {
+    ...site.social.youtube,
+    icon: 'youtube' as const,
+    title: 'INSPIREWORKSS on YouTube',
+    text: 'SolidWorks builds, modelling techniques and engineering-drawing exercises.',
+  },
+  {
+    ...site.social.blog,
+    icon: 'blog' as const,
+    title: 'The blog',
+    text: 'Written engineering notes and articles by Avani Jangam.',
+  },
+];
+
+const schema = videos.length
+  ? [
+      {
+        '@type': 'ItemList',
+        name: `${site.name} tutorials${suffix}`,
+        itemListOrder: 'https://schema.org/ItemListOrderDescending',
+        itemListElement: videos.map((v, i) => ({
+          '@type': 'ListItem',
+          position: (page?.start ?? 0) + i + 1,
+          url: youtubeUrl(v.id),
+          name: v.data.title,
+        })),
+      },
+    ]
+  : [];
+---
+
+<BaseLayout
+  title={`Engineering Tutorials & Resources${suffix}`}
+  description={current > 1
+    ? `More SolidWorks and mechanical engineering tutorials from INSPIREWORKSS, ranked by views — page ${current} of ${last}.`
+    : 'Free mechanical engineering tutorials from INSPIREWORKSS — SolidWorks modelling builds, design techniques and engineering-drawing exercises, ranked by views and updated automatically.'}
+  trail={trail}
+  schema={schema}
+>
+  {
+    page?.url.prev && <link slot="head" rel="prev" href={pageHref(current - 1)} />
+  }
+  {
+    page?.url.next && <link slot="head" rel="next" href={pageHref(current + 1)} />
+  }
+
+  <TitleBlock
+    eyebrow="Learn with INSPIREWORKSS"
+    title="Resources"
+    lead="Complex engineering concepts, simplified — with a focus on both the how and the why."
+    sheet="06 / 07"
+    meta={[
+      { label: 'Page', value: `${pad(current)} of ${pad(last)}` },
+      { label: 'Videos', value: `${pad(total)} long-form` },
+      { label: 'Order', value: 'Most watched first' },
+    ]}
+    trail={trail}
+  />
+
+  <section class="py-16 sm:py-20 lg:py-24" aria-labelledby="videos-title">
+    <div class="container-x">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading
+          mark="A"
+          eyebrow="YouTube"
+          id="videos-title"
+          title="Tutorials, most watched first."
+          intro="Long-form tutorials from the INSPIREWORKSS channel, ranked by views and updated automatically."
+        />
+        {updated && <p class="eyebrow shrink-0" data-reveal>Updated {updated}</p>}
+      </div>
+
+      {
+        videos.length > 0 ? (
+          <>
+            <div class="mt-10 border-t border-ink">
+              {videos.map((v, i) => (
+                <VideoListItem video={v} rank={(page?.start ?? 0) + i + 1} eager={i === 0} />
+              ))}
+            </div>
+            <Pagination current={current} last={last} href={pageHref} label="Tutorial pages" />
+          </>
+        ) : (
+          <div class="mt-10 border-t border-ink py-12" data-reveal>
+            <p class="lead max-w-xl">New tutorials are on their way. In the meantime, the full library is on the YouTube channel.</p>
+            <a href={site.social.youtube.url} class="btn btn-primary mt-8" target="_blank" rel="noopener">
+              Visit the channel <Icon name="arrow-up-right" />
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="grid-paper border-y border-line py-20 sm:py-24" aria-labelledby="channels-title">
+    <div class="container-x">
+      <SectionHeading mark="B" eyebrow="Follow along" id="channels-title" title="Keep learning." />
+      <ul class="mt-12 grid gap-px border border-line bg-line md:grid-cols-2">
+        {
+          channels.map((c, i) => (
+            <li class="bg-sheet" data-reveal style={`--reveal-i: ${i}`}>
+              <a href={c.url} target="_blank" rel="me noopener" class="channel">
+                <Icon name={c.icon} size={28} />
+                <span class="heading-lg mt-6 block">{c.title}</span>
+                <span class="mt-2 block text-ink-2">{c.text}</span>
+                <span class="link-arrow mt-6">
+                  {c.handle} <Icon name="arrow-up-right" />
+                </span>
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CTABand title="Want a tutorial or training for your team?" subject="Training / content enquiry — INSPIREWORKSS" />
+</BaseLayout>
+
+<style>
+  .channel {
+    display: block;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    transition: background-color 0.25s ease;
+  }
+
+  .channel:hover {
+    background: var(--c-paper);
+  }
+
+  .channel:hover .heading-lg {
+    color: var(--c-accent);
+  }
+</style>

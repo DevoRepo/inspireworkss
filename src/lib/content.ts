@@ -7,6 +7,7 @@ export type Project = CollectionEntry<'projects'>;
 export type Skill = CollectionEntry<'expertise'>;
 export type Tool = CollectionEntry<'tools'>;
 export type Video = CollectionEntry<'videos'>;
+export type YouTubeVideo = CollectionEntry<'youtube'>;
 
 const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
 
@@ -39,6 +40,13 @@ export async function getSkills(): Promise<Skill[]> {
 }
 
 /** Tools ordered by group, then level (Expert first), then name. */
+/** Long-form channel videos, most viewed first (newest first when views are equal). */
+export async function getYouTubeVideos(): Promise<YouTubeVideo[]> {
+  return (await getCollection('youtube')).sort(
+    (a, b) => b.data.views - a.data.views || b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+  );
+}
+
 export async function getTools(): Promise<Tool[]> {
   const groupIndex = (g: string) => (toolGroups.includes(g) ? toolGroups.indexOf(g) : toolGroups.length);
   return (await getCollection('tools')).sort(
@@ -75,13 +83,31 @@ export function groupBy<T, K extends string>(items: T[], key: (item: T) => K): [
 /** Two-digit drawing-style index: 1 → "01". */
 export const pad = (n: number) => String(n).padStart(2, '0');
 
-const thumbnails = import.meta.glob<{ default: ImageMetadata }>('/src/assets/videos/*.jpg', { eager: true });
+const thumbnails = import.meta.glob<{ default: ImageMetadata }>(['/src/assets/videos/*.jpg', '/src/assets/youtube/*.jpg'], { eager: true });
 
-/** Local, optimisable thumbnail for a YouTube video id (stored in src/assets/videos/<id>.jpg). */
+/**
+ * Local, optimisable thumbnail for a YouTube video id.
+ * Thumbnails fetched from the channel (src/assets/youtube/, refreshed every build) take priority,
+ * so a changed thumbnail on YouTube shows up on the site; src/assets/videos/ is the hand-kept fallback.
+ */
 export function videoThumbnail(id: string): ImageMetadata {
-  const mod = thumbnails[`/src/assets/videos/${id}.jpg`];
-  if (!mod) throw new Error(`Missing thumbnail src/assets/videos/${id}.jpg`);
+  const mod = thumbnails[`/src/assets/youtube/${id}.jpg`] ?? thumbnails[`/src/assets/videos/${id}.jpg`];
+  if (!mod) throw new Error(`Missing thumbnail for video ${id}`);
   return mod.default;
+}
+
+const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
+const dateFormat = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+export const formatViews = (n: number) => `${compact.format(n)} ${n === 1 ? 'view' : 'views'}`;
+export const formatDate = (d: Date) => dateFormat.format(d);
+
+/** 754 → "12:34", 3723 → "1:02:03". */
+export function formatDuration(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = String(seconds % 60).padStart(2, '0');
+  return h ? `${h}:${String(m).padStart(2, '0')}:${s}` : `${m}:${s}`;
 }
 
 export const youtubeUrl = (id: string) => `https://www.youtube.com/watch?v=${id}`;

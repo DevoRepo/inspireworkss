@@ -34,7 +34,8 @@ Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Av
 - Light theme is the default. Every new style must work in both themes: use the `--c-*` tokens in `src/styles/global.css` and never hard-code colours.
 - Scoped `<style>` in `.astro` files is unlayered, so it overrides Tailwind utilities. Make responsive `display` changes in a component media query instead.
 - Don't use gendered pronouns for Avani. Write "Avani Jangam" or rephrase.
-- Before committing, run `npm run check` and `npm run build`.
+- Before committing, run `npm run check` and `npm run build`. `npm run build` also refreshes the YouTube snapshot, so commit those generated files too.
+- The Projects section will get a different design later; the user will specify it. Don't couple it to the Resources video feed.
 
 ### Where things are (common edits)
 | Change | File |
@@ -43,7 +44,8 @@ Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Av
 | Add or edit a service | `src/content/services/<slug>.md` (schema in `src/content.config.ts`) |
 | Add or edit a project | `src/content/projects/<slug>.md` + image in `src/assets/projects/` |
 | Skills / software levels | `src/content/expertise.json`, `src/content/tools.json` |
-| YouTube videos | `src/content/videos.json` + thumbnail `src/assets/videos/<id>.jpg` |
+| Resources page videos | **Automatic.** `scripts/fetch-youtube.mjs` runs as `prebuild`. It writes `src/content/youtube.json` + `src/assets/youtube/`, long-form only, sorted by views, 5 per page (`src/config/youtube.json`). Never edit the generated files by hand. |
+| Homepage "Learn" videos | `src/content/videos.json` + thumbnail `src/assets/videos/<id>.jpg` |
 | Experience / education / certifications | `src/content/credentials.json` (the About section appears automatically) |
 | Colours, fonts, spacing, buttons, motion | `src/styles/global.css` |
 | Header / footer / theme toggle | `src/components/Header.astro`, `Footer.astro`, `ThemeToggle.astro` |

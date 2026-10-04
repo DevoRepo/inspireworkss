@@ -1,0 +1,125 @@
+---
+/** Numbered pagination styled as a drawing sheet index ("Sheet 2 of 4"). */
+interface Props {
+  current: number;
+  last: number;
+  /** Builds the URL for a page number (page 1 should be the section root). */
+  href: (page: number) => string;
+  label?: string;
+}
+
+const { current, last, href, label = 'Pagination' } = Astro.props;
+
+/** Page numbers to show, with null standing for a gap ("…"). */
+function pageList(): (number | null)[] {
+  if (last <= 7) return Array.from({ length: last }, (_, i) => i + 1);
+  const pages = new Set([1, last, current - 1, current, current + 1].filter((p) => p >= 1 && p <= last));
+  const sorted = [...pages].sort((a, b) => a - b);
+  return sorted.flatMap((p, i) => (i > 0 && p - sorted[i - 1] > 1 ? [null, p] : [p]));
+}
+---
+
+{
+  last > 1 && (
+    <nav aria-label={label} class="pager">
+      <p class="eyebrow">
+        Sheet {current} of {last}
+      </p>
+      <div class="flex flex-wrap items-center gap-2">
+        {current > 1 ? (
+          <a href={href(current - 1)} class="step" rel="prev">
+            ← <span class="hidden sm:inline">Previous</span>
+            <span class="sr-only sm:hidden">Previous page</span>
+          </a>
+        ) : (
+          <span class="step is-disabled" aria-hidden="true">
+            ← <span class="hidden sm:inline">Previous</span>
+          </span>
+        )}
+
+        <ol class="flex flex-wrap items-center gap-2">
+          {pageList().map((p) =>
+            p === null ? (
+              <li class="gap" aria-hidden="true">
+                …
+              </li>
+            ) : (
+              <li>
+                <a href={href(p)} class:list={['num', { 'is-current': p === current }]} aria-current={p === current ? 'page' : undefined}>
+                  <span class="sr-only">Page </span>
+                  {String(p).padStart(2, '0')}
+                </a>
+              </li>
+            ),
+          )}
+        </ol>
+
+        {current < last ? (
+          <a href={href(current + 1)} class="step" rel="next">
+            <span class="hidden sm:inline">Next</span>
+            <span class="sr-only sm:hidden">Next page</span> →
+          </a>
+        ) : (
+          <span class="step is-disabled" aria-hidden="true">
+            <span class="hidden sm:inline">Next</span> →
+          </span>
+        )}
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 2rem;
+  }
+
+  .num,
+  .step {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding-inline: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 0 1px var(--c-line-strong);
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+
+  .step {
+    display: inline-flex;
+    gap: 0.5rem;
+  }
+
+  a.num:hover,
+  a.step:hover {
+    box-shadow: inset 0 0 0 1px var(--c-ink);
+    color: var(--c-accent);
+  }
+
+  .num.is-current {
+    background: var(--c-ink);
+    color: var(--c-paper);
+    box-shadow: none;
+  }
+
+  /* Disabled ends stay legible (AA contrast); a fainter frame signals they are inactive. */
+  .is-disabled {
+    color: var(--c-ink-3);
+    box-shadow: inset 0 0 0 1px var(--c-line);
+    cursor: not-allowed;
+  }
+
+  .gap {
+    padding-inline: 0.25rem;
+    color: var(--c-ink-3);
+  }
+</style>
