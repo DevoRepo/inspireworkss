@@ -12,7 +12,9 @@
     "astro": "astro",
     "check": "astro check",
     "prebuild": "node scripts/fetch-youtube.mjs",
-    "youtube": "node scripts/fetch-youtube.mjs"
+    "youtube": "node scripts/fetch-youtube.mjs",
+    "deploy": "astro check && SITE_URL=${SITE_URL:-https://inspireworkss.inspireworkss.workers.dev} npm run build && wrangler deploy",
+    "preview:cloudflare": "npm run build && wrangler dev"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -26,7 +28,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "sharp": "^0.35.5",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.147.0"
   },
   "description": "INSPIREWORKSS — Mechanical engineering portfolio & services website of Avani Jangam"
 }

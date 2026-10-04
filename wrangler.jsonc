@@ -1,0 +1,15 @@
+// Cloudflare deployment config (Pages, now part of Cloudflare Workers — static assets only, no server code).
+// Deploy with `npm run deploy`. See README → "Deploying to Cloudflare".
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "inspireworkss",
+  "compatibility_date": "2026-10-04",
+  "assets": {
+    // Astro's static build output. public/_headers is applied automatically.
+    "directory": "./dist",
+    // Serve dist/404.html for unknown URLs.
+    "not_found_handling": "404-page",
+    // /about → /about/ (matches trailingSlash: 'always').
+    "html_handling": "auto-trailing-slash"
+  }
+}

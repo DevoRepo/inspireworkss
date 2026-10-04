@@ -17,23 +17,34 @@ npm run preview   # serve ./dist locally
 
 Requires Node 22.12 or later.
 
-## Deploying to Cloudflare Pages
+## Deploying to Cloudflare
 
-| Setting | Value |
-|---|---|
-| Framework preset | Astro |
-| Build command | `npm run build` |
-| Build output directory | `dist` |
-| Environment variable `NODE_VERSION` | `22` |
-| Environment variable `SITE_URL` | your final domain, e.g. `https://example.com` (set once the domain is decided) |
+The site is hosted on **Cloudflare Pages, which now runs on Cloudflare Workers** as static assets. There is no server code and no adapter.
 
-The production domain is **not** hard-coded. Canonical URLs, Open Graph URLs, `sitemap-index.xml` and `robots.txt` all come from `site` in [`astro.config.mjs`](astro.config.mjs), which is resolved in this order:
+**Live:** https://inspireworkss.inspireworkss.workers.dev
 
-1. `SITE_URL`, which you set in Cloudflare Pages.
-2. `CF_PAGES_URL`, which Cloudflare injects automatically. It is the per-deployment `*.pages.dev` URL.
+```sh
+npm run deploy               # type-check → fetch YouTube videos → build → upload to Cloudflare
+npm run preview:cloudflare   # build, then serve locally through Cloudflare's runtime (wrangler dev)
+```
+
+Deployment needs a one-time `npx wrangler login`. The Cloudflare settings are in [`wrangler.jsonc`](wrangler.jsonc):
+- project name `inspireworkss`
+- assets served from `./dist`
+- `dist/404.html` for unknown URLs
+- automatic trailing slashes
+
+The production domain is **not** hard-coded into the site. Canonical URLs, Open Graph URLs, `sitemap-index.xml` and `robots.txt` all come from `site` in [`astro.config.mjs`](astro.config.mjs). It is resolved in this order:
+
+1. `SITE_URL`. The `deploy` script defaults it to the `workers.dev` address above.
+2. `CF_PAGES_URL`, which Cloudflare's Git-connected builds inject automatically.
 3. `http://localhost:4321` for local development.
 
-Set `SITE_URL` before launch, even to the `*.pages.dev` address. Without it, canonical URLs point at a deployment-specific preview URL.
+### When the domain is decided
+
+1. In the Cloudflare dashboard, go to **Workers & Pages → inspireworkss → Settings → Domains & Routes → Add → Custom domain**. The domain must use Cloudflare DNS.
+2. Change the default URL in the `deploy` script in `package.json` to the new domain, or run `SITE_URL=https://your-domain.com npm run deploy`.
+3. Optionally turn off the `workers.dev` route in the same settings page, so only the real domain serves the site.
 
 Security and caching headers are in [`public/_headers`](public/_headers).
 
