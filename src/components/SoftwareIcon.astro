@@ -1,0 +1,98 @@
+---
+/**
+ * Software icon: a small rounded tile with the tool's short code (tools.json → code).
+ * The tile colour follows the tool's group, so the whole toolset reads as one family.
+ * Decorative only: the tool name is always written next to it.
+ */
+import { toolGroups, type Tool } from '../lib/content';
+
+interface Props {
+  tool: Tool;
+  size?: 'sm' | 'md';
+  /** 'dark' when the tile sits on an always-dark surface (e.g. the logo plate). */
+  tone?: 'auto' | 'dark';
+  class?: string;
+}
+
+const { tool, size = 'md', tone = 'auto', class: className } = Astro.props;
+const kinds = ['cad', 'plant', 'analysis', 'automation'] as const;
+const kind = kinds[toolGroups.indexOf(tool.data.group)] ?? 'automation';
+---
+
+<span class:list={['sw-icon', `sw-${size}`, `sw-${kind}`, { 'sw-dark': tone === 'dark' }, className]} aria-hidden="true">
+  {tool.data.code}
+</span>
+
+<style>
+  .sw-icon {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    font-family: var(--font-sans);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--fg);
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--edge, transparent);
+  }
+
+  .sw-md {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.625rem;
+    font-size: 0.875rem;
+  }
+
+  .sw-sm {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.625rem;
+    letter-spacing: -0.02em;
+  }
+
+  /* Group colours, taken from the site tokens so both themes work. */
+  .sw-cad {
+    --bg: var(--c-ink);
+    --fg: var(--c-paper);
+  }
+
+  .sw-plant {
+    --bg: var(--c-annot);
+    --fg: var(--c-paper);
+  }
+
+  .sw-analysis {
+    --bg: var(--c-accent);
+    --fg: var(--c-accent-ink);
+  }
+
+  .sw-automation {
+    --bg: var(--c-sheet);
+    --fg: var(--c-ink);
+    --edge: var(--c-line-strong);
+  }
+
+  /* On an always-dark surface the graphite and outlined tiles need light versions. */
+  .sw-dark.sw-cad {
+    --bg: rgb(255 255 255 / 0.12);
+    --fg: #f1efe9;
+  }
+
+  .sw-dark.sw-plant {
+    --bg: #6fa8ba;
+    --fg: #0f1113;
+  }
+
+  .sw-dark.sw-analysis {
+    --bg: #ff4b3e;
+    --fg: #140605;
+  }
+
+  .sw-dark.sw-automation {
+    --bg: transparent;
+    --fg: #f1efe9;
+    --edge: rgb(255 255 255 / 0.3);
+  }
+</style>

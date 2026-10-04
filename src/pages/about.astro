@@ -1,5 +1,6 @@
 ---
 import { url } from '../lib/url';
+import SoftwareIcon from '../components/SoftwareIcon.astro';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TitleBlock from '../components/TitleBlock.astro';
@@ -94,8 +95,8 @@ const trail = [{ name: 'About', href: '/about/' }];
             <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
               {
                 tools.map((t) => (
-                  <li class="flex items-center gap-2 text-[0.95rem]">
-                    <span class="tool-mark" aria-hidden="true" />
+                  <li class="flex items-center gap-2.5 text-[0.95rem]">
+                    <SoftwareIcon tool={t} size="sm" tone="dark" />
                     {t.data.name}
                   </li>
                 ))
@@ -249,14 +250,6 @@ const trail = [{ name: 'About', href: '/about/' }];
 
   .plate-eyebrow {
     color: #9aa1a8;
-  }
-
-  .tool-mark {
-    width: 0.5rem;
-    height: 0.5rem;
-    flex: none;
-    background: #ff4b3e;
-    transform: rotate(45deg);
   }
 
   .domain-rule {

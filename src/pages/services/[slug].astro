@@ -58,8 +58,8 @@ const schema = [
     title={data.title}
     lead={data.summary}
     meta={[
-      { label: 'Skills', value: `${pad(skills.length)} referenced` },
-      { label: 'Software', value: tools.length ? tools.map((t) => t.data.name).slice(0, 3).join(', ') + (tools.length > 3 ? ' +' : '') : '—' },
+      { label: 'Skills applied', value: pad(skills.length) },
+      ...(tools.length ? [{ label: 'Software packages', value: pad(tools.length) }] : []),
     ]}
     trail={trail}
   >
@@ -143,7 +143,7 @@ const schema = [
             )}
             {tools.length > 0 && (
               <div class="lg:col-span-4" data-reveal style="--reveal-i: 1">
-                <SpecTable caption="Software" itemLabel="Package" noteLabel="Used for" rows={tools.map((t) => ({ name: t.data.name, note: t.data.use }))} />
+                <SpecTable caption="Software" itemLabel="Package" noteLabel="Used for" rows={tools.map((t) => ({ name: t.data.name, note: t.data.use, tool: t }))} />
               </div>
             )}
           </div>

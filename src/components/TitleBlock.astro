@@ -1,11 +1,13 @@
 ---
 import { url } from '../lib/url';
 /**
- * Page header: breadcrumb trail, heading, lead, and a short list of key facts
- * set like the notes column of a drawing (label left, value right, hairline rules).
+ * Page header as a DESIGN.md "colour block": one graphite panel with rounded corners that holds
+ * the breadcrumb, heading, lead and key figures. A faint drawing of the IW hex sits behind it.
  */
 interface Meta {
+  /** Small caption under the figure. */
   label: string;
+  /** The figure itself, set large. Keep it short. */
   value: string;
 }
 
@@ -20,59 +22,130 @@ interface Props {
 const { eyebrow, title, lead, meta = [], trail = [] } = Astro.props;
 ---
 
-<section class="title-block grid-paper" aria-labelledby="page-title">
-  <div class="container-x relative pb-14 pt-10 sm:pt-14 lg:pb-20 lg:pt-20">
-    {
-      trail.length > 0 && (
-        <nav aria-label="Breadcrumb" class="mb-8">
-          <ol class="crumbs">
-            <li>
-              <a href={url('/')}>Home</a>
-            </li>
-            {trail.map((item, i) => (
-              <li>
-                {i === trail.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={url(item.href)}>{item.name}</a>}
-              </li>
-            ))}
-          </ol>
-        </nav>
-      )
-    }
+<section class="title-block" aria-labelledby="page-title">
+  <div class="container-x pt-4 sm:pt-6">
+    <div class="panel">
+      <svg class="hex" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+        <circle cx="200" cy="200" r="178" class="hex-c"></circle>
+        <path d="M0 200h400M200 0v400" class="hex-c"></path>
+        <path d="M200 30 347 115v170L200 370 53 285V115Z" class="hex-o"></path>
+        <path d="M200 200V370M200 200 53 115M200 200l147-85" class="hex-o"></path>
+        <path d="M200 30 347 115v170" class="hex-r"></path>
+      </svg>
 
-    <div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
-      <div class="lg:col-span-8" data-reveal>
-        <p class="eyebrow flex items-center gap-3"><span class="tick" aria-hidden="true"></span>{eyebrow}</p>
-        <h1 id="page-title" class="display-lg mt-5">{title}</h1>
-        {lead && <p class="lead mt-6 max-w-2xl">{lead}</p>}
-        <slot />
+      <div class="relative">
+        {
+          trail.length > 0 && (
+            <nav aria-label="Breadcrumb" class="mb-10 sm:mb-14">
+              <ol class="crumbs">
+                <li>
+                  <a href={url('/')}>Home</a>
+                </li>
+                {trail.map((item, i) => (
+                  <li>{i === trail.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={url(item.href)}>{item.name}</a>}</li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+
+        <div class="max-w-4xl" data-reveal>
+          <p class="eyebrow panel-muted flex items-center gap-3"><span class="tick" aria-hidden="true"></span>{eyebrow}</p>
+          <h1 id="page-title" class="display-lg mt-5">{title}</h1>
+          {lead && <p class="lead panel-muted mt-6 max-w-2xl">{lead}</p>}
+          <slot />
+        </div>
+
+        {
+          meta.length > 0 && (
+            <dl class="figures" data-reveal style="--reveal-i: 2">
+              {meta.map((cell) => (
+                <div>
+                  <dt>{cell.label}</dt>
+                  <dd>{cell.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
       </div>
-
-      {
-        meta.length > 0 && (
-          <dl class="facts lg:col-span-4" data-reveal style="--reveal-i: 2">
-            {meta.map((cell) => (
-              <div>
-                <dt>{cell.label}</dt>
-                <dd>{cell.value}</dd>
-              </div>
-            ))}
-          </dl>
-        )
-      }
     </div>
   </div>
 </section>
 
 <style>
-  .title-block {
+  .panel {
+    /* The panel is graphite in both themes, so it carries its own light-on-dark palette. */
+    --c-accent: #ff4b3e;
+    --c-accent-ink: #140605;
+    --p-ink: #f1efe9;
+    --p-ink-2: #b9bec4;
+    --p-line: rgb(255 255 255 / 0.12);
+
     position: relative;
-    border-bottom: 1px solid var(--c-line);
+    overflow: hidden;
+    padding: clamp(1.5rem, 1rem + 3vw, 4rem);
+    border-radius: clamp(1rem, 0.6rem + 1.4vw, 1.5rem);
+    background-color: var(--c-plate);
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: -1px -1px;
+    color: var(--p-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :global([data-theme='dark']) .panel {
+    background-color: #1a1d21;
+    box-shadow: inset 0 0 0 1px var(--c-line);
+  }
+
+  /* Faint construction drawing of the IW hex, cropped by the panel edge. */
+  .hex {
+    position: absolute;
+    right: -7rem;
+    top: 50%;
+    width: min(36rem, 80vw);
+    translate: 0 -50%;
+    fill: none;
+    pointer-events: none;
+  }
+
+  /* On narrow screens the drawing sits behind the text, so it steps further back. */
+  @media (max-width: 47.99rem) {
+    .hex {
+      opacity: 0.5;
+    }
+  }
+
+  .hex-c {
+    stroke: rgb(255 255 255 / 0.08);
+    stroke-width: 1;
+    stroke-dasharray: 3 6;
+  }
+
+  .hex-o {
+    stroke: rgb(255 255 255 / 0.13);
+    stroke-width: 1.5;
+  }
+
+  .hex-r {
+    stroke: var(--c-accent);
+    stroke-opacity: 0.6;
+    stroke-width: 2;
   }
 
   .tick {
     width: 1.5rem;
     height: 1px;
+    flex: none;
     background: var(--c-accent);
+  }
+
+  .panel-muted {
+    color: var(--p-ink-2);
   }
 
   .crumbs {
@@ -80,48 +153,78 @@ const { eyebrow, title, lead, meta = [], trail = [] } = Astro.props;
     flex-wrap: wrap;
     gap: 0.25rem 0;
     font-size: 0.875rem;
-    color: var(--c-ink-3);
+    color: var(--p-ink-2);
   }
 
   .crumbs li + li::before {
     content: '/';
     margin-inline: 0.55rem;
-    color: var(--c-line-strong);
+    opacity: 0.5;
   }
 
   .crumbs a {
     transition: color 0.2s;
   }
 
-  .crumbs a:hover {
-    color: var(--c-accent);
-  }
-
+  .crumbs a:hover,
   .crumbs [aria-current] {
-    color: var(--c-ink);
+    color: var(--p-ink);
   }
 
-  .facts > div {
+  .figures {
     display: grid;
-    grid-template-columns: 7rem minmax(0, 1fr);
-    gap: 1rem;
-    padding-block: 0.85rem;
-    border-bottom: 1px solid var(--c-line);
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--p-line);
   }
 
-  .facts > div:first-child {
-    border-top: 1px solid var(--c-line);
+  /* Figure on top, caption below; the dt stays first in the markup for screen readers. */
+  .figures > div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    min-width: 0;
   }
 
-  .facts dt {
+  .figures dd {
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 2rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+  }
+
+  .figures dt {
     font-size: 0.875rem;
-    color: var(--c-ink-3);
+    color: var(--p-ink-2);
   }
 
-  .facts dd {
-    font-size: 0.975rem;
-    font-weight: 500;
-    line-height: 1.45;
-    color: var(--c-ink);
+  /* Chips passed in through the slot (e.g. Expertise categories) switch to the dark palette. */
+  .panel :global(.chip) {
+    background: rgb(255 255 255 / 0.06);
+    border-color: var(--p-line);
+    color: var(--p-ink);
+  }
+
+  .panel :global(a.chip:hover) {
+    border-color: var(--p-ink);
+  }
+
+  /* Buttons passed in through the slot (e.g. service enquiry) on the dark panel. */
+  .panel :global(.btn-primary:hover) {
+    background: var(--p-ink);
+    color: #111214;
+  }
+
+  .panel :global(.btn-ghost) {
+    color: var(--p-ink);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3);
+  }
+
+  .panel :global(.btn-ghost:hover) {
+    box-shadow: inset 0 0 0 1px var(--p-ink);
   }
 </style>

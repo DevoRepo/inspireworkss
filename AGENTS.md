@@ -44,7 +44,7 @@ Static Astro 7 site for INSPIREWORKSS, the mechanical engineering practice of Av
 | Email, social links, nav, tagline | `src/config/site.ts` |
 | Add or edit a service | `src/content/services/<slug>.md` (schema in `src/content.config.ts`) |
 | Add or edit a project | `src/content/projects/<slug>.md` + image in `src/assets/projects/` |
-| Skills / software | `src/content/expertise.json` (skill, category, note), `src/content/tools.json` (name, use, group). **No self-rated levels**: every skill is shown as professional, with "Applied in" links derived from the services that reference it. |
+| Skills / software | `src/content/expertise.json` (skill, category, note), `src/content/tools.json` (name, code, use, group; `code` is the 2–3 letter label on the software icon tile). **No self-rated levels**: every skill is shown as professional, with "Applied in" links derived from the services that reference it. |
 | Resources page videos | **Automatic.** `scripts/fetch-youtube.mjs` runs as `prebuild`. It writes `src/content/youtube.json` + `src/assets/youtube/`, long-form only, sorted by views, 5 per page (`src/config/youtube.json`). Never edit the generated files by hand. |
 | Homepage "Learn" videos | `src/content/videos.json` + thumbnail `src/assets/videos/<id>.jpg` |
 | Experience / education / certifications | `src/content/credentials.json` (the About section appears automatically) |
