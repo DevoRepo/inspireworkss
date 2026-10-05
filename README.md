@@ -32,7 +32,7 @@ npm run preview:cloudflare   # build, then serve locally through Cloudflare's ru
 
 [`.github/workflows/deploy-cloudflare.yml`](.github/workflows/deploy-cloudflare.yml) runs `npm run deploy`:
 - on every push to `main`;
-- **daily at 02:30 UTC**, so new YouTube videos and view counts appear automatically;
+- **daily at 03:17 UTC** (8:47 am India time), so new YouTube videos and view counts appear automatically;
 - whenever you start it from **Actions → Deploy to Cloudflare → Run workflow**.
 
 It uses two repository secrets: `CLOUDFLARE_API_TOKEN` (the "Edit Cloudflare Workers" token) and `YOUTUBE_API_KEY`. The account ID is in `wrangler.jsonc`.
